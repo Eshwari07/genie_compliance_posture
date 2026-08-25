@@ -1,0 +1,8 @@
+data_generator/out/
+__pycache__/
+*.pyc
+node_modules/
+app/frontend/dist/
+.venv/
+sources/
+.DS_Store

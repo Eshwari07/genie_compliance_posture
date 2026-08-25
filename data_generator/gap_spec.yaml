@@ -1,0 +1,370 @@
+# =============================================================================
+# gap_spec.yaml — THE ENGINEERED GAP MAP
+# =============================================================================
+# Source of truth for Northwind Regional Bank's compliance posture.
+#
+# Gaps are DESIGNED, not random. Three consumers read this file:
+#   1. data_generator/generate_policies.py  — decides what each policy does and does not say
+#   2. data_generator/generate_controls.py  — control inventory, ownership, test recency
+#   3. notebooks/09_build_gold_tables.py    — asserts every designed gap is present + reachable
+#
+# If a demo question does not have a satisfying answer, the fix belongs here, not in the query.
+# =============================================================================
+
+meta:
+  client_name: Northwind Regional Bank
+  spec_version: "1.0"
+  # Overall coverage where Covered=1.0, Partial=0.5, Gap=0.0.
+  # High enough to look like a real program, low enough that gap questions stay interesting.
+  target_overall_coverage_pct: 68.0
+  tolerance_pct: 3.0
+
+# -----------------------------------------------------------------------------
+# Domain taxonomy — CSF 2.0-informed, one policy document per domain.
+# Every obligation, unified control and org control carries exactly one of these.
+# -----------------------------------------------------------------------------
+domains:
+  - id: GOV
+    name: Governance & Risk Management
+    target_coverage_pct: 82
+  - id: ASM
+    name: Asset Management
+    target_coverage_pct: 71
+  - id: IAM
+    name: Identity & Access Management
+    target_coverage_pct: 84
+  - id: DAT
+    name: Data Protection & Cryptography
+    target_coverage_pct: 66
+  - id: CFG
+    name: Secure Configuration & Change Management
+    target_coverage_pct: 74
+  - id: VUL
+    name: Vulnerability & Patch Management
+    target_coverage_pct: 62
+  - id: NET
+    name: Network & Infrastructure Security
+    target_coverage_pct: 70
+  - id: APP
+    name: Application Security
+    target_coverage_pct: 58
+  - id: LOG
+    name: Logging, Monitoring & Detection
+    target_coverage_pct: 76
+  - id: IRP
+    name: Incident Response
+    target_coverage_pct: 80
+  - id: BCR
+    name: Business Continuity & Resilience
+    target_coverage_pct: 55
+  - id: TPR
+    name: Third-Party Risk Management
+    target_coverage_pct: 64
+  - id: PHY
+    name: Physical & Environmental Security
+    target_coverage_pct: 61
+  # Deliberately the weakest domain. Drives "which domain is weakest, and by how much?"
+  # Must remain the minimum across all domains by a clear margin (>=8 points).
+  - id: MED
+    name: Media Handling & Secure Disposal
+    target_coverage_pct: 24
+    is_weakest_domain: true
+  - id: HRS
+    name: Human Resources Security & Awareness
+    target_coverage_pct: 78
+
+# -----------------------------------------------------------------------------
+# Framework posture. PCI DSS is deliberately the weakest framework.
+# Drives "which framework are we least prepared for?"
+# -----------------------------------------------------------------------------
+frameworks:
+  - id: FFIEC
+    target_coverage_pct: 74
+  - id: NIST80053
+    target_coverage_pct: 70
+  - id: ISO27001
+    target_coverage_pct: 69
+  - id: SOC2
+    target_coverage_pct: 72
+  - id: PCIDSS
+    target_coverage_pct: 51
+    is_weakest_framework: true
+    # Must stay at least this far below the next-weakest framework so the answer is unambiguous.
+    min_margin_pct: 12
+
+# -----------------------------------------------------------------------------
+# HARD GAPS — subject areas with no policy coverage whatsoever.
+# Every obligation tagged with these themes resolves to coverage_status='Gap'
+# with policy_clause_id = NULL. Drives "list our uncovered high-criticality obligations."
+# -----------------------------------------------------------------------------
+hard_gaps:
+  - theme: media_sanitization
+    domain: MED
+    label: Media sanitization and secure disposal
+    gap_reason: >-
+      No policy or standard defines sanitization methods, verification, or certificates of
+      destruction for decommissioned media. Raised at the 2025 internal audit; unremediated.
+    criticality: High
+    min_obligations: 9
+
+  - theme: removable_media
+    domain: MED
+    label: Removable media controls
+    gap_reason: >-
+      No policy governs the use, encryption, or registration of removable media. USB mass storage
+      is technically blocked on managed endpoints, but the control is undocumented and untested.
+    criticality: High
+    min_obligations: 6
+
+  - theme: threat_intelligence
+    domain: LOG
+    label: Threat intelligence program
+    gap_reason: >-
+      No documented process for receiving, evaluating, or acting on external threat intelligence.
+      Ad hoc consumption of FS-ISAC alerts by two analysts, with no defined workflow.
+    criticality: Medium
+    min_obligations: 5
+
+  - theme: insider_threat
+    domain: HRS
+    label: Insider threat program
+    gap_reason: >-
+      No insider threat program exists. Behavioural monitoring, and the governance and privacy
+      review such a program requires, have not been established.
+    criticality: Medium
+    min_obligations: 4
+
+  - theme: supply_chain_sbom
+    domain: TPR
+    label: Software supply chain and SBOM
+    gap_reason: >-
+      Vendor risk management covers service providers but is silent on software provenance,
+      SBOM collection, and third-party component integrity verification.
+    criticality: High
+    min_obligations: 5
+
+# -----------------------------------------------------------------------------
+# STALE POLICIES — exist and provide coverage, but overdue for review.
+# Drives "which policies are overdue, and how much depends on them?"
+# Staleness threshold used by the is_stale_policy SQL expression is 18 months.
+# -----------------------------------------------------------------------------
+stale_policies:
+  - policy_key: business_continuity
+    last_reviewed: "2019-06-14"
+    review_cycle_months: 12
+    note: >-
+      Predates the 2024 cloud migration entirely. Still references the decommissioned
+      Tukwila datacentre as the warm recovery site.
+    min_dependent_obligations: 22
+
+  - policy_key: physical_security
+    last_reviewed: "2020-02-28"
+    review_cycle_months: 24
+    note: >-
+      Predates the branch consolidation programme. Names four branches that have since closed.
+    min_dependent_obligations: 14
+
+  - policy_key: secure_sdlc
+    last_reviewed: "2022-11-03"
+    review_cycle_months: 12
+    note: >-
+      Written before the platform team adopted containers and CI/CD. No pipeline security content.
+    min_dependent_obligations: 17
+
+# -----------------------------------------------------------------------------
+# ASPIRATIONAL LANGUAGE — clauses that read as commitments but are not binding.
+# Classified clause_modality='aspirational' and downgraded to Partial coverage.
+# A genuinely realistic audit finding, and it makes Partial mean something.
+# -----------------------------------------------------------------------------
+aspirational_clauses:
+  weasel_phrases:
+    - "will be implemented"
+    - "where feasible"
+    - "as resources permit"
+    - "should be considered"
+    - "is encouraged to"
+    - "on a best-efforts basis"
+    - "is planned for a future release"
+  # Section refs are validated against clause_bank_*.yaml by generate_policies.py —
+  # a placement pointing at a section that does not exist fails the build.
+  placements:
+    - policy_key: secure_sdlc
+      section: "5.3"
+      text_theme: static application security testing coverage
+    - policy_key: vulnerability_management
+      section: "3.4"
+      text_theme: remediation SLA for medium-severity findings
+    - policy_key: encryption_key_management
+      section: "6.1"
+      text_theme: hardware security module adoption for key storage
+    - policy_key: vendor_risk
+      section: "5.4"
+      text_theme: continuous monitoring of critical vendors
+    - policy_key: logging_monitoring
+      section: "6.3"
+      text_theme: log retention beyond twelve months
+  target_partial_share_pct: 18
+
+# -----------------------------------------------------------------------------
+# POLICY CONTRADICTION — two policies that disagree.
+# Drives "show me conflicting policy requirements", which is a question no dashboard has a tile for.
+# -----------------------------------------------------------------------------
+contradictions:
+  - id: CONTRA-01
+    topic: Encryption of data at rest
+    strict:
+      policy_key: encryption_key_management
+      section: "4.1"
+      position: >-
+        All data classified Confidential or Restricted must be encrypted at rest using AES-256.
+    permissive:
+      policy_key: data_classification
+      section: "6.2"
+      position: >-
+        Confidential data should be encrypted at rest where technically feasible.
+    affected_domain: DAT
+    resolution_status: unresolved
+
+  - id: CONTRA-02
+    topic: Privileged access recertification frequency
+    strict:
+      policy_key: privileged_access
+      section: "5.2"
+      position: Privileged entitlements are recertified every 90 days.
+    permissive:
+      policy_key: access_control
+      section: "4.5"
+      position: User access rights are reviewed at least annually.
+    affected_domain: IAM
+    resolution_status: unresolved
+
+# -----------------------------------------------------------------------------
+# PCI DSS SPECIFIC OMISSIONS — why PCI is the weakest framework.
+# The CDE Security Standard exists but is materially incomplete.
+# -----------------------------------------------------------------------------
+pci_omissions:
+  - requirement_theme: quarterly ASV external vulnerability scanning
+    pci_ref_prefix: "11.3"
+    gap_reason: >-
+      The CDE Security Standard requires internal scanning but never mentions quarterly external
+      scanning by an Approved Scanning Vendor. No ASV is currently engaged.
+    criticality: High
+  - requirement_theme: annual penetration testing and segmentation validation
+    pci_ref_prefix: "11.4"
+    gap_reason: >-
+      Penetration testing is performed ad hoc and does not include CDE segmentation validation.
+    criticality: High
+  - requirement_theme: cardholder data retention and disposal limits
+    pci_ref_prefix: "3.2"
+    gap_reason: >-
+      No defined retention period or quarterly purge process for stored cardholder data. Compounded
+      by the media sanitization hard gap.
+    criticality: High
+  - requirement_theme: file integrity monitoring on CDE systems
+    pci_ref_prefix: "11.5"
+    gap_reason: >-
+      File integrity monitoring is deployed on core banking hosts but was never extended to the CDE.
+    criticality: Medium
+
+# -----------------------------------------------------------------------------
+# OWNER CONCENTRATION — one person is the bottleneck.
+# Drives "which control owners have the most open high-criticality gaps?"
+# -----------------------------------------------------------------------------
+owner_concentration:
+  bottleneck_owner:
+    name: Marcus Feld
+    role: IT Security Manager
+    team: Information Security
+    # Must own strictly more open high-criticality gaps than anyone else, by this margin.
+    min_open_high_crit_gaps: 14
+    min_margin_over_next: 5
+  note: >-
+    Realistic for a bank this size: a single hands-on manager absorbs the technical controls that
+    nobody else owns. Makes the answer actionable rather than merely descriptive.
+
+# -----------------------------------------------------------------------------
+# UNTESTED CONTROLS — implemented but unverified.
+# Drives "which controls are implemented but haven't been tested?"
+# Threshold used by the is_untested_control SQL expression is 12 months.
+# -----------------------------------------------------------------------------
+untested_controls:
+  target_share_of_implemented_pct: 18
+  tolerance_pct: 4
+  concentrated_in_domains: [BCR, PHY, MED, TPR]
+  note: >-
+    Deliberately concentrated in the same domains as the stale policies, so "stale policy" and
+    "untested control" corroborate rather than contradict each other.
+
+# -----------------------------------------------------------------------------
+# HIGH-LEVERAGE UNIFIED CONTROLS — the payoff for the whole hub-and-spoke model.
+# Each maps to obligations in >=4 of the 5 frameworks. These make the prioritization
+# hero question produce a dramatic, obviously-useful answer.
+# -----------------------------------------------------------------------------
+high_leverage_controls:
+  min_count_touching_4plus_frameworks: 8
+  designated:
+    - unified_control_id: UC-IAM-03
+      name: Multi-factor authentication for privileged access
+      frameworks: [FFIEC, NIST80053, ISO27001, SOC2, PCIDSS]
+      current_status: Partial
+      effort_days: 25
+    - unified_control_id: UC-IAM-05
+      name: Periodic access recertification
+      frameworks: [FFIEC, NIST80053, ISO27001, SOC2, PCIDSS]
+      current_status: Partial
+      effort_days: 18
+    - unified_control_id: UC-DAT-02
+      name: Encryption of data at rest
+      frameworks: [FFIEC, NIST80053, ISO27001, SOC2, PCIDSS]
+      current_status: Partial
+      effort_days: 40
+    - unified_control_id: UC-LOG-01
+      name: Centralized security event logging and retention
+      frameworks: [FFIEC, NIST80053, ISO27001, SOC2, PCIDSS]
+      current_status: Partial
+      effort_days: 30
+    - unified_control_id: UC-TPR-01
+      name: Third-party security due diligence
+      frameworks: [FFIEC, NIST80053, ISO27001, SOC2]
+      current_status: Partial
+      effort_days: 22
+    - unified_control_id: UC-VUL-01
+      name: Vulnerability scanning and remediation SLAs
+      frameworks: [FFIEC, NIST80053, ISO27001, PCIDSS]
+      current_status: Partial
+      effort_days: 20
+    - unified_control_id: UC-MED-01
+      name: Media sanitization and secure disposal
+      frameworks: [FFIEC, NIST80053, ISO27001, PCIDSS]
+      current_status: None
+      effort_days: 12
+    - unified_control_id: UC-IRP-02
+      name: Incident response testing and tabletop exercises
+      frameworks: [FFIEC, NIST80053, ISO27001, SOC2]
+      current_status: Partial
+      effort_days: 15
+    - unified_control_id: UC-CFG-01
+      name: Secure baseline configuration management
+      frameworks: [FFIEC, NIST80053, ISO27001, PCIDSS]
+      current_status: Partial
+      effort_days: 35
+
+# -----------------------------------------------------------------------------
+# THE HERO ANSWER — the demo climax must be deterministic.
+# "If we only had budget for three more controls this quarter, which three give the most lift?"
+# UC-MED-01 ranking first is the punchline: the cheapest item on the list unlocks the
+# single worst domain AND four frameworks AND a blocking PCI requirement.
+# -----------------------------------------------------------------------------
+expected_hero_ranking:
+  question: >-
+    If we only had budget for three more controls this quarter, which three would close the most
+    high-criticality gaps across the most frameworks?
+  # priority_score = (high_crit_closed * 3 + obligations_closed) * frameworks_touched / effort_days
+  expected_top_3:
+    - UC-MED-01
+    - UC-IAM-03
+    - UC-VUL-01
+  assert_top_1: UC-MED-01
+  note: >-
+    Asserted in 09_build_gold_tables.py. If generation drifts and the ranking changes, the demo
+    script is wrong — fail the build rather than discover it on camera.

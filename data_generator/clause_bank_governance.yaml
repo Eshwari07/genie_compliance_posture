@@ -1,0 +1,749 @@
+# =============================================================================
+# clause_bank_governance.yaml  (1 of 3)
+# =============================================================================
+# Authored policy clauses for Northwind Regional Bank. Rendered into real PDFs by
+# generate_policies.py, then genuinely re-parsed out of those PDFs by the pipeline.
+#
+# `uc` is the GROUND-TRUTH unified control this clause satisfies. The LLM mapping in
+# notebook 07 never sees it; notebook 08 uses it to score the LLM's clause->obligation
+# mapping. That is what lets the write-up quote a real accuracy number.
+#
+# `modality`:
+#   mandatory    — binding requirement ("must", "shall"). Yields Covered.
+#   advisory     — guidance ("should" without a hard obligation). Yields Partial.
+#   aspirational — future/conditional commitment. Yields Partial. Injected per gap_spec.
+# =============================================================================
+
+policies:
+
+  # ===========================================================================
+  - policy_key: information_security
+    clauses:
+      - section: "1"
+        heading: Purpose and Scope
+        items:
+          - ref: "1.1"
+            uc: UC-GOV-01
+            modality: mandatory
+            text: >-
+              This Policy establishes the mandatory information security requirements for
+              Northwind Regional Bank, N.A. and applies to all employees, contractors, temporary
+              staff and third parties who access Bank information or information systems.
+          - ref: "1.2"
+            uc: UC-GOV-01
+            modality: mandatory
+            text: >-
+              This Policy applies to all Bank information regardless of format or location,
+              including information held by third parties on the Bank's behalf.
+          - ref: "1.3"
+            uc: UC-GOV-04
+            modality: mandatory
+            text: >-
+              The Bank must maintain a register of legal, regulatory and contractual information
+              security obligations applicable to its operations, and must review that register at
+              least annually and upon any material regulatory change.
+
+      - section: "2"
+        heading: Governance and Accountability
+        items:
+          - ref: "2.1"
+            uc: UC-GOV-02
+            modality: mandatory
+            text: >-
+              The Chief Information Security Officer is accountable for the design, operation and
+              effectiveness of the information security program and reports quarterly to the
+              Technology Risk Committee.
+          - ref: "2.2"
+            uc: UC-GOV-02
+            modality: mandatory
+            text: >-
+              Information security roles and responsibilities must be formally documented,
+              assigned to named individuals, and reviewed whenever organizational structure
+              changes.
+          - ref: "2.3"
+            uc: UC-GOV-01
+            modality: mandatory
+            text: >-
+              This Policy and its subordinate Standards and Procedures must be approved by the
+              Technology Risk Committee and reviewed at least annually.
+          - ref: "2.4"
+            uc: UC-GOV-05
+            modality: mandatory
+            text: >-
+              Internal Audit must perform an independent review of the information security
+              program at least every twenty-four months, and findings must be tracked to closure
+              in the enterprise issue management system.
+
+      - section: "3"
+        heading: Risk Management Framework
+        items:
+          - ref: "3.1"
+            uc: UC-GOV-03
+            modality: mandatory
+            text: >-
+              Information security risks must be identified, assessed against the Bank's approved
+              risk criteria, recorded in the risk register, and assigned to a named risk owner.
+          - ref: "3.2"
+            uc: UC-GOV-03
+            modality: mandatory
+            text: >-
+              A formal information security risk assessment must be performed at least annually
+              and prior to any material change to systems, processes or third-party arrangements.
+          - ref: "3.3"
+            uc: UC-GOV-03
+            modality: mandatory
+            text: >-
+              Risks exceeding the Bank's stated tolerance must be treated, transferred, or
+              formally accepted in writing by the Chief Risk Officer.
+          - ref: "3.4"
+            uc: UC-ASM-02
+            modality: mandatory
+            text: >-
+              Systems that store, process or transmit Confidential or Restricted information must
+              be recorded in the enterprise system inventory together with their data flows.
+
+      - section: "4"
+        heading: Policy Exceptions
+        items:
+          - ref: "4.1"
+            uc: UC-GOV-03
+            modality: mandatory
+            text: >-
+              Any deviation from this Policy or its subordinate Standards requires a documented
+              exception approved by the Chief Information Security Officer and the relevant risk
+              owner, with a defined expiry date not exceeding twelve months.
+          - ref: "4.2"
+            uc: UC-GOV-03
+            modality: mandatory
+            text: >-
+              Open exceptions must be reviewed quarterly by the Technology Risk Committee, and
+              exceptions may not be renewed more than twice without executive escalation.
+
+      - section: "5"
+        heading: Roles and Responsibilities
+        items:
+          - ref: "5.1"
+            uc: UC-GOV-02
+            modality: mandatory
+            text: >-
+              Business unit leaders are accountable for compliance with this Policy within their
+              areas and for ensuring their personnel complete required security training.
+          - ref: "5.2"
+            uc: UC-ASM-03
+            modality: mandatory
+            text: >-
+              Every information asset and information system must have a designated owner
+              accountable for its classification, access authorisation and protection.
+          - ref: "5.3"
+            uc: UC-GOV-02
+            modality: mandatory
+            text: >-
+              The Chief Compliance Officer is responsible for monitoring the Bank's adherence to
+              applicable regulatory security obligations and reporting material issues to the
+              Board Risk Committee.
+
+      - section: "6"
+        heading: Compliance and Enforcement
+        items:
+          - ref: "6.1"
+            uc: UC-HRS-05
+            modality: mandatory
+            text: >-
+              All personnel must acknowledge this Policy upon hire and annually thereafter.
+              Acknowledgement records must be retained for the duration of employment plus
+              seven years.
+          - ref: "6.2"
+            uc: UC-HRS-05
+            modality: mandatory
+            text: >-
+              Violations of this Policy may result in disciplinary action up to and including
+              termination of employment or contract, and may be referred to law enforcement where
+              unlawful conduct is suspected.
+          - ref: "6.3"
+            uc: UC-GOV-05
+            modality: mandatory
+            text: >-
+              Compliance with this Policy must be measured through defined metrics reported to
+              the Technology Risk Committee on a quarterly basis.
+
+  # ===========================================================================
+  - policy_key: access_control
+    clauses:
+      - section: "1"
+        heading: Purpose and Scope
+        items:
+          - ref: "1.1"
+            uc: UC-IAM-01
+            modality: mandatory
+            text: >-
+              This Standard defines mandatory requirements for the management of identities and
+              access to Northwind Regional Bank information systems, and applies to all workforce,
+              service and third-party accounts.
+          - ref: "1.2"
+            uc: UC-IAM-01
+            modality: mandatory
+            text: >-
+              All access to Bank systems must be through a uniquely attributable individual
+              identity. Shared and generic interactive accounts are prohibited.
+
+      - section: "2"
+        heading: Identity Lifecycle
+        items:
+          - ref: "2.1"
+            uc: UC-IAM-01
+            modality: mandatory
+            text: >-
+              Identities must be provisioned only upon an approved request from the individual's
+              line manager, recorded in ServiceNow, and validated against an active Human
+              Resources record.
+          - ref: "2.2"
+            uc: UC-IAM-01
+            modality: mandatory
+            text: >-
+              Access rights must be updated within five business days of any role change, and
+              entitlements no longer required for the new role must be removed.
+          - ref: "2.3"
+            uc: UC-IAM-01
+            modality: mandatory
+            text: >-
+              All access must be revoked within twenty-four hours of employment or contract
+              termination. For involuntary terminations, access must be revoked before the
+              individual is notified.
+          - ref: "2.4"
+            uc: UC-IAM-01
+            modality: mandatory
+            text: >-
+              Service accounts must have a named human owner, a documented purpose, and must be
+              reviewed for continued need at least annually.
+          - ref: "2.5"
+            uc: UC-HRS-01
+            modality: mandatory
+            text: >-
+              Background verification appropriate to the sensitivity of the role must be completed
+              before system access is granted.
+
+      - section: "3"
+        heading: Authentication Requirements
+        items:
+          - ref: "3.1"
+            uc: UC-IAM-02
+            modality: mandatory
+            text: >-
+              Interactive authentication to Bank systems must be performed through the enterprise
+              single sign-on service (Okta). Direct local authentication is permitted only where
+              technically unavoidable and must be documented as an exception.
+          - ref: "3.2"
+            uc: UC-IAM-02
+            modality: mandatory
+            text: >-
+              Passwords must be a minimum of fourteen characters, must be screened against a
+              breached-credential corpus at the point of creation, and must not be reused across
+              the previous twelve passwords.
+          - ref: "3.3"
+            uc: UC-IAM-02
+            modality: mandatory
+            text: >-
+              Accounts must be locked after ten consecutive failed authentication attempts and may
+              be unlocked only after verified identity confirmation.
+          - ref: "3.4"
+            uc: UC-IAM-03
+            modality: mandatory
+            text: >-
+              Multi-factor authentication must be enforced for all remote access, all access to
+              internet-facing administrative interfaces, and all access to systems processing
+              Restricted data.
+          - ref: "3.5"
+            uc: UC-IAM-02
+            modality: mandatory
+            text: >-
+              Interactive sessions must terminate after fifteen minutes of inactivity, and after
+              eight hours regardless of activity.
+
+      - section: "4"
+        heading: Authorization and Least Privilege
+        items:
+          - ref: "4.1"
+            uc: UC-IAM-04
+            modality: mandatory
+            text: >-
+              Access must be granted on the principles of least privilege and need-to-know, and
+              limited to the minimum entitlements required to perform the assigned role.
+          - ref: "4.2"
+            uc: UC-IAM-04
+            modality: mandatory
+            text: >-
+              Access must be granted through defined role-based entitlement bundles. Direct
+              assignment of individual permissions requires documented approval from the system
+              owner.
+          - ref: "4.3"
+            uc: UC-IAM-04
+            modality: mandatory
+            text: >-
+              Duties that create a conflict of interest, including the ability to both initiate
+              and approve a financial transaction, must be segregated across separate individuals.
+              Where segregation is not operationally possible, a documented compensating detective
+              control must be implemented.
+          - ref: "4.4"
+            uc: UC-IAM-04
+            modality: mandatory
+            text: >-
+              Developers must not hold standing write access to production systems. Production
+              changes must be deployed through the approved release pipeline.
+          # CONTRA-02 permissive side. Deliberately contradicts privileged_access 5.2 (90 days).
+          - ref: "4.5"
+            uc: UC-IAM-05
+            modality: mandatory
+            text: >-
+              User access rights are reviewed at least annually by the relevant system owner, and
+              entitlements that are no longer justified are removed.
+
+      - section: "5"
+        heading: Access Review and Recertification
+        items:
+          - ref: "5.1"
+            uc: UC-IAM-05
+            modality: mandatory
+            text: >-
+              Access recertification campaigns must be conducted through the enterprise identity
+              governance tooling, and reviewers must positively confirm or revoke each entitlement.
+              Failure to respond results in automatic revocation.
+          - ref: "5.2"
+            uc: UC-IAM-05
+            modality: mandatory
+            text: >-
+              Recertification evidence, including reviewer identity, decision and date, must be
+              retained for seven years to support regulatory examination.
+          - ref: "5.3"
+            uc: UC-IAM-05
+            modality: advisory
+            text: >-
+              System owners should review dormant accounts monthly and disable accounts with no
+              authentication activity for ninety days.
+
+      - section: "6"
+        heading: Remote and Third-Party Access
+        items:
+          - ref: "6.1"
+            uc: UC-IAM-07
+            modality: mandatory
+            text: >-
+              Remote access to the Bank's internal network must be established through the
+              approved VPN service with multi-factor authentication and device posture assessment.
+          - ref: "6.2"
+            uc: UC-IAM-07
+            modality: mandatory
+            text: >-
+              Third-party access must be time-bound, restricted to the specific systems required,
+              approved by the relevant system owner and the Vendor Risk Manager, and fully logged.
+          - ref: "6.3"
+            uc: UC-IAM-07
+            modality: mandatory
+            text: >-
+              Third-party access accounts must be disabled immediately upon completion of the
+              engagement and reviewed for continued need every ninety days while active.
+
+  # ===========================================================================
+  - policy_key: privileged_access
+    clauses:
+      - section: "1"
+        heading: Purpose and Scope
+        items:
+          - ref: "1.1"
+            uc: UC-IAM-06
+            modality: mandatory
+            text: >-
+              This Procedure governs the issuance, use, monitoring and revocation of privileged
+              access across all Northwind Regional Bank environments, including cloud
+              administrative consoles.
+          - ref: "1.2"
+            uc: UC-IAM-06
+            modality: mandatory
+            text: >-
+              Privileged access means any entitlement permitting administrative control of a
+              system, bypass of security controls, or unrestricted access to Restricted data.
+
+      - section: "2"
+        heading: Privileged Account Inventory
+        items:
+          - ref: "2.1"
+            uc: UC-IAM-06
+            modality: mandatory
+            text: >-
+              A complete inventory of privileged accounts must be maintained in CyberArk,
+              including account purpose, associated system, and named accountable owner.
+          - ref: "2.2"
+            uc: UC-IAM-06
+            modality: mandatory
+            text: >-
+              Privileged access must be granted through a separate administrative identity
+              distinct from the individual's standard user account.
+          - ref: "2.3"
+            uc: UC-ASM-01
+            modality: mandatory
+            text: >-
+              The privileged account inventory must be reconciled against the enterprise system
+              inventory quarterly, and accounts on unregistered systems must be escalated.
+
+      - section: "3"
+        heading: Vaulting and Credential Rotation
+        items:
+          - ref: "3.1"
+            uc: UC-IAM-06
+            modality: mandatory
+            text: >-
+              All privileged credentials must be stored in CyberArk. Storage of privileged
+              credentials in source code, configuration files, scripts or personal password
+              managers is prohibited.
+          - ref: "3.2"
+            uc: UC-IAM-06
+            modality: mandatory
+            text: >-
+              Privileged credentials must be rotated automatically every thirty days, and
+              immediately upon check-in following interactive use.
+          - ref: "3.3"
+            uc: UC-IAM-06
+            modality: mandatory
+            text: >-
+              Break-glass emergency accounts must be sealed in the vault, alert the Security
+              Operations team on retrieval, and be rotated within one hour of use.
+
+      - section: "4"
+        heading: Just-in-Time Elevation
+        items:
+          - ref: "4.1"
+            uc: UC-IAM-03
+            modality: mandatory
+            text: >-
+              Privileged sessions must be initiated through CyberArk with multi-factor
+              authentication. Standing privileged access is prohibited except for break-glass
+              accounts.
+          - ref: "4.2"
+            uc: UC-IAM-04
+            modality: mandatory
+            text: >-
+              Privileged elevation requests must state a business justification and be approved by
+              the system owner. Elevation grants expire after four hours.
+
+      - section: "5"
+        heading: Recertification of Privileged Entitlements
+        items:
+          - ref: "5.1"
+            uc: UC-IAM-05
+            modality: mandatory
+            text: >-
+              Privileged entitlements must be recertified by the accountable system owner and
+              countersigned by the Information Security team.
+          # CONTRA-02 strict side. Deliberately contradicts access_control 4.5 (annual).
+          - ref: "5.2"
+            uc: UC-IAM-05
+            modality: mandatory
+            text: >-
+              Privileged entitlements are recertified every ninety days. Entitlements not
+              positively confirmed within the campaign window are revoked automatically.
+          - ref: "5.3"
+            uc: UC-IAM-05
+            modality: mandatory
+            text: >-
+              Any privileged account not used within sixty days must be disabled and referred to
+              its owner for justification.
+
+      - section: "6"
+        heading: Session Recording and Review
+        items:
+          - ref: "6.1"
+            uc: UC-LOG-01
+            modality: mandatory
+            text: >-
+              All privileged sessions must be recorded, and session recordings must be retained
+              for twelve months.
+          - ref: "6.2"
+            uc: UC-LOG-02
+            modality: mandatory
+            text: >-
+              A risk-based sample of privileged sessions must be reviewed monthly by the Security
+              Operations Lead, and anomalies raised as security events.
+          - ref: "6.3"
+            uc: UC-LOG-03
+            modality: mandatory
+            text: >-
+              Privileged users must not be able to alter or delete their own session recordings or
+              the audit logs of their own activity.
+
+  # ===========================================================================
+  - policy_key: data_classification
+    clauses:
+      - section: "1"
+        heading: Purpose and Scope
+        items:
+          - ref: "1.1"
+            uc: UC-DAT-01
+            modality: mandatory
+            text: >-
+              This Policy establishes how Northwind Regional Bank information is classified,
+              labelled, handled and retained throughout its lifecycle.
+
+      - section: "2"
+        heading: Classification Levels
+        items:
+          - ref: "2.1"
+            uc: UC-DAT-01
+            modality: mandatory
+            text: >-
+              All Bank information must be classified as Public, Internal, Confidential or
+              Restricted. Information that has not been classified must be treated as Confidential
+              by default.
+          - ref: "2.2"
+            uc: UC-DAT-01
+            modality: mandatory
+            text: >-
+              Customer non-public personal information, authentication credentials and cardholder
+              data must be classified as Restricted.
+          - ref: "2.3"
+            uc: UC-ASM-03
+            modality: mandatory
+            text: >-
+              Each information asset must have a designated owner responsible for assigning and
+              periodically reviewing its classification.
+
+      - section: "3"
+        heading: Labelling Requirements
+        items:
+          - ref: "3.1"
+            uc: UC-DAT-01
+            modality: mandatory
+            text: >-
+              Documents and reports classified Confidential or Restricted must carry a visible
+              classification label in the header or footer of every page.
+          - ref: "3.2"
+            uc: UC-DAT-01
+            modality: advisory
+            text: >-
+              Structured data stores containing Confidential or Restricted information should be
+              tagged with their classification in the enterprise data catalogue.
+
+      - section: "4"
+        heading: Handling by Classification
+        items:
+          - ref: "4.1"
+            uc: UC-DAT-01
+            modality: mandatory
+            text: >-
+              Restricted information must not be copied to unmanaged devices, personal cloud
+              storage, or personal email accounts.
+          - ref: "4.2"
+            uc: UC-DAT-01
+            modality: mandatory
+            text: >-
+              Printing of Restricted information requires business justification and must use
+              secure release printing at the point of collection.
+          - ref: "4.3"
+            uc: UC-IAM-04
+            modality: mandatory
+            text: >-
+              Access to Restricted information must be authorised by the information owner and
+              limited to personnel with a demonstrated business need.
+
+      - section: "5"
+        heading: Data Sharing and Transfer
+        items:
+          - ref: "5.1"
+            uc: UC-DAT-03
+            modality: mandatory
+            text: >-
+              Confidential and Restricted information transmitted outside the Bank's network must
+              be protected using approved encryption.
+          - ref: "5.2"
+            uc: UC-TPR-02
+            modality: mandatory
+            text: >-
+              Disclosure of Confidential or Restricted information to a third party requires an
+              executed agreement containing confidentiality and security obligations.
+          - ref: "5.3"
+            uc: UC-DAT-05
+            modality: mandatory
+            text: >-
+              Outbound email and web traffic must be inspected by the data loss prevention service
+              for unauthorised transmission of Restricted information.
+
+      - section: "6"
+        heading: Protection of Data at Rest and in Transit
+        items:
+          - ref: "6.1"
+            uc: UC-DAT-03
+            modality: mandatory
+            text: >-
+              Confidential and Restricted data in transit across untrusted networks must be
+              protected with TLS 1.2 or higher.
+          # CONTRA-01 permissive side. Deliberately contradicts encryption_key_management 4.1.
+          - ref: "6.2"
+            uc: UC-DAT-02
+            modality: advisory
+            text: >-
+              Confidential data should be encrypted at rest where technically feasible, taking
+              into account the operational impact on legacy platforms.
+          - ref: "6.3"
+            uc: UC-DAT-02
+            modality: mandatory
+            text: >-
+              Portable computing devices issued by the Bank must have full-disk encryption enabled
+              and centrally attested.
+
+      - section: "7"
+        heading: Retention and Records Management
+        items:
+          - ref: "7.1"
+            uc: UC-DAT-06
+            modality: mandatory
+            text: >-
+              Information must be retained in accordance with the Bank's Records Retention
+              Schedule, and must not be retained beyond its defined period without a documented
+              legal hold.
+          - ref: "7.2"
+            uc: UC-DAT-06
+            modality: mandatory
+            text: >-
+              Retention periods must be defined for every record type in the Records Retention
+              Schedule, and the Schedule must be reviewed annually by the Chief Compliance Officer.
+          - ref: "7.3"
+            uc: UC-DAT-06
+            modality: advisory
+            text: >-
+              Business units should identify and dispose of information that has exceeded its
+              retention period during the annual records review.
+
+  # ===========================================================================
+  - policy_key: encryption_key_management
+    clauses:
+      - section: "1"
+        heading: Purpose and Scope
+        items:
+          - ref: "1.1"
+            uc: UC-DAT-04
+            modality: mandatory
+            text: >-
+              This Standard defines approved cryptographic controls and the management of
+              cryptographic keys across all Northwind Regional Bank systems.
+
+      - section: "2"
+        heading: Approved Cryptographic Algorithms
+        items:
+          - ref: "2.1"
+            uc: UC-DAT-04
+            modality: mandatory
+            text: >-
+              Only cryptographic algorithms and key lengths listed in Appendix A of this Standard
+              may be used. Appendix A must be reviewed annually against current industry guidance.
+          - ref: "2.2"
+            uc: UC-DAT-04
+            modality: mandatory
+            text: >-
+              Use of DES, 3DES, RC4, MD5 and SHA-1 for the protection of Confidential or Restricted
+              information is prohibited.
+          - ref: "2.3"
+            uc: UC-DAT-04
+            modality: mandatory
+            text: >-
+              Cryptographic modules protecting Restricted data must be validated to FIPS 140-2
+              Level 2 or higher.
+
+      - section: "3"
+        heading: Encryption in Transit
+        items:
+          - ref: "3.1"
+            uc: UC-DAT-03
+            modality: mandatory
+            text: >-
+              All data in transit across public or untrusted networks must be encrypted using
+              TLS 1.2 or higher with approved cipher suites.
+          - ref: "3.2"
+            uc: UC-DAT-03
+            modality: mandatory
+            text: >-
+              TLS 1.0, TLS 1.1 and SSL in all versions must be disabled on all Bank systems and
+              network devices.
+          - ref: "3.3"
+            uc: UC-DAT-03
+            modality: mandatory
+            text: >-
+              Certificates must be issued by an approved certificate authority, must not exceed
+              thirteen months validity, and must be tracked in the certificate inventory with
+              automated expiry alerting.
+
+      - section: "4"
+        heading: Encryption at Rest
+        items:
+          # CONTRA-01 strict side. Deliberately contradicts data_classification 6.2.
+          - ref: "4.1"
+            uc: UC-DAT-02
+            modality: mandatory
+            text: >-
+              All data classified Confidential or Restricted must be encrypted at rest using
+              AES-256.
+          - ref: "4.2"
+            uc: UC-DAT-02
+            modality: mandatory
+            text: >-
+              Database-level encryption must be enabled for all databases storing Restricted
+              information, and encryption status must be verified quarterly.
+          - ref: "4.3"
+            uc: UC-BCR-02
+            modality: mandatory
+            text: >-
+              Backup media and backup repositories containing Confidential or Restricted
+              information must be encrypted using AES-256.
+
+      - section: "5"
+        heading: Key Lifecycle Management
+        items:
+          - ref: "5.1"
+            uc: UC-DAT-04
+            modality: mandatory
+            text: >-
+              Cryptographic keys must be generated using an approved random number generator
+              within a validated cryptographic module.
+          - ref: "5.2"
+            uc: UC-DAT-04
+            modality: mandatory
+            text: >-
+              Data encryption keys must be rotated at least annually, and immediately upon
+              suspected compromise or departure of any individual with key custodian duties.
+          - ref: "5.3"
+            uc: UC-DAT-04
+            modality: mandatory
+            text: >-
+              Key custodian duties must be formally assigned in writing, and custodians must
+              acknowledge their responsibilities annually.
+          - ref: "5.4"
+            uc: UC-DAT-04
+            modality: mandatory
+            text: >-
+              Clear-text cryptographic keys must be protected by split knowledge and dual control,
+              such that no single individual can reconstruct a key.
+          - ref: "5.5"
+            uc: UC-DAT-04
+            modality: mandatory
+            text: >-
+              Retired and replaced keys must be securely destroyed or archived under dual control,
+              and must not be reused.
+
+      - section: "6"
+        heading: Key Storage and Hardware Security Modules
+        items:
+          - ref: "6.1"
+            uc: UC-DAT-04
+            modality: aspirational
+            text: >-
+              Hardware security module adoption for the storage of master keys will be implemented
+              as resources permit, following completion of the cloud migration programme.
+          - ref: "6.2"
+            uc: UC-DAT-04
+            modality: mandatory
+            text: >-
+              Keys must be stored separately from the data they protect, and key stores must be
+              access-controlled and logged.
+          - ref: "6.3"
+            uc: UC-LOG-01
+            modality: mandatory
+            text: >-
+              All key management operations, including generation, rotation, export and
+              destruction, must be logged and the logs retained for seven years.

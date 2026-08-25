@@ -1,0 +1,758 @@
+# =============================================================================
+# clause_bank_specialist.yaml  (3 of 3)
+# =============================================================================
+# See clause_bank_governance.yaml for the schema and the meaning of `uc` and `modality`.
+#
+# NEGATIVE SPACE MATTERS AS MUCH AS THE TEXT.
+# Per gap_spec.yaml#hard_gaps, no clause in ANY of the three banks may be tagged with:
+#   UC-MED-01  media sanitization and secure disposal
+#   UC-MED-02  removable media controls
+#   UC-LOG-04  threat intelligence program
+#   UC-HRS-04  insider threat program
+#   UC-APP-03  software supply chain integrity
+# generate_policies.py asserts this. The absence is the finding.
+# =============================================================================
+
+policies:
+
+  # ===========================================================================
+  - policy_key: security_awareness
+    clauses:
+      - section: "1"
+        heading: Purpose and Scope
+        items:
+          - ref: "1.1"
+            uc: UC-HRS-02
+            modality: mandatory
+            text: >-
+              This Policy establishes security awareness and training requirements for all
+              Northwind Regional Bank personnel, contractors and temporary staff.
+
+      - section: "2"
+        heading: Onboarding Security Training
+        items:
+          - ref: "2.1"
+            uc: UC-HRS-02
+            modality: mandatory
+            text: >-
+              All new personnel must complete security awareness training within thirty days of
+              their start date, and before being granted access to Restricted data.
+          - ref: "2.2"
+            uc: UC-HRS-05
+            modality: mandatory
+            text: >-
+              All new personnel must read and acknowledge the Acceptable Use Policy as a condition
+              of receiving system access.
+
+      - section: "3"
+        heading: Annual Refresher Training
+        items:
+          - ref: "3.1"
+            uc: UC-HRS-02
+            modality: mandatory
+            text: >-
+              All personnel must complete security awareness refresher training annually.
+          - ref: "3.2"
+            uc: UC-HRS-02
+            modality: mandatory
+            text: >-
+              Training completion must be tracked centrally, and personnel more than thirty days
+              overdue must be escalated to their line manager and to Human Resources.
+          - ref: "3.3"
+            uc: UC-HRS-02
+            modality: mandatory
+            text: >-
+              Training content must be reviewed annually and updated to reflect the current threat
+              landscape and any material policy change.
+
+      - section: "4"
+        heading: Role-Based Training
+        items:
+          - ref: "4.1"
+            uc: UC-HRS-03
+            modality: mandatory
+            text: >-
+              Personnel holding privileged access must complete additional role-based security
+              training annually.
+          - ref: "4.2"
+            uc: UC-HRS-03
+            modality: mandatory
+            text: >-
+              Software developers must complete secure coding training annually, covering the
+              current OWASP Top Ten and the Bank's secure coding requirements.
+          - ref: "4.3"
+            uc: UC-HRS-03
+            modality: advisory
+            text: >-
+              Personnel handling cardholder data should receive annual training specific to
+              cardholder data handling obligations.
+
+      - section: "5"
+        heading: Phishing Simulation Program
+        items:
+          - ref: "5.1"
+            uc: UC-HRS-02
+            modality: mandatory
+            text: >-
+              Simulated phishing exercises must be conducted at least quarterly across all
+              personnel with an email account.
+          - ref: "5.2"
+            uc: UC-HRS-02
+            modality: mandatory
+            text: >-
+              Personnel who fail two or more simulated phishing exercises within a rolling twelve
+              month period must complete remedial training.
+
+      - section: "6"
+        heading: Personnel Screening
+        items:
+          - ref: "6.1"
+            uc: UC-HRS-01
+            modality: mandatory
+            text: >-
+              Background verification, including criminal history and employment verification,
+              must be completed for all personnel before their start date.
+          - ref: "6.2"
+            uc: UC-HRS-01
+            modality: mandatory
+            text: >-
+              Personnel in roles with privileged system access or access to cardholder data must
+              undergo enhanced screening, including credit history verification where permitted by
+              law.
+          - ref: "6.3"
+            uc: UC-HRS-01
+            modality: advisory
+            text: >-
+              Personnel in the most sensitive roles should be re-screened every five years.
+
+      - section: "7"
+        heading: Disciplinary Process
+        items:
+          - ref: "7.1"
+            uc: UC-HRS-05
+            modality: mandatory
+            text: >-
+              A formal disciplinary process must be applied to personnel who violate information
+              security policies, applied consistently and proportionately to the violation.
+          - ref: "7.2"
+            uc: UC-HRS-05
+            modality: mandatory
+            text: >-
+              Personnel must return all Bank assets and information on termination of employment,
+              and the return must be recorded by Human Resources.
+
+  # ===========================================================================
+  - policy_key: logging_monitoring
+    clauses:
+      - section: "1"
+        heading: Purpose and Scope
+        items:
+          - ref: "1.1"
+            uc: UC-LOG-01
+            modality: mandatory
+            text: >-
+              This Standard defines the security events that must be logged across Northwind
+              Regional Bank systems, and how those logs are protected, retained, monitored and
+              reviewed.
+
+      - section: "2"
+        heading: Events Required to be Logged
+        items:
+          - ref: "2.1"
+            uc: UC-LOG-01
+            modality: mandatory
+            text: >-
+              All systems processing Confidential or Restricted data must log successful and failed
+              authentication attempts, privilege escalation, and account management events.
+          - ref: "2.2"
+            uc: UC-LOG-01
+            modality: mandatory
+            text: >-
+              All access to Restricted data, including read access by privileged users, must be
+              logged with sufficient detail to attribute the access to an individual.
+          - ref: "2.3"
+            uc: UC-LOG-01
+            modality: mandatory
+            text: >-
+              Initialisation, stopping and pausing of audit logging must itself be logged and must
+              generate an alert.
+          - ref: "2.4"
+            uc: UC-LOG-01
+            modality: mandatory
+            text: >-
+              Changes to system-level objects, security configuration and audit log configuration
+              must be logged.
+
+      - section: "3"
+        heading: Log Content Requirements
+        items:
+          - ref: "3.1"
+            uc: UC-LOG-01
+            modality: mandatory
+            text: >-
+              Each log entry must record the user or service identity, the event type, the date and
+              time, the success or failure indication, the origination of the event, and the
+              affected resource.
+          - ref: "3.2"
+            uc: UC-LOG-01
+            modality: mandatory
+            text: >-
+              Logs must not contain authentication credentials, full payment card numbers, or other
+              Restricted data in clear text.
+
+      - section: "4"
+        heading: Time Synchronisation
+        items:
+          - ref: "4.1"
+            uc: UC-LOG-01
+            modality: mandatory
+            text: >-
+              All systems must synchronise their clocks to the Bank's authoritative internal time
+              sources, which in turn synchronise to an accepted external reference.
+          - ref: "4.2"
+            uc: UC-LOG-01
+            modality: mandatory
+            text: >-
+              Time synchronisation configuration must be protected so that only authorised
+              personnel can modify it, and time drift must be monitored.
+
+      - section: "5"
+        heading: Log Protection and Integrity
+        items:
+          - ref: "5.1"
+            uc: UC-LOG-03
+            modality: mandatory
+            text: >-
+              Logs must be forwarded to Splunk Enterprise Security promptly after generation, and
+              the forwarding path must be monitored for interruption.
+          - ref: "5.2"
+            uc: UC-LOG-03
+            modality: mandatory
+            text: >-
+              Access to logs must be restricted to personnel with an operational need, and all
+              access to the log platform must itself be logged.
+          - ref: "5.3"
+            uc: UC-LOG-03
+            modality: mandatory
+            text: >-
+              Logs must be protected against modification and deletion, including by system
+              administrators of the originating system.
+
+      - section: "6"
+        heading: Retention Periods
+        items:
+          - ref: "6.1"
+            uc: UC-LOG-01
+            modality: mandatory
+            text: >-
+              Security event logs must be retained for a minimum of twelve months, with at least
+              the most recent three months immediately available for analysis.
+          - ref: "6.2"
+            uc: UC-LOG-01
+            modality: mandatory
+            text: >-
+              Logs subject to a legal hold must be preserved beyond their standard retention period
+              until the hold is formally released.
+          # Aspirational placement per gap_spec.yaml — downgrades UC-LOG-01 to Partial.
+          - ref: "6.3"
+            uc: UC-LOG-01
+            modality: aspirational
+            text: >-
+              Extension of security log retention beyond twelve months to meet anticipated
+              regulatory expectations is planned for a future release of the logging platform.
+
+      - section: "7"
+        heading: Alerting and Review
+        items:
+          - ref: "7.1"
+            uc: UC-LOG-02
+            modality: mandatory
+            text: >-
+              Detection rules must be defined for security-relevant conditions and must generate
+              alerts to the Security Operations team.
+          - ref: "7.2"
+            uc: UC-LOG-02
+            modality: mandatory
+            text: >-
+              Alerts must be triaged within timeframes defined by alert priority, and triage
+              outcomes must be recorded.
+          - ref: "7.3"
+            uc: UC-LOG-02
+            modality: mandatory
+            text: >-
+              Detection rule coverage and alert quality must be reviewed at least quarterly, and
+              rules must be tuned to manage false positive volume.
+          - ref: "7.4"
+            uc: UC-LOG-02
+            modality: advisory
+            text: >-
+              Anomalies identified through log review should be raised as security events and
+              investigated under the Cyber Incident Response Plan.
+
+  # ===========================================================================
+  - policy_key: secure_sdlc
+    clauses:
+      - section: "1"
+        heading: Purpose and Scope
+        items:
+          - ref: "1.1"
+            uc: UC-APP-01
+            modality: mandatory
+            text: >-
+              This Standard defines security requirements applicable to the development,
+              acquisition and maintenance of software used by Northwind Regional Bank.
+
+      - section: "2"
+        heading: Secure Design and Threat Modelling
+        items:
+          - ref: "2.1"
+            uc: UC-APP-01
+            modality: mandatory
+            text: >-
+              Security requirements must be defined and documented during the design phase of every
+              new application or major enhancement.
+          - ref: "2.2"
+            uc: UC-APP-01
+            modality: mandatory
+            text: >-
+              Threat modelling must be performed for all applications handling Confidential or
+              Restricted data, and threat model outputs must inform the security requirements.
+          - ref: "2.3"
+            uc: UC-APP-01
+            modality: advisory
+            text: >-
+              Design decisions with security implications should be recorded so that they can be
+              revisited during subsequent enhancements.
+
+      - section: "3"
+        heading: Secure Coding Requirements
+        items:
+          - ref: "3.1"
+            uc: UC-APP-01
+            modality: mandatory
+            text: >-
+              Applications must be developed in accordance with the Bank's secure coding guidelines
+              and must address the current OWASP Top Ten categories.
+          - ref: "3.2"
+            uc: UC-APP-01
+            modality: mandatory
+            text: >-
+              All input received from untrusted sources must be validated, and output must be
+              encoded appropriately for its destination context.
+          - ref: "3.3"
+            uc: UC-IAM-06
+            modality: mandatory
+            text: >-
+              Credentials, API keys and cryptographic secrets must not be committed to source
+              control, and repositories must be scanned for exposed secrets on every commit.
+          - ref: "3.4"
+            uc: UC-APP-01
+            modality: mandatory
+            text: >-
+              Error handling must not disclose stack traces, internal paths or system detail to end
+              users.
+
+      - section: "4"
+        heading: Code Review
+        items:
+          - ref: "4.1"
+            uc: UC-APP-04
+            modality: mandatory
+            text: >-
+              All code changes must be reviewed and approved by at least one qualified engineer
+              other than the author before merge to a protected branch.
+          - ref: "4.2"
+            uc: UC-APP-04
+            modality: mandatory
+            text: >-
+              Branch protection must be enforced on all production branches in GitHub Enterprise,
+              and direct pushes to protected branches must be prohibited.
+          - ref: "4.3"
+            uc: UC-APP-04
+            modality: mandatory
+            text: >-
+              Code review records must be retained and must be available to Internal Audit on
+              request.
+
+      - section: "5"
+        heading: Application Security Testing
+        items:
+          - ref: "5.1"
+            uc: UC-APP-02
+            modality: mandatory
+            text: >-
+              Dynamic application security testing must be performed against internet-facing
+              applications prior to each major release.
+          - ref: "5.2"
+            uc: UC-APP-02
+            modality: mandatory
+            text: >-
+              Security testing findings rated High or Critical must be remediated before the
+              application is promoted to production.
+          # Aspirational placement per gap_spec.yaml — downgrades UC-APP-02 to Partial.
+          - ref: "5.3"
+            uc: UC-APP-02
+            modality: aspirational
+            text: >-
+              Static application security testing coverage will be extended across the full
+              application portfolio on a best-efforts basis as engineering capacity allows.
+          - ref: "5.4"
+            uc: UC-APP-02
+            modality: advisory
+            text: >-
+              Security testing results should be retained for a minimum of two years to
+              demonstrate remediation history.
+
+      - section: "6"
+        heading: Third-Party and Open Source Components
+        items:
+          # NOTE: this section addresses licensing only. It deliberately says nothing about
+          # SBOM, component vulnerability screening, or provenance/integrity verification.
+          # That absence is the UC-APP-03 hard gap from gap_spec.yaml.
+          - ref: "6.1"
+            uc: UC-GOV-04
+            modality: mandatory
+            text: >-
+              Open source components must be reviewed for licence compatibility before use, and
+              components under a copyleft licence require Legal approval.
+          - ref: "6.2"
+            uc: UC-GOV-04
+            modality: mandatory
+            text: >-
+              A record of open source components and their licences must be maintained for each
+              application to support licence compliance reporting.
+
+      - section: "7"
+        heading: Release Approval
+        items:
+          - ref: "7.1"
+            uc: UC-CFG-02
+            modality: mandatory
+            text: >-
+              Release to production requires documented approval from the application owner
+              confirming that security testing requirements have been satisfied.
+          - ref: "7.2"
+            uc: UC-APP-01
+            modality: mandatory
+            text: >-
+              Production releases must be deployed through the automated pipeline, and the pipeline
+              must enforce the required security gates.
+
+  # ===========================================================================
+  - policy_key: cde_security
+    clauses:
+      # PCI OMISSIONS per gap_spec.yaml#pci_omissions. This Standard deliberately says
+      # NOTHING about: quarterly ASV external scanning, annual penetration testing and
+      # segmentation validation, cardholder data retention limits and quarterly purge,
+      # or file integrity monitoring. That is why PCI DSS is the weakest framework.
+      - section: "1"
+        heading: Purpose and Scope
+        items:
+          - ref: "1.1"
+            uc: UC-GOV-04
+            modality: mandatory
+            text: >-
+              This Standard defines security requirements for the Northwind Regional Bank
+              Cardholder Data Environment, comprising VLAN 340 and the CardStream Issuing Platform
+              tenancy.
+          - ref: "1.2"
+            uc: UC-ASM-02
+            modality: mandatory
+            text: >-
+              A data flow diagram showing all cardholder data flows into, within and out of the
+              Cardholder Data Environment must be maintained and reviewed annually.
+
+      - section: "2"
+        heading: CDE Boundary and Segmentation
+        items:
+          - ref: "2.1"
+            uc: UC-NET-01
+            modality: mandatory
+            text: >-
+              The Cardholder Data Environment must be segmented from the Bank's general corporate
+              network by firewall controls permitting only explicitly authorised traffic.
+          - ref: "2.2"
+            uc: UC-NET-02
+            modality: mandatory
+            text: >-
+              Firewall rulesets governing the Cardholder Data Environment must default to deny and
+              must be reviewed at least every six months.
+          - ref: "2.3"
+            uc: UC-NET-02
+            modality: mandatory
+            text: >-
+              Inbound and outbound traffic to the Cardholder Data Environment must be restricted to
+              that which is necessary for the card processing function, and all other traffic must
+              be explicitly denied.
+          - ref: "2.4"
+            uc: UC-NET-01
+            modality: mandatory
+            text: >-
+              Systems within the Cardholder Data Environment must not be directly accessible from
+              the internet, and no direct route may exist between the internet and any system
+              storing cardholder data.
+          - ref: "2.5"
+            uc: UC-NET-03
+            modality: mandatory
+            text: >-
+              Wireless networks must not be connected to the Cardholder Data Environment, and the
+              presence of unauthorised wireless access points must be tested for quarterly.
+
+      - section: "3"
+        heading: Cardholder Data Storage
+        items:
+          - ref: "3.1"
+            uc: UC-DAT-02
+            modality: mandatory
+            text: >-
+              Primary account numbers must be rendered unreadable wherever stored, using strong
+              cryptography with associated key management processes.
+          - ref: "3.2"
+            uc: UC-DAT-01
+            modality: mandatory
+            text: >-
+              Sensitive authentication data, including the full track data, card verification code
+              and PIN block, must not be stored after authorisation completes.
+          - ref: "3.3"
+            uc: UC-DAT-01
+            modality: mandatory
+            text: >-
+              The primary account number must be masked when displayed, such that no more than the
+              first six and last four digits are visible, except for personnel with a documented
+              business need to see the full number.
+          - ref: "3.4"
+            uc: UC-DAT-03
+            modality: mandatory
+            text: >-
+              Primary account numbers transmitted across open public networks must be protected
+              with strong cryptography, and must never be sent by unprotected messaging channels.
+
+      - section: "4"
+        heading: Access to Cardholder Data
+        items:
+          - ref: "4.1"
+            uc: UC-IAM-04
+            modality: mandatory
+            text: >-
+              Access to cardholder data must be restricted to personnel whose role requires it, on
+              a least-privilege basis, and must be documented and approved.
+          - ref: "4.2"
+            uc: UC-IAM-03
+            modality: mandatory
+            text: >-
+              Multi-factor authentication must be enforced for all non-console administrative
+              access to the Cardholder Data Environment and for all remote access into it.
+          - ref: "4.3"
+            uc: UC-IAM-05
+            modality: mandatory
+            text: >-
+              Access to the Cardholder Data Environment must be reviewed at least every six months
+              and revoked where no longer required.
+          - ref: "4.4"
+            uc: UC-IAM-02
+            modality: mandatory
+            text: >-
+              Shared, group and generic accounts must not be used within the Cardholder Data
+              Environment.
+          - ref: "4.5"
+            uc: UC-PHY-02
+            modality: mandatory
+            text: >-
+              Physical access to systems within the Cardholder Data Environment must be restricted
+              and monitored, and visitor access must be logged.
+
+      - section: "5"
+        heading: Vulnerability Management within the CDE
+        items:
+          - ref: "5.1"
+            uc: UC-VUL-01
+            modality: mandatory
+            text: >-
+              Internal vulnerability scanning of the Cardholder Data Environment must be performed
+              at least quarterly and after any significant change.
+          - ref: "5.2"
+            uc: UC-VUL-01
+            modality: mandatory
+            text: >-
+              High risk vulnerabilities identified within the Cardholder Data Environment must be
+              remediated and the affected systems rescanned to confirm resolution.
+          - ref: "5.3"
+            uc: UC-NET-04
+            modality: mandatory
+            text: >-
+              Anti-malware protection must be deployed on all systems within the Cardholder Data
+              Environment that are commonly affected by malicious software, and must be kept
+              current and actively running.
+          - ref: "5.4"
+            uc: UC-CFG-01
+            modality: mandatory
+            text: >-
+              Systems within the Cardholder Data Environment must be configured to the Bank's
+              hardened baseline, with all unnecessary services, protocols and accounts disabled.
+
+      - section: "6"
+        heading: Logging within the CDE
+        items:
+          - ref: "6.1"
+            uc: UC-LOG-01
+            modality: mandatory
+            text: >-
+              All access to system components and to cardholder data within the Cardholder Data
+              Environment must be logged and linked to an individual user.
+          - ref: "6.2"
+            uc: UC-LOG-01
+            modality: mandatory
+            text: >-
+              Audit logs from the Cardholder Data Environment must be forwarded to Splunk
+              Enterprise Security and retained in accordance with the Logging, Monitoring and SIEM
+              Standard.
+          - ref: "6.3"
+            uc: UC-LOG-02
+            modality: mandatory
+            text: >-
+              Logs from the Cardholder Data Environment must be reviewed daily for anomalies,
+              through automated alerting where available.
+
+  # ===========================================================================
+  - policy_key: physical_security
+    clauses:
+      # NOTE: Section 6 covers equipment removal and reuse but deliberately says nothing
+      # about sanitization method, verification, or certificates of destruction. That is
+      # the UC-MED-01 hard gap. UC-MED-02 (removable media) is absent entirely.
+      - section: "1"
+        heading: Purpose and Scope
+        items:
+          - ref: "1.1"
+            uc: UC-PHY-01
+            modality: mandatory
+            text: >-
+              This Policy establishes physical and environmental security requirements for
+              Northwind Regional Bank premises, including its branch network, corporate offices and
+              data processing facilities.
+
+      - section: "2"
+        heading: Facility Access Control
+        items:
+          - ref: "2.1"
+            uc: UC-PHY-01
+            modality: mandatory
+            text: >-
+              Physical access to Bank premises must be controlled by badge access, and badges must
+              be issued only upon authorisation from the facility manager.
+          - ref: "2.2"
+            uc: UC-PHY-01
+            modality: mandatory
+            text: >-
+              Badges must be reclaimed on termination of employment, and badge access must be
+              revoked within twenty-four hours.
+          - ref: "2.3"
+            uc: UC-PHY-01
+            modality: mandatory
+            text: >-
+              Physical access records must be retained for a minimum of twelve months.
+          - ref: "2.4"
+            uc: UC-PHY-01
+            modality: advisory
+            text: >-
+              Facility managers should review the list of personnel holding badge access to their
+              facility on a semi-annual basis.
+
+      - section: "3"
+        heading: Visitor Management
+        items:
+          - ref: "3.1"
+            uc: UC-PHY-01
+            modality: mandatory
+            text: >-
+              Visitors must be registered on arrival, issued a visibly distinct visitor badge, and
+              escorted at all times within non-public areas.
+          - ref: "3.2"
+            uc: UC-PHY-01
+            modality: mandatory
+            text: >-
+              Visitor logs must record the visitor name, the organisation represented, the person
+              visited, and the times of arrival and departure, and must be retained for twelve
+              months.
+
+      - section: "4"
+        heading: Secure Areas and Data Centres
+        items:
+          - ref: "4.1"
+            uc: UC-PHY-02
+            modality: mandatory
+            text: >-
+              Data centres and communications rooms must be secured by an additional layer of
+              access control beyond general facility access.
+          - ref: "4.2"
+            uc: UC-PHY-02
+            modality: mandatory
+            text: >-
+              Access to data centres and communications rooms must be authorised individually,
+              logged, and reviewed at least quarterly.
+          - ref: "4.3"
+            uc: UC-PHY-02
+            modality: mandatory
+            text: >-
+              Secure areas must be monitored by video surveillance, and recordings must be retained
+              for a minimum of ninety days.
+          - ref: "4.4"
+            uc: UC-PHY-02
+            modality: advisory
+            text: >-
+              Publicly accessible network jacks in branch lobbies and meeting rooms should be
+              disabled when not in active use.
+
+      - section: "5"
+        heading: Environmental Controls
+        items:
+          - ref: "5.1"
+            uc: UC-PHY-03
+            modality: mandatory
+            text: >-
+              Data centres must be protected by uninterruptible power supply and backup generation
+              sufficient to support an orderly shutdown or sustained operation.
+          - ref: "5.2"
+            uc: UC-PHY-03
+            modality: mandatory
+            text: >-
+              Fire detection and suppression systems appropriate to electronic equipment must be
+              installed in data centres and inspected annually.
+          - ref: "5.3"
+            uc: UC-PHY-03
+            modality: mandatory
+            text: >-
+              Temperature and humidity in data centres must be monitored continuously, with
+              alerting on excursion beyond defined thresholds.
+          - ref: "5.4"
+            uc: UC-PHY-03
+            modality: advisory
+            text: >-
+              Water detection should be installed beneath raised flooring in data centre areas.
+
+      - section: "6"
+        heading: Equipment Security and Removal
+        items:
+          - ref: "6.1"
+            uc: UC-ASM-03
+            modality: mandatory
+            text: >-
+              Removal of Bank computing equipment from Bank premises requires prior authorisation
+              from the asset owner, and the removal must be recorded in the asset register.
+          - ref: "6.2"
+            uc: UC-ASM-03
+            modality: mandatory
+            text: >-
+              Equipment taken off site must remain the responsibility of the assigned custodian and
+              must not be left unattended in publicly accessible locations.
+          - ref: "6.3"
+            uc: UC-MED-03
+            modality: mandatory
+            text: >-
+              Backup media held at the offsite storage facility must be inventoried and reconciled
+              at least annually.
+          - ref: "6.4"
+            uc: UC-PHY-02
+            modality: mandatory
+            text: >-
+              Unattended workstations in customer-facing areas must be secured by automatic screen
+              locking after five minutes of inactivity.

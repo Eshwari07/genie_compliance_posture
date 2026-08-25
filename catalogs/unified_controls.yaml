@@ -1,0 +1,731 @@
+# =============================================================================
+# unified_controls.yaml — THE HARMONIZATION HUB
+# =============================================================================
+# 62 canonical controls that every framework obligation maps onto.
+#
+# This is the single most important structural decision in ComplyLens. Instead of a pairwise
+# crosswalk (obligation_a <-> obligation_b), which grows N^2 across 5 frameworks and forces
+# Genie into self-joins with ambiguous direction, every obligation maps to exactly one
+# unified control. Any cross-framework question then becomes one clean join through the hub:
+#
+#     "which ISO controls does this NIST control also satisfy?"
+#       -> obligations sharing a unified_control_id
+#
+# Structure is seeded from NIST CSF 2.0 (public domain) because NIST publishes an official
+# machine-readable CSF 2.0 <-> SP 800-53 Rev 5 mapping in CPRT, which notebook 08 uses as
+# ground truth to score our generated crosswalk.
+#
+# csf_function: GV Govern | ID Identify | PR Protect | DE Detect | RS Respond | RC Recover
+# =============================================================================
+
+meta:
+  version: "1.0"
+  seeded_from: NIST Cybersecurity Framework 2.0 (public domain)
+  domain_taxonomy: data_generator/gap_spec.yaml#domains
+
+controls:
+
+  # --- GOV — Governance & Risk Management -----------------------------------
+  - id: UC-GOV-01
+    name: Information security policy framework
+    domain: GOV
+    csf_function: GV
+    csf_category: GV.PO
+    description: >-
+      A documented, board-approved information security policy hierarchy is established,
+      communicated to all personnel, and reviewed on a defined cycle.
+    implementation_effort: Low
+    est_effort_days: 10
+
+  - id: UC-GOV-02
+    name: Security roles, responsibilities and authorities
+    domain: GOV
+    csf_function: GV
+    csf_category: GV.RR
+    description: >-
+      Cybersecurity roles, responsibilities and reporting lines are formally assigned,
+      resourced, and held accountable by senior management.
+    implementation_effort: Low
+    est_effort_days: 8
+
+  - id: UC-GOV-03
+    name: Risk assessment and treatment
+    domain: GOV
+    csf_function: ID
+    csf_category: ID.RA
+    description: >-
+      Information security risks are identified, analysed against defined criteria, assigned
+      an owner, and treated or formally accepted through a documented process.
+    implementation_effort: Medium
+    est_effort_days: 25
+
+  - id: UC-GOV-04
+    name: Regulatory and contractual obligation management
+    domain: GOV
+    csf_function: GV
+    csf_category: GV.OC
+    description: >-
+      Applicable legal, regulatory and contractual security obligations are identified,
+      documented, and monitored for change.
+    implementation_effort: Medium
+    est_effort_days: 20
+
+  - id: UC-GOV-05
+    name: Independent assurance and internal audit
+    domain: GOV
+    csf_function: GV
+    csf_category: GV.OV
+    description: >-
+      The security program is independently reviewed on a defined cycle, and findings are
+      tracked to remediation.
+    implementation_effort: Medium
+    est_effort_days: 18
+
+  # --- ASM — Asset Management ------------------------------------------------
+  - id: UC-ASM-01
+    name: Hardware and software asset inventory
+    domain: ASM
+    csf_function: ID
+    csf_category: ID.AM
+    description: >-
+      A complete, current inventory of hardware and software assets is maintained, including
+      unauthorised-asset detection.
+    implementation_effort: Medium
+    est_effort_days: 22
+
+  - id: UC-ASM-02
+    name: Data inventory and flow mapping
+    domain: ASM
+    csf_function: ID
+    csf_category: ID.AM
+    description: >-
+      Data stores, data flows and system interconnections are inventoried and maintained,
+      including flows crossing trust boundaries.
+    implementation_effort: Medium
+    est_effort_days: 20
+
+  - id: UC-ASM-03
+    name: Asset ownership and lifecycle management
+    domain: ASM
+    csf_function: ID
+    csf_category: ID.AM
+    description: >-
+      Every asset has a named owner, and assets are governed from acquisition through
+      decommissioning.
+    implementation_effort: Low
+    est_effort_days: 12
+
+  # --- IAM — Identity & Access Management ------------------------------------
+  - id: UC-IAM-01
+    name: Identity lifecycle management
+    domain: IAM
+    csf_function: PR
+    csf_category: PR.AA
+    description: >-
+      Identities are provisioned, modified and revoked through an authorised joiner-mover-leaver
+      process, with revocation on termination within a defined interval.
+    implementation_effort: Medium
+    est_effort_days: 22
+
+  - id: UC-IAM-02
+    name: Authentication strength requirements
+    domain: IAM
+    csf_function: PR
+    csf_category: PR.AA
+    description: >-
+      Authentication mechanisms meet defined strength requirements, including credential
+      complexity, rotation, lockout and prohibition of shared accounts.
+    implementation_effort: Medium
+    est_effort_days: 16
+
+  - id: UC-IAM-03
+    name: Multi-factor authentication for privileged access
+    domain: IAM
+    csf_function: PR
+    csf_category: PR.AA
+    description: >-
+      Multi-factor authentication is enforced for all privileged, administrative and remote
+      access to systems holding sensitive or regulated data.
+    implementation_effort: Medium
+    est_effort_days: 25
+    high_leverage: true
+
+  - id: UC-IAM-04
+    name: Least privilege and segregation of duties
+    domain: IAM
+    csf_function: PR
+    csf_category: PR.AA
+    description: >-
+      Access is granted on least-privilege and need-to-know principles, and conflicting duties
+      are separated across individuals.
+    implementation_effort: Medium
+    est_effort_days: 24
+
+  - id: UC-IAM-05
+    name: Periodic access recertification
+    domain: IAM
+    csf_function: PR
+    csf_category: PR.AA
+    description: >-
+      Access entitlements are reviewed by accountable owners on a defined cycle, with
+      revocation of entitlements that are no longer justified.
+    implementation_effort: Medium
+    est_effort_days: 18
+    high_leverage: true
+
+  - id: UC-IAM-06
+    name: Privileged credential vaulting and rotation
+    domain: IAM
+    csf_function: PR
+    csf_category: PR.AA
+    description: >-
+      Privileged credentials are stored in a managed vault, checked out under approval, rotated
+      automatically, and never embedded in code or scripts.
+    implementation_effort: High
+    est_effort_days: 32
+
+  - id: UC-IAM-07
+    name: Remote and third-party access security
+    domain: IAM
+    csf_function: PR
+    csf_category: PR.AA
+    description: >-
+      Remote and vendor access is brokered through controlled channels, authenticated, time-bound
+      and logged.
+    implementation_effort: Medium
+    est_effort_days: 20
+
+  # --- DAT — Data Protection & Cryptography ----------------------------------
+  - id: UC-DAT-01
+    name: Data classification and handling
+    domain: DAT
+    csf_function: PR
+    csf_category: PR.DS
+    description: >-
+      Information is classified by sensitivity, labelled accordingly, and handled per rules
+      defined for each classification level.
+    implementation_effort: Medium
+    est_effort_days: 20
+
+  - id: UC-DAT-02
+    name: Encryption of data at rest
+    domain: DAT
+    csf_function: PR
+    csf_category: PR.DS
+    description: >-
+      Sensitive and regulated data is encrypted at rest using approved algorithms, across
+      databases, file stores, backups and endpoints.
+    implementation_effort: High
+    est_effort_days: 40
+    high_leverage: true
+
+  - id: UC-DAT-03
+    name: Encryption of data in transit
+    domain: DAT
+    csf_function: PR
+    csf_category: PR.DS
+    description: >-
+      Data transmitted over untrusted networks is protected with approved transport encryption,
+      and deprecated protocols and ciphers are disabled.
+    implementation_effort: Medium
+    est_effort_days: 18
+
+  - id: UC-DAT-04
+    name: Cryptographic key management
+    domain: DAT
+    csf_function: PR
+    csf_category: PR.DS
+    description: >-
+      Cryptographic keys are generated, distributed, stored, rotated, archived and destroyed
+      under a documented lifecycle with split knowledge for high-value keys.
+    implementation_effort: High
+    est_effort_days: 30
+
+  - id: UC-DAT-05
+    name: Data loss prevention
+    domain: DAT
+    csf_function: PR
+    csf_category: PR.DS
+    description: >-
+      Technical controls detect and prevent unauthorised exfiltration of sensitive data across
+      email, web and endpoint channels.
+    implementation_effort: High
+    est_effort_days: 35
+
+  - id: UC-DAT-06
+    name: Data retention and records management
+    domain: DAT
+    csf_function: PR
+    csf_category: PR.DS
+    description: >-
+      Retention periods are defined per data type and enforced, with defensible deletion once
+      the retention period expires.
+    implementation_effort: Medium
+    est_effort_days: 24
+
+  # --- CFG — Secure Configuration & Change Management ------------------------
+  - id: UC-CFG-01
+    name: Secure baseline configuration management
+    domain: CFG
+    csf_function: PR
+    csf_category: PR.PS
+    description: >-
+      Hardened baseline configurations are defined for each platform type, applied at build,
+      and maintained over the asset lifecycle.
+    implementation_effort: High
+    est_effort_days: 35
+    high_leverage: true
+
+  - id: UC-CFG-02
+    name: Change control and approval
+    domain: CFG
+    csf_function: PR
+    csf_category: PR.PS
+    description: >-
+      Changes to production systems are requested, risk-assessed, tested, approved and
+      documented, with defined handling for emergency changes.
+    implementation_effort: Medium
+    est_effort_days: 20
+
+  - id: UC-CFG-03
+    name: Configuration drift detection
+    domain: CFG
+    csf_function: DE
+    csf_category: DE.CM
+    description: >-
+      Deviation from approved baselines is automatically detected, alerted and remediated.
+    implementation_effort: Medium
+    est_effort_days: 22
+
+  # --- VUL — Vulnerability & Patch Management --------------------------------
+  - id: UC-VUL-01
+    name: Vulnerability scanning and remediation SLAs
+    domain: VUL
+    csf_function: ID
+    csf_category: ID.RA
+    description: >-
+      Internal and external vulnerability scanning runs on a defined cycle across all in-scope
+      assets, with findings triaged and remediated within severity-based deadlines.
+    implementation_effort: Medium
+    est_effort_days: 20
+    high_leverage: true
+
+  - id: UC-VUL-02
+    name: Patch management
+    domain: VUL
+    csf_function: PR
+    csf_category: PR.PS
+    description: >-
+      Security patches are identified, tested and deployed within timeframes driven by severity
+      and asset criticality.
+    implementation_effort: Medium
+    est_effort_days: 24
+
+  - id: UC-VUL-03
+    name: Penetration testing
+    domain: VUL
+    csf_function: ID
+    csf_category: ID.RA
+    description: >-
+      Independent penetration testing is performed at least annually and after significant
+      change, including validation of segmentation boundaries.
+    implementation_effort: Medium
+    est_effort_days: 15
+
+  # --- NET — Network & Infrastructure Security -------------------------------
+  - id: UC-NET-01
+    name: Network segmentation
+    domain: NET
+    csf_function: PR
+    csf_category: PR.IR
+    description: >-
+      Networks are segmented by trust level and data sensitivity, restricting lateral movement
+      and isolating regulated environments.
+    implementation_effort: High
+    est_effort_days: 38
+
+  - id: UC-NET-02
+    name: Boundary protection and firewall management
+    domain: NET
+    csf_function: PR
+    csf_category: PR.IR
+    description: >-
+      Traffic crossing network boundaries is filtered by default-deny rulesets that are
+      documented, justified and reviewed periodically.
+    implementation_effort: Medium
+    est_effort_days: 22
+
+  - id: UC-NET-03
+    name: Wireless network security
+    domain: NET
+    csf_function: PR
+    csf_category: PR.IR
+    description: >-
+      Wireless networks use strong authentication and encryption, are segregated from sensitive
+      environments, and are monitored for rogue access points.
+    implementation_effort: Low
+    est_effort_days: 12
+
+  - id: UC-NET-04
+    name: Malware protection
+    domain: NET
+    csf_function: PR
+    csf_category: PR.PS
+    description: >-
+      Anti-malware and endpoint detection capabilities are deployed, kept current, and monitored
+      across servers and endpoints.
+    implementation_effort: Medium
+    est_effort_days: 18
+
+  # --- APP — Application Security --------------------------------------------
+  - id: UC-APP-01
+    name: Secure software development lifecycle
+    domain: APP
+    csf_function: PR
+    csf_category: PR.PS
+    description: >-
+      Security requirements, threat modelling and secure design review are embedded into the
+      development lifecycle, with separated development, test and production environments.
+    implementation_effort: High
+    est_effort_days: 34
+
+  - id: UC-APP-02
+    name: Application security testing
+    domain: APP
+    csf_function: ID
+    csf_category: ID.RA
+    description: >-
+      Applications undergo static and dynamic security testing before release, with findings
+      remediated on severity-based timelines.
+    implementation_effort: Medium
+    est_effort_days: 26
+
+  - id: UC-APP-03
+    name: Software supply chain integrity
+    domain: APP
+    csf_function: GV
+    csf_category: GV.SC
+    description: >-
+      Third-party and open-source components are inventoried via SBOM, screened for known
+      vulnerabilities, and verified for integrity and provenance before use.
+    implementation_effort: High
+    est_effort_days: 30
+
+  - id: UC-APP-04
+    name: Secure code review
+    domain: APP
+    csf_function: PR
+    csf_category: PR.PS
+    description: >-
+      Code changes receive peer security review before merge to production branches, with
+      enforced branch protection.
+    implementation_effort: Low
+    est_effort_days: 12
+
+  # --- LOG — Logging, Monitoring & Detection ---------------------------------
+  - id: UC-LOG-01
+    name: Centralized security event logging and retention
+    domain: LOG
+    csf_function: DE
+    csf_category: DE.CM
+    description: >-
+      Security-relevant events are logged with sufficient detail, forwarded to a central
+      platform, time-synchronised, and retained for a defined period.
+    implementation_effort: High
+    est_effort_days: 30
+    high_leverage: true
+
+  - id: UC-LOG-02
+    name: Security monitoring, alerting and triage
+    domain: LOG
+    csf_function: DE
+    csf_category: DE.AE
+    description: >-
+      Detection rules generate alerts that are triaged by defined staff within defined
+      timeframes, and tuned based on outcomes.
+    implementation_effort: High
+    est_effort_days: 32
+
+  - id: UC-LOG-03
+    name: Log integrity protection
+    domain: LOG
+    csf_function: PR
+    csf_category: PR.DS
+    description: >-
+      Logs are protected against modification and deletion, including by privileged users, and
+      access to logs is itself logged.
+    implementation_effort: Medium
+    est_effort_days: 16
+
+  - id: UC-LOG-04
+    name: Threat intelligence program
+    domain: LOG
+    csf_function: ID
+    csf_category: ID.RA
+    description: >-
+      External threat intelligence is received from defined sources, evaluated for relevance,
+      and converted into detection or preventive action.
+    implementation_effort: Medium
+    est_effort_days: 18
+
+  # --- IRP — Incident Response -----------------------------------------------
+  - id: UC-IRP-01
+    name: Incident response plan and procedures
+    domain: IRP
+    csf_function: RS
+    csf_category: RS.MA
+    description: >-
+      A documented incident response plan defines severity classification, roles, escalation
+      paths and containment, eradication and recovery procedures.
+    implementation_effort: Medium
+    est_effort_days: 20
+
+  - id: UC-IRP-02
+    name: Incident response testing and exercises
+    domain: IRP
+    csf_function: ID
+    csf_category: ID.IM
+    description: >-
+      The incident response plan is exercised at least annually through tabletop or simulation,
+      and lessons learned drive plan updates.
+    implementation_effort: Low
+    est_effort_days: 15
+    high_leverage: true
+
+  - id: UC-IRP-03
+    name: Incident notification and regulatory reporting
+    domain: IRP
+    csf_function: RS
+    csf_category: RS.CO
+    description: >-
+      Incidents are reported to regulators, customers and other stakeholders within the
+      timeframes mandated by applicable requirements.
+    implementation_effort: Medium
+    est_effort_days: 16
+
+  - id: UC-IRP-04
+    name: Forensic evidence handling
+    domain: IRP
+    csf_function: RS
+    csf_category: RS.AN
+    description: >-
+      Evidence is collected and preserved under documented chain-of-custody procedures that
+      maintain admissibility.
+    implementation_effort: Medium
+    est_effort_days: 14
+
+  # --- BCR — Business Continuity & Resilience --------------------------------
+  - id: UC-BCR-01
+    name: Business impact analysis
+    domain: BCR
+    csf_function: GV
+    csf_category: GV.OC
+    description: >-
+      Critical business processes and supporting systems are identified, with recovery time and
+      recovery point objectives defined and approved.
+    implementation_effort: Medium
+    est_effort_days: 22
+
+  - id: UC-BCR-02
+    name: Backup and recovery
+    domain: BCR
+    csf_function: PR
+    csf_category: PR.DS
+    description: >-
+      Backups are performed on a defined schedule, protected against alteration, stored with
+      appropriate separation, and restore-tested.
+    implementation_effort: Medium
+    est_effort_days: 24
+
+  - id: UC-BCR-03
+    name: Disaster recovery testing
+    domain: BCR
+    csf_function: RC
+    csf_category: RC.RP
+    description: >-
+      Recovery plans are tested at least annually against defined objectives, with results
+      documented and gaps remediated.
+    implementation_effort: Medium
+    est_effort_days: 20
+
+  - id: UC-BCR-04
+    name: Resilience of critical services
+    domain: BCR
+    csf_function: PR
+    csf_category: PR.IR
+    description: >-
+      Critical services are designed for redundancy and adequate capacity, so that single points
+      of failure do not cause prolonged outage.
+    implementation_effort: High
+    est_effort_days: 36
+
+  # --- TPR — Third-Party Risk Management -------------------------------------
+  - id: UC-TPR-01
+    name: Third-party security due diligence
+    domain: TPR
+    csf_function: GV
+    csf_category: GV.SC
+    description: >-
+      Vendors are risk-tiered and assessed for security posture before contract award, with the
+      depth of assessment driven by criticality and data access.
+    implementation_effort: Medium
+    est_effort_days: 22
+    high_leverage: true
+
+  - id: UC-TPR-02
+    name: Contractual security requirements
+    domain: TPR
+    csf_function: GV
+    csf_category: GV.SC
+    description: >-
+      Contracts with third parties include security, breach notification, audit rights and
+      data-handling obligations proportionate to risk.
+    implementation_effort: Low
+    est_effort_days: 14
+
+  - id: UC-TPR-03
+    name: Ongoing vendor monitoring
+    domain: TPR
+    csf_function: GV
+    csf_category: GV.SC
+    description: >-
+      Vendor security posture is reassessed periodically over the life of the relationship, with
+      frequency driven by tier.
+    implementation_effort: Medium
+    est_effort_days: 20
+
+  - id: UC-TPR-04
+    name: Vendor offboarding and data return
+    domain: TPR
+    csf_function: GV
+    csf_category: GV.SC
+    description: >-
+      On termination, vendor access is revoked and organizational data is returned or destroyed
+      with evidence obtained.
+    implementation_effort: Low
+    est_effort_days: 10
+
+  # --- PHY — Physical & Environmental Security -------------------------------
+  - id: UC-PHY-01
+    name: Facility access control
+    domain: PHY
+    csf_function: PR
+    csf_category: PR.AA
+    description: >-
+      Physical access to facilities is restricted by authorisation, badge control and visitor
+      management, and access records are retained.
+    implementation_effort: Medium
+    est_effort_days: 18
+
+  - id: UC-PHY-02
+    name: Secure areas and data centre protection
+    domain: PHY
+    csf_function: PR
+    csf_category: PR.IR
+    description: >-
+      Data centres and other secure areas have layered physical controls, monitoring, and
+      independently reviewed access lists.
+    implementation_effort: Medium
+    est_effort_days: 22
+
+  - id: UC-PHY-03
+    name: Environmental controls
+    domain: PHY
+    csf_function: PR
+    csf_category: PR.IR
+    description: >-
+      Power, cooling, fire suppression and environmental monitoring protect equipment from
+      environmental threats and utility failure.
+    implementation_effort: Medium
+    est_effort_days: 20
+
+  # --- MED — Media Handling & Secure Disposal --------------------------------
+  - id: UC-MED-01
+    name: Media sanitization and secure disposal
+    domain: MED
+    csf_function: PR
+    csf_category: PR.DS
+    description: >-
+      Media is sanitized using methods appropriate to its classification before disposal or
+      reuse, with sanitization verified and evidenced.
+    implementation_effort: Low
+    est_effort_days: 12
+    high_leverage: true
+
+  - id: UC-MED-02
+    name: Removable media controls
+    domain: MED
+    csf_function: PR
+    csf_category: PR.DS
+    description: >-
+      Use of removable media is restricted, authorised, encrypted and logged, or technically
+      prevented where not required.
+    implementation_effort: Low
+    est_effort_days: 10
+
+  - id: UC-MED-03
+    name: Media transport and physical storage
+    domain: MED
+    csf_function: PR
+    csf_category: PR.DS
+    description: >-
+      Media containing sensitive data is protected and tracked during transport and physical
+      storage, including backup media held offsite.
+    implementation_effort: Low
+    est_effort_days: 10
+
+  # --- HRS — Human Resources Security & Awareness ----------------------------
+  - id: UC-HRS-01
+    name: Personnel screening
+    domain: HRS
+    csf_function: PR
+    csf_category: PR.AA
+    description: >-
+      Background verification proportionate to role sensitivity is performed before granting
+      access, and repeated for high-privilege roles.
+    implementation_effort: Low
+    est_effort_days: 10
+
+  - id: UC-HRS-02
+    name: Security awareness training
+    domain: HRS
+    csf_function: PR
+    csf_category: PR.AT
+    description: >-
+      All personnel complete security awareness training at onboarding and at least annually,
+      with completion tracked and enforced.
+    implementation_effort: Low
+    est_effort_days: 12
+
+  - id: UC-HRS-03
+    name: Role-based security training
+    domain: HRS
+    csf_function: PR
+    csf_category: PR.AT
+    description: >-
+      Personnel in privileged, developer or security roles receive additional training specific
+      to the risks of those roles.
+    implementation_effort: Low
+    est_effort_days: 14
+
+  - id: UC-HRS-04
+    name: Insider threat program
+    domain: HRS
+    csf_function: DE
+    csf_category: DE.CM
+    description: >-
+      Indicators of insider risk are monitored under a governed program with defined privacy
+      safeguards, escalation paths and legal review.
+    implementation_effort: High
+    est_effort_days: 28
+
+  - id: UC-HRS-05
+    name: Acceptable use and disciplinary process
+    domain: HRS
+    csf_function: GV
+    csf_category: GV.RR
+    description: >-
+      Acceptable use is defined and acknowledged by personnel, and a formal disciplinary process
+      applies to security policy violations.
+    implementation_effort: Low
+    est_effort_days: 8

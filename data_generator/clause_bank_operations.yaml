@@ -1,0 +1,732 @@
+# =============================================================================
+# clause_bank_operations.yaml  (2 of 3)
+# =============================================================================
+# See clause_bank_governance.yaml for the schema and the meaning of `uc` and `modality`.
+# =============================================================================
+
+policies:
+
+  # ===========================================================================
+  - policy_key: vulnerability_management
+    clauses:
+      - section: "1"
+        heading: Purpose and Scope
+        items:
+          - ref: "1.1"
+            uc: UC-VUL-01
+            modality: mandatory
+            text: >-
+              This Standard defines requirements for identifying, assessing, prioritising and
+              remediating technical vulnerabilities across all Northwind Regional Bank systems,
+              including cloud-hosted and vendor-managed infrastructure.
+
+      - section: "2"
+        heading: Asset Scanning Coverage
+        items:
+          - ref: "2.1"
+            uc: UC-VUL-01
+            modality: mandatory
+            text: >-
+              Authenticated vulnerability scanning must be performed against all internal
+              production systems at least monthly using Tenable.io.
+          - ref: "2.2"
+            uc: UC-VUL-01
+            modality: mandatory
+            text: >-
+              Scanning coverage must be reconciled against the enterprise asset inventory monthly,
+              and assets absent from scanning coverage must be escalated to the asset owner.
+          - ref: "2.3"
+            uc: UC-ASM-01
+            modality: mandatory
+            text: >-
+              Systems discovered during scanning that are not present in the asset inventory must
+              be investigated within five business days and either registered or removed.
+          - ref: "2.4"
+            uc: UC-VUL-01
+            modality: mandatory
+            text: >-
+              Scanning must be performed following any significant infrastructure change and prior
+              to promoting a new system into production.
+
+      - section: "3"
+        heading: Severity Classification and Remediation SLAs
+        items:
+          - ref: "3.1"
+            uc: UC-VUL-01
+            modality: mandatory
+            text: >-
+              Vulnerabilities must be assigned a severity of Critical, High, Medium or Low based
+              on CVSS base score adjusted for asset criticality and exploit availability.
+          - ref: "3.2"
+            uc: UC-VUL-01
+            modality: mandatory
+            text: >-
+              Critical severity vulnerabilities on internet-facing systems must be remediated
+              within seven calendar days of identification.
+          - ref: "3.3"
+            uc: UC-VUL-01
+            modality: mandatory
+            text: >-
+              High severity vulnerabilities must be remediated within thirty calendar days of
+              identification.
+          # Aspirational placement per gap_spec.yaml — downgrades UC-VUL-01 to Partial.
+          - ref: "3.4"
+            uc: UC-VUL-01
+            modality: aspirational
+            text: >-
+              A formal remediation service level for Medium severity findings will be implemented
+              once the vulnerability management platform migration completes.
+          - ref: "3.5"
+            uc: UC-VUL-01
+            modality: mandatory
+            text: >-
+              Vulnerabilities that cannot be remediated within the applicable deadline must be
+              raised as a risk acceptance under Section 5 before the deadline elapses.
+
+      - section: "4"
+        heading: Patch Deployment
+        items:
+          - ref: "4.1"
+            uc: UC-VUL-02
+            modality: mandatory
+            text: >-
+              Security patches must be deployed through the enterprise patch management service,
+              and patch compliance must be reported monthly by platform.
+          - ref: "4.2"
+            uc: UC-VUL-02
+            modality: mandatory
+            text: >-
+              Patches must be tested in a non-production environment before deployment to
+              production, except where an emergency change is authorised.
+          - ref: "4.3"
+            uc: UC-VUL-02
+            modality: mandatory
+            text: >-
+              Systems that cannot be patched must be isolated by compensating network controls and
+              recorded on the exception register.
+          - ref: "4.4"
+            uc: UC-NET-04
+            modality: mandatory
+            text: >-
+              Anti-malware signatures and endpoint detection agents must be kept current, with
+              agent health monitored and non-reporting endpoints investigated within two business
+              days.
+
+      - section: "5"
+        heading: Exception and Risk Acceptance
+        items:
+          - ref: "5.1"
+            uc: UC-GOV-03
+            modality: mandatory
+            text: >-
+              Risk acceptances for unremediated vulnerabilities must be approved by the system
+              owner and the Chief Information Security Officer, and must state a compensating
+              control and an expiry date.
+          - ref: "5.2"
+            uc: UC-GOV-03
+            modality: mandatory
+            text: >-
+              Open risk acceptances must be reviewed quarterly and reported to the Technology Risk
+              Committee.
+
+      - section: "6"
+        heading: Reporting and Metrics
+        items:
+          - ref: "6.1"
+            uc: UC-VUL-01
+            modality: mandatory
+            text: >-
+              Vulnerability metrics, including open findings by severity and mean time to
+              remediate, must be reported monthly to the Chief Information Security Officer.
+          - ref: "6.2"
+            uc: UC-VUL-03
+            modality: mandatory
+            text: >-
+              Penetration testing of internet-facing applications must be performed at least
+              annually by a qualified independent party.
+          - ref: "6.3"
+            uc: UC-VUL-03
+            modality: mandatory
+            text: >-
+              Penetration test findings must be tracked to remediation in the enterprise issue
+              management system and retested upon closure.
+
+  # ===========================================================================
+  - policy_key: change_management
+    clauses:
+      - section: "1"
+        heading: Purpose and Scope
+        items:
+          - ref: "1.1"
+            uc: UC-CFG-02
+            modality: mandatory
+            text: >-
+              This Policy governs all changes to Northwind Regional Bank production systems,
+              infrastructure, network configuration and application code.
+
+      - section: "2"
+        heading: Change Categories
+        items:
+          - ref: "2.1"
+            uc: UC-CFG-02
+            modality: mandatory
+            text: >-
+              Changes must be categorised as Standard, Normal or Emergency, and each category has
+              defined approval and testing requirements.
+          - ref: "2.2"
+            uc: UC-CFG-02
+            modality: mandatory
+            text: >-
+              All changes must be recorded in ServiceNow before implementation, including
+              Emergency changes which must be recorded within one business day of implementation.
+          - ref: "2.3"
+            uc: UC-CFG-02
+            modality: mandatory
+            text: >-
+              Every change record must state the business justification, the risk assessment, the
+              implementation plan and the rollback plan.
+
+      - section: "3"
+        heading: Change Advisory Board
+        items:
+          - ref: "3.1"
+            uc: UC-CFG-02
+            modality: mandatory
+            text: >-
+              Normal changes affecting production systems must be reviewed and approved by the
+              Change Advisory Board before implementation.
+          - ref: "3.2"
+            uc: UC-CFG-02
+            modality: mandatory
+            text: >-
+              Changes to systems within the Cardholder Data Environment must additionally be
+              approved by the Payments and Card Services Manager.
+          - ref: "3.3"
+            uc: UC-CFG-02
+            modality: mandatory
+            text: >-
+              Change approval records, including approver identity and timestamp, must be retained
+              for seven years.
+
+      - section: "4"
+        heading: Testing and Rollback Requirements
+        items:
+          - ref: "4.1"
+            uc: UC-CFG-02
+            modality: mandatory
+            text: >-
+              Changes must be tested in an environment representative of production before
+              implementation, and test evidence must be attached to the change record.
+          - ref: "4.2"
+            uc: UC-CFG-02
+            modality: mandatory
+            text: >-
+              A documented and tested rollback plan must exist for every Normal and Emergency
+              change to a production system.
+          - ref: "4.3"
+            uc: UC-APP-01
+            modality: mandatory
+            text: >-
+              Development, test and production environments must be logically separated, and
+              production data must not be copied into lower environments unless masked.
+
+      - section: "5"
+        heading: Emergency Changes
+        items:
+          - ref: "5.1"
+            uc: UC-CFG-02
+            modality: mandatory
+            text: >-
+              Emergency changes require verbal approval from the Head of Infrastructure or a
+              designated deputy prior to implementation, confirmed in writing within one business
+              day.
+          - ref: "5.2"
+            uc: UC-CFG-02
+            modality: mandatory
+            text: >-
+              All Emergency changes must be retrospectively reviewed by the Change Advisory Board
+              at its next scheduled meeting.
+
+      - section: "6"
+        heading: Baseline Configuration Management
+        items:
+          - ref: "6.1"
+            uc: UC-CFG-01
+            modality: mandatory
+            text: >-
+              Hardened baseline configurations must be defined and documented for each supported
+              operating system, database platform and network device type.
+          - ref: "6.2"
+            uc: UC-CFG-01
+            modality: mandatory
+            text: >-
+              Systems must be built from approved baseline images, and deviations from baseline
+              must be documented and approved.
+          - ref: "6.3"
+            uc: UC-CFG-01
+            modality: advisory
+            text: >-
+              Baseline configurations should be reviewed against current vendor and industry
+              hardening guidance annually.
+          - ref: "6.4"
+            uc: UC-CFG-03
+            modality: mandatory
+            text: >-
+              Automated configuration compliance scanning must run weekly against production
+              systems, and drift from approved baseline must generate a ticket for remediation.
+          - ref: "6.5"
+            uc: UC-CFG-01
+            modality: mandatory
+            text: >-
+              Default vendor accounts and default credentials must be disabled or changed before a
+              system is placed into production.
+
+      - section: "7"
+        heading: Segregation of Duties
+        items:
+          - ref: "7.1"
+            uc: UC-IAM-04
+            modality: mandatory
+            text: >-
+              The individual who develops or requests a change must not be the individual who
+              approves it.
+          - ref: "7.2"
+            uc: UC-APP-04
+            modality: mandatory
+            text: >-
+              Deployment of application code to production must be performed through the automated
+              release pipeline, and manual deployment requires documented exception approval.
+
+  # ===========================================================================
+  - policy_key: incident_response
+    clauses:
+      - section: "1"
+        heading: Purpose and Scope
+        items:
+          - ref: "1.1"
+            uc: UC-IRP-01
+            modality: mandatory
+            text: >-
+              This Plan defines how Northwind Regional Bank detects, classifies, responds to and
+              recovers from cybersecurity incidents, and applies to all Bank systems and to
+              incidents at third parties affecting Bank data.
+
+      - section: "2"
+        heading: Incident Severity Classification
+        items:
+          - ref: "2.1"
+            uc: UC-IRP-01
+            modality: mandatory
+            text: >-
+              Incidents must be classified as Severity 1 through Severity 4 based on customer
+              impact, data exposure, regulatory implication and service disruption.
+          - ref: "2.2"
+            uc: UC-IRP-01
+            modality: mandatory
+            text: >-
+              Severity 1 and Severity 2 incidents must be escalated to the Chief Information
+              Security Officer and the Chief Risk Officer within one hour of classification.
+          - ref: "2.3"
+            uc: UC-IRP-01
+            modality: mandatory
+            text: >-
+              Incident severity must be reassessed at each status checkpoint and adjusted as new
+              information emerges.
+
+      - section: "3"
+        heading: Detection and Triage
+        items:
+          - ref: "3.1"
+            uc: UC-LOG-02
+            modality: mandatory
+            text: >-
+              The Security Operations team must triage alerts generated by Splunk Enterprise
+              Security and CrowdStrike Falcon within defined timeframes based on alert priority.
+          - ref: "3.2"
+            uc: UC-IRP-01
+            modality: mandatory
+            text: >-
+              All suspected incidents must be recorded in the incident management system from the
+              point of first suspicion, including those subsequently determined to be false
+              positives.
+          - ref: "3.3"
+            uc: UC-HRS-02
+            modality: mandatory
+            text: >-
+              All personnel must report suspected security incidents to the Security Operations
+              team immediately through the published reporting channels.
+
+      - section: "4"
+        heading: Containment, Eradication and Recovery
+        items:
+          - ref: "4.1"
+            uc: UC-IRP-01
+            modality: mandatory
+            text: >-
+              The Incident Commander must authorise containment actions, balancing the need to
+              limit damage against the preservation of forensic evidence.
+          - ref: "4.2"
+            uc: UC-IRP-04
+            modality: mandatory
+            text: >-
+              Forensic evidence must be collected and preserved under documented chain-of-custody
+              procedures, and system images must be taken before remediation where feasible.
+          - ref: "4.3"
+            uc: UC-IRP-01
+            modality: mandatory
+            text: >-
+              Recovery to production may proceed only after the Incident Commander confirms the
+              root cause has been addressed and affected systems have been validated.
+          - ref: "4.4"
+            uc: UC-BCR-02
+            modality: mandatory
+            text: >-
+              Where recovery requires restoration from backup, the integrity of the backup must be
+              verified before restoration to production.
+
+      - section: "5"
+        heading: Regulatory and Customer Notification
+        items:
+          - ref: "5.1"
+            uc: UC-IRP-03
+            modality: mandatory
+            text: >-
+              The Bank must notify its primary federal regulator of a notification incident as soon
+              as practicable and no later than thirty-six hours after determining that such an
+              incident has occurred.
+          - ref: "5.2"
+            uc: UC-IRP-03
+            modality: mandatory
+            text: >-
+              Customer notification of unauthorised access to sensitive customer information must
+              be made as soon as possible following the Bank's response programme and applicable
+              interagency guidance.
+          - ref: "5.3"
+            uc: UC-IRP-03
+            modality: mandatory
+            text: >-
+              The payment card brands and the acquiring bank must be notified immediately upon
+              confirmation of a suspected compromise of cardholder data.
+          - ref: "5.4"
+            uc: UC-IRP-03
+            modality: mandatory
+            text: >-
+              All external incident communications must be reviewed and approved by the Chief
+              Compliance Officer and the Bank's legal counsel before release.
+
+      - section: "6"
+        heading: Post-Incident Review
+        items:
+          - ref: "6.1"
+            uc: UC-IRP-01
+            modality: mandatory
+            text: >-
+              A post-incident review must be completed within fifteen business days for all
+              Severity 1 and Severity 2 incidents.
+          - ref: "6.2"
+            uc: UC-IRP-01
+            modality: mandatory
+            text: >-
+              Post-incident review actions must be assigned to a named owner with a target date and
+              tracked to closure in the enterprise issue management system.
+
+      - section: "7"
+        heading: Exercise and Testing Schedule
+        items:
+          - ref: "7.1"
+            uc: UC-IRP-02
+            modality: mandatory
+            text: >-
+              A tabletop exercise of this Plan must be conducted at least annually with
+              participation from Information Security, Technology Operations, Compliance, Legal and
+              Communications.
+          - ref: "7.2"
+            uc: UC-IRP-02
+            modality: advisory
+            text: >-
+              A technical simulation exercise involving live response tooling should be conducted
+              annually in addition to the tabletop exercise.
+          - ref: "7.3"
+            uc: UC-IRP-02
+            modality: mandatory
+            text: >-
+              Exercise findings must be documented and used to update this Plan within sixty days
+              of the exercise.
+
+  # ===========================================================================
+  - policy_key: business_continuity
+    clauses:
+      - section: "1"
+        heading: Purpose and Scope
+        items:
+          - ref: "1.1"
+            uc: UC-BCR-01
+            modality: mandatory
+            text: >-
+              This Policy establishes requirements for maintaining and recovering critical business
+              operations of Northwind Regional Bank following a disruptive event.
+
+      - section: "2"
+        heading: Business Impact Analysis
+        items:
+          - ref: "2.1"
+            uc: UC-BCR-01
+            modality: mandatory
+            text: >-
+              A business impact analysis must be performed for all business processes and reviewed
+              at least every two years.
+          - ref: "2.2"
+            uc: UC-BCR-01
+            modality: mandatory
+            text: >-
+              The business impact analysis must identify critical processes, their supporting
+              systems, their dependencies on third parties, and the maximum tolerable period of
+              disruption.
+          - ref: "2.3"
+            uc: UC-BCR-01
+            modality: mandatory
+            text: >-
+              Business process owners must validate the criticality ratings assigned to their
+              processes as part of each business impact analysis cycle.
+
+      - section: "3"
+        heading: Recovery Objectives
+        items:
+          - ref: "3.1"
+            uc: UC-BCR-01
+            modality: mandatory
+            text: >-
+              Recovery time objectives and recovery point objectives must be defined and formally
+              approved for every critical business process.
+          - ref: "3.2"
+            uc: UC-BCR-04
+            modality: mandatory
+            text: >-
+              Systems supporting processes with a recovery time objective of four hours or less
+              must be deployed in a resilient configuration without a single point of failure.
+          - ref: "3.3"
+            uc: UC-BCR-02
+            modality: mandatory
+            text: >-
+              Backups of critical systems must be performed daily, and backup success must be
+              monitored with failures investigated within one business day.
+          - ref: "3.4"
+            uc: UC-BCR-02
+            modality: mandatory
+            text: >-
+              At least one backup copy must be maintained in a location geographically separate
+              from the primary processing facility.
+          - ref: "3.5"
+            uc: UC-BCR-02
+            modality: advisory
+            text: >-
+              Backup copies should be maintained in an immutable or write-once form to provide
+              resilience against ransomware.
+
+      - section: "4"
+        heading: Recovery Site Strategy
+        items:
+          - ref: "4.1"
+            uc: UC-BCR-04
+            modality: mandatory
+            text: >-
+              The Bank maintains a warm recovery site at the Tukwila, Washington facility capable
+              of supporting critical processing within the defined recovery time objectives.
+          - ref: "4.2"
+            uc: UC-BCR-04
+            modality: mandatory
+            text: >-
+              Recovery site capacity must be reviewed annually against current production volumes.
+
+      - section: "5"
+        heading: Plan Testing and Exercises
+        items:
+          - ref: "5.1"
+            uc: UC-BCR-03
+            modality: mandatory
+            text: >-
+              Disaster recovery plans for critical systems must be tested at least annually against
+              their defined recovery objectives.
+          - ref: "5.2"
+            uc: UC-BCR-03
+            modality: mandatory
+            text: >-
+              Test results, including whether recovery objectives were met, must be documented and
+              reported to the Technology Risk Committee.
+          - ref: "5.3"
+            uc: UC-BCR-02
+            modality: mandatory
+            text: >-
+              Restoration from backup media must be tested at least quarterly for critical systems,
+              and the test must verify data integrity as well as recoverability.
+          - ref: "5.4"
+            uc: UC-BCR-03
+            modality: mandatory
+            text: >-
+              Deficiencies identified during recovery testing must be remediated and retested
+              before the next annual test cycle.
+
+      - section: "6"
+        heading: Crisis Communication
+        items:
+          - ref: "6.1"
+            uc: UC-BCR-01
+            modality: mandatory
+            text: >-
+              A crisis communication plan must define notification procedures for employees,
+              customers, regulators and the media, and must include out-of-band contact methods.
+          - ref: "6.2"
+            uc: UC-BCR-01
+            modality: mandatory
+            text: >-
+              Emergency contact lists must be validated at least semi-annually.
+
+  # ===========================================================================
+  - policy_key: vendor_risk
+    clauses:
+      - section: "1"
+        heading: Purpose and Scope
+        items:
+          - ref: "1.1"
+            uc: UC-TPR-01
+            modality: mandatory
+            text: >-
+              This Policy governs the identification, assessment and ongoing management of risk
+              arising from third parties that provide services to, or hold data on behalf of,
+              Northwind Regional Bank.
+          - ref: "1.2"
+            uc: UC-TPR-01
+            modality: mandatory
+            text: >-
+              This Policy applies throughout the third-party lifecycle, from pre-contract due
+              diligence through to termination and data return.
+
+      - section: "2"
+        heading: Vendor Tiering and Criticality
+        items:
+          - ref: "2.1"
+            uc: UC-TPR-01
+            modality: mandatory
+            text: >-
+              All third parties must be assigned a criticality tier of Critical, High, Moderate or
+              Low based on data sensitivity, operational dependency and regulatory significance.
+          - ref: "2.2"
+            uc: UC-TPR-01
+            modality: mandatory
+            text: >-
+              A central inventory of third parties, including tier, services provided, data
+              accessed and relationship owner, must be maintained by the Vendor Risk Manager.
+          - ref: "2.3"
+            uc: UC-TPR-01
+            modality: mandatory
+            text: >-
+              Vendor tiering must be reassessed whenever the scope of services or data access
+              materially changes.
+
+      - section: "3"
+        heading: Pre-Contract Due Diligence
+        items:
+          - ref: "3.1"
+            uc: UC-TPR-01
+            modality: mandatory
+            text: >-
+              Security due diligence must be completed and accepted before any contract is executed
+              with a Critical or High tier third party.
+          - ref: "3.2"
+            uc: UC-TPR-01
+            modality: mandatory
+            text: >-
+              Due diligence for Critical tier vendors must include review of an independent
+              assurance report such as a SOC 2 Type II, or an equivalent on-site assessment.
+          - ref: "3.3"
+            uc: UC-TPR-01
+            modality: mandatory
+            text: >-
+              Material findings from due diligence must be remediated by the vendor, or accepted as
+              a risk by the relationship owner and the Chief Risk Officer, before contract
+              execution.
+          - ref: "3.4"
+            uc: UC-TPR-01
+            modality: mandatory
+            text: >-
+              Subcontracting by a Critical tier vendor requires prior written notification to the
+              Bank and assessment of the subcontractor's security posture.
+
+      - section: "4"
+        heading: Contractual Security Requirements
+        items:
+          - ref: "4.1"
+            uc: UC-TPR-02
+            modality: mandatory
+            text: >-
+              Contracts with third parties accessing Confidential or Restricted data must include
+              confidentiality, information security, and data-handling obligations.
+          - ref: "4.2"
+            uc: UC-TPR-02
+            modality: mandatory
+            text: >-
+              Contracts must require the third party to notify the Bank of a security incident
+              affecting Bank data within twenty-four hours of discovery.
+          - ref: "4.3"
+            uc: UC-TPR-02
+            modality: mandatory
+            text: >-
+              Contracts with Critical and High tier vendors must include the Bank's right to audit
+              or to receive an annual independent assurance report.
+          - ref: "4.4"
+            uc: UC-TPR-02
+            modality: mandatory
+            text: >-
+              Contracts must specify the permitted locations for storage and processing of Bank
+              data.
+
+      - section: "5"
+        heading: Ongoing Monitoring
+        items:
+          - ref: "5.1"
+            uc: UC-TPR-03
+            modality: mandatory
+            text: >-
+              Critical tier vendors must be reassessed annually, and High tier vendors at least
+              every two years.
+          - ref: "5.2"
+            uc: UC-TPR-03
+            modality: mandatory
+            text: >-
+              Independent assurance reports for Critical tier vendors must be obtained and reviewed
+              annually, and material exceptions must be tracked to resolution.
+          - ref: "5.3"
+            uc: UC-TPR-03
+            modality: mandatory
+            text: >-
+              Vendor performance and security issues must be recorded and escalated to the
+              Technology Risk Committee where they represent a material risk.
+          # Aspirational placement per gap_spec.yaml — downgrades UC-TPR-03 to Partial.
+          - ref: "5.4"
+            uc: UC-TPR-03
+            modality: aspirational
+            text: >-
+              Continuous monitoring of critical vendors through an external security ratings
+              service will be implemented as resources permit.
+
+      - section: "6"
+        heading: Offboarding and Termination
+        items:
+          - ref: "6.1"
+            uc: UC-TPR-04
+            modality: mandatory
+            text: >-
+              Upon termination of a third-party relationship, all vendor access to Bank systems
+              must be revoked within five business days.
+          - ref: "6.2"
+            uc: UC-TPR-04
+            modality: mandatory
+            text: >-
+              The third party must return or destroy all Bank data upon termination, and must
+              provide written confirmation of destruction.
+          - ref: "6.3"
+            uc: UC-TPR-04
+            modality: advisory
+            text: >-
+              The relationship owner should conduct a post-termination review to confirm that all
+              access has been removed and all data has been returned.
