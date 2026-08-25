@@ -302,50 +302,52 @@ untested_controls:
 # -----------------------------------------------------------------------------
 high_leverage_controls:
   min_count_touching_4plus_frameworks: 8
+  # `frameworks` is asserted against the loaded catalogs in 09_build_gold_tables.py,
+  # so these lists are derived fact rather than aspiration. Keep them in sync.
   designated:
     - unified_control_id: UC-IAM-03
       name: Multi-factor authentication for privileged access
-      frameworks: [FFIEC, NIST80053, ISO27001, SOC2, PCIDSS]
+      frameworks: [FFIEC, ISO27001, NIST80053, PCIDSS]
       current_status: Partial
       effort_days: 25
     - unified_control_id: UC-IAM-05
       name: Periodic access recertification
-      frameworks: [FFIEC, NIST80053, ISO27001, SOC2, PCIDSS]
+      frameworks: [FFIEC, ISO27001, NIST80053, PCIDSS, SOC2]
       current_status: Partial
       effort_days: 18
     - unified_control_id: UC-DAT-02
       name: Encryption of data at rest
-      frameworks: [FFIEC, NIST80053, ISO27001, SOC2, PCIDSS]
+      frameworks: [FFIEC, ISO27001, NIST80053, PCIDSS]
       current_status: Partial
       effort_days: 40
     - unified_control_id: UC-LOG-01
       name: Centralized security event logging and retention
-      frameworks: [FFIEC, NIST80053, ISO27001, SOC2, PCIDSS]
+      frameworks: [FFIEC, ISO27001, NIST80053, PCIDSS]
       current_status: Partial
       effort_days: 30
     - unified_control_id: UC-TPR-01
       name: Third-party security due diligence
-      frameworks: [FFIEC, NIST80053, ISO27001, SOC2]
+      frameworks: [FFIEC, ISO27001, NIST80053, PCIDSS, SOC2]
       current_status: Partial
       effort_days: 22
     - unified_control_id: UC-VUL-01
       name: Vulnerability scanning and remediation SLAs
-      frameworks: [FFIEC, NIST80053, ISO27001, PCIDSS]
+      frameworks: [FFIEC, ISO27001, NIST80053, PCIDSS, SOC2]
       current_status: Partial
       effort_days: 20
     - unified_control_id: UC-MED-01
       name: Media sanitization and secure disposal
-      frameworks: [FFIEC, NIST80053, ISO27001, PCIDSS]
+      frameworks: [FFIEC, ISO27001, NIST80053, PCIDSS, SOC2]
       current_status: None
       effort_days: 12
     - unified_control_id: UC-IRP-02
       name: Incident response testing and tabletop exercises
-      frameworks: [FFIEC, NIST80053, ISO27001, SOC2]
+      frameworks: [FFIEC, ISO27001, NIST80053, PCIDSS, SOC2]
       current_status: Partial
       effort_days: 15
     - unified_control_id: UC-CFG-01
       name: Secure baseline configuration management
-      frameworks: [FFIEC, NIST80053, ISO27001, PCIDSS]
+      frameworks: [FFIEC, ISO27001, NIST80053, PCIDSS, SOC2]
       current_status: Partial
       effort_days: 35
 

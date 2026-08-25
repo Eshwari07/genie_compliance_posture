@@ -1,0 +1,527 @@
+# =============================================================================
+# soc2_tsc.yaml — AICPA SOC 2 Trust Services Criteria
+# =============================================================================
+# LICENSING: The Trust Services Criteria are copyrighted by the AICPA. This file contains
+# NO verbatim criteria text. `ref` and `title` are the publicly-referenced criteria
+# identifiers and short names; `text` is independently authored plain-English paraphrase
+# written for this project. Loaded with text_provenance = 'paraphrased'.
+#
+# Scope reflects a realistic engagement for Northwind Regional Bank's treasury-services
+# API: Security (the common criteria), Availability, Confidentiality, Processing Integrity
+# and Privacy. 61 criteria.
+#
+# `uc` is the ground-truth unified control, hidden from the LLM crosswalk.
+# =============================================================================
+
+framework:
+  id: SOC2
+  short_name: SOC 2
+  full_name: AICPA SOC 2 Trust Services Criteria (2017, as revised 2022)
+  version: "2017/2022"
+  issuing_body: American Institute of Certified Public Accountants
+  category: Attestation criteria
+  jurisdiction: United States
+  text_provenance: paraphrased
+
+obligations:
+
+  # --- CC1 Control Environment ---------------------------------------------
+  - ref: CC1.1
+    title: Commitment to integrity and ethical values
+    trust_category: Security
+    domain: GOV
+    uc: UC-GOV-01
+    criticality: Medium
+    text: The entity demonstrates a commitment to integrity and ethical values through its standards of conduct, and evaluates adherence to them.
+
+  - ref: CC1.2
+    title: Board independence and oversight
+    trust_category: Security
+    domain: GOV
+    uc: UC-GOV-05
+    criticality: Medium
+    text: The board of directors operates independently of management and exercises oversight of the development and performance of internal control.
+
+  - ref: CC1.3
+    title: Organizational structure and reporting lines
+    trust_category: Security
+    domain: GOV
+    uc: UC-GOV-02
+    criticality: Medium
+    text: Management establishes structures, reporting lines, and appropriate authorities and responsibilities in pursuit of the entity's objectives.
+
+  - ref: CC1.4
+    title: Commitment to competence
+    trust_category: Security
+    domain: HRS
+    uc: UC-HRS-02
+    criticality: Medium
+    text: The entity demonstrates a commitment to attract, develop and retain competent individuals in alignment with its objectives.
+
+  - ref: CC1.5
+    title: Accountability for internal control
+    trust_category: Security
+    domain: GOV
+    uc: UC-GOV-02
+    criticality: Medium
+    text: The entity holds individuals accountable for their internal control responsibilities in the pursuit of its objectives.
+
+  # --- CC2 Communication and Information -----------------------------------
+  - ref: CC2.1
+    title: Use of relevant quality information
+    trust_category: Security
+    domain: GOV
+    uc: UC-GOV-03
+    criticality: Medium
+    text: The entity obtains or generates and uses relevant, quality information to support the functioning of internal control.
+
+  - ref: CC2.2
+    title: Internal communication of information security responsibilities
+    trust_category: Security
+    domain: HRS
+    uc: UC-HRS-02
+    criticality: High
+    text: The entity internally communicates information, including objectives and responsibilities for internal control, necessary to support the functioning of internal control.
+
+  - ref: CC2.3
+    title: External communication with relevant parties
+    trust_category: Security
+    domain: TPR
+    uc: UC-TPR-02
+    criticality: Medium
+    text: The entity communicates with external parties regarding matters affecting the functioning of internal control.
+
+  # --- CC3 Risk Assessment --------------------------------------------------
+  - ref: CC3.1
+    title: Specification of objectives
+    trust_category: Security
+    domain: GOV
+    uc: UC-GOV-03
+    criticality: Medium
+    text: The entity specifies objectives with sufficient clarity to enable the identification and assessment of risks relating to those objectives.
+
+  - ref: CC3.2
+    title: Identification and analysis of risk
+    trust_category: Security
+    domain: GOV
+    uc: UC-GOV-03
+    criticality: High
+    text: The entity identifies risks to the achievement of its objectives across the entity and analyses those risks as a basis for determining how they should be managed.
+
+  - ref: CC3.3
+    title: Consideration of fraud risk
+    trust_category: Security
+    domain: GOV
+    uc: UC-GOV-03
+    criticality: Medium
+    text: The entity considers the potential for fraud in assessing risks to the achievement of its objectives.
+
+  - ref: CC3.4
+    title: Identification of significant change
+    trust_category: Security
+    domain: CFG
+    uc: UC-CFG-02
+    criticality: Medium
+    text: The entity identifies and assesses changes that could significantly impact the system of internal control.
+
+  # --- CC4 Monitoring Activities --------------------------------------------
+  - ref: CC4.1
+    title: Ongoing and separate evaluations
+    trust_category: Security
+    domain: GOV
+    uc: UC-GOV-05
+    criticality: Medium
+    text: The entity selects, develops and performs ongoing and separate evaluations to ascertain whether the components of internal control are present and functioning.
+
+  - ref: CC4.2
+    title: Evaluation and communication of deficiencies
+    trust_category: Security
+    domain: GOV
+    uc: UC-GOV-05
+    criticality: Medium
+    text: The entity evaluates and communicates internal control deficiencies in a timely manner to those responsible for taking corrective action.
+
+  # --- CC5 Control Activities -----------------------------------------------
+  - ref: CC5.1
+    title: Selection and development of control activities
+    trust_category: Security
+    domain: GOV
+    uc: UC-GOV-03
+    criticality: Medium
+    text: The entity selects and develops control activities that contribute to the mitigation of risks to the achievement of objectives to acceptable levels.
+
+  - ref: CC5.2
+    title: Technology general controls
+    trust_category: Security
+    domain: CFG
+    uc: UC-CFG-01
+    criticality: High
+    text: The entity selects and develops general control activities over technology to support the achievement of its objectives.
+
+  - ref: CC5.3
+    title: Deployment through policies and procedures
+    trust_category: Security
+    domain: GOV
+    uc: UC-GOV-01
+    criticality: Medium
+    text: The entity deploys control activities through policies that establish what is expected and procedures that put those policies into action.
+
+  # --- CC6 Logical and Physical Access Controls -----------------------------
+  - ref: CC6.1
+    title: Logical access security software and infrastructure
+    trust_category: Security
+    domain: IAM
+    uc: UC-IAM-04
+    criticality: High
+    text: The entity implements logical access security software, infrastructure and architectures over protected information assets to protect them from security events.
+
+  - ref: CC6.2
+    title: Registration and authorization of new users
+    trust_category: Security
+    domain: IAM
+    uc: UC-IAM-01
+    criticality: High
+    text: Prior to issuing system credentials, the entity registers and authorizes new internal and external users, and removes access when the user is no longer authorized.
+
+  - ref: CC6.3
+    title: Role-based access and least privilege
+    trust_category: Security
+    domain: IAM
+    uc: UC-IAM-05
+    criticality: High
+    text: The entity authorizes, modifies or removes access to data, software, functions and other protected information assets based on roles, responsibilities and least privilege, and reviews that access periodically.
+
+  - ref: CC6.4
+    title: Physical access to facilities
+    trust_category: Security
+    domain: PHY
+    uc: UC-PHY-01
+    criticality: Medium
+    text: The entity restricts physical access to facilities and protected information assets to authorized personnel commensurate with the level of risk.
+
+  - ref: CC6.5
+    title: Disposal of physical assets containing data
+    trust_category: Security
+    domain: MED
+    uc: UC-MED-01
+    criticality: High
+    text: The entity discontinues logical and physical protections over physical assets only after the ability to read or recover data has been diminished and is no longer required to meet objectives.
+
+  - ref: CC6.6
+    title: Protection against threats from outside system boundaries
+    trust_category: Security
+    domain: NET
+    uc: UC-NET-02
+    criticality: High
+    text: The entity implements logical access security measures to protect against threats from sources outside its system boundaries.
+
+  - ref: CC6.7
+    title: Restriction of information movement
+    trust_category: Security
+    domain: DAT
+    uc: UC-DAT-05
+    criticality: High
+    text: The entity restricts the transmission, movement and removal of information to authorized users and processes, and protects it during transmission, movement and removal.
+
+  - ref: CC6.8
+    title: Prevention and detection of unauthorized software
+    trust_category: Security
+    domain: NET
+    uc: UC-NET-04
+    criticality: High
+    text: The entity implements controls to prevent or detect and act upon the introduction of unauthorized or malicious software.
+
+  # --- CC7 System Operations ------------------------------------------------
+  - ref: CC7.1
+    title: Detection of configuration changes and vulnerabilities
+    trust_category: Security
+    domain: VUL
+    uc: UC-VUL-01
+    criticality: High
+    text: The entity uses detection and monitoring procedures to identify changes to configurations that result in the introduction of new vulnerabilities, and to identify susceptibilities to newly discovered vulnerabilities.
+
+  - ref: CC7.2
+    title: Monitoring for anomalies indicative of security events
+    trust_category: Security
+    domain: LOG
+    uc: UC-LOG-02
+    criticality: High
+    text: The entity monitors system components and the operation of those components for anomalies indicative of malicious acts, natural disasters and errors, and analyses them to determine whether they represent security events.
+
+  - ref: CC7.3
+    title: Evaluation of security events
+    trust_category: Security
+    domain: IRP
+    uc: UC-IRP-01
+    criticality: High
+    text: The entity evaluates security events to determine whether they could or have resulted in a failure to meet objectives, and if so, takes action to prevent or address such failures.
+
+  - ref: CC7.4
+    title: Incident response program
+    trust_category: Security
+    domain: IRP
+    uc: UC-IRP-01
+    criticality: High
+    text: The entity responds to identified security incidents by executing a defined incident response program to understand, contain, remediate and communicate them.
+
+  - ref: CC7.5
+    title: Recovery from identified security incidents
+    trust_category: Security
+    domain: IRP
+    uc: UC-IRP-02
+    criticality: High
+    text: The entity identifies, develops and implements activities to recover from identified security incidents, and tests those activities periodically.
+
+  # --- CC8 Change Management ------------------------------------------------
+  - ref: CC8.1
+    title: Authorized changes to infrastructure and software
+    trust_category: Security
+    domain: CFG
+    uc: UC-CFG-02
+    criticality: High
+    text: The entity authorizes, designs, develops or acquires, configures, documents, tests, approves and implements changes to infrastructure, data, software and procedures to meet its objectives.
+
+  # --- CC9 Risk Mitigation --------------------------------------------------
+  - ref: CC9.1
+    title: Business disruption risk mitigation
+    trust_category: Security
+    domain: BCR
+    uc: UC-BCR-01
+    criticality: High
+    text: The entity identifies, selects and develops risk mitigation activities for risks arising from potential business disruptions.
+
+  - ref: CC9.2
+    title: Vendor and business partner risk management
+    trust_category: Security
+    domain: TPR
+    uc: UC-TPR-01
+    criticality: High
+    text: The entity assesses and manages risks associated with vendors and business partners.
+
+  # --- A Availability -------------------------------------------------------
+  - ref: A1.1
+    title: Capacity management
+    trust_category: Availability
+    domain: BCR
+    uc: UC-BCR-04
+    criticality: Medium
+    text: The entity maintains, monitors and evaluates current processing capacity and use of system components to manage capacity demand and enable the implementation of additional capacity.
+
+  - ref: A1.2
+    title: Environmental protections, backup and recovery infrastructure
+    trust_category: Availability
+    domain: BCR
+    uc: UC-BCR-02
+    criticality: High
+    text: The entity authorizes, designs, develops, implements, operates, approves, maintains and monitors environmental protections, software, data backup processes and recovery infrastructure to meet its objectives.
+
+  - ref: A1.3
+    title: Testing of recovery plan procedures
+    trust_category: Availability
+    domain: BCR
+    uc: UC-BCR-03
+    criticality: High
+    text: The entity tests recovery plan procedures supporting system recovery to meet its objectives.
+
+  # --- C Confidentiality ----------------------------------------------------
+  - ref: C1.1
+    title: Identification and maintenance of confidential information
+    trust_category: Confidentiality
+    domain: DAT
+    uc: UC-DAT-01
+    criticality: High
+    text: The entity identifies and maintains confidential information to meet its objectives related to confidentiality.
+
+  - ref: C1.2
+    title: Disposal of confidential information
+    trust_category: Confidentiality
+    domain: MED
+    uc: UC-MED-01
+    criticality: High
+    text: The entity disposes of confidential information to meet its objectives related to confidentiality.
+
+  # --- PI Processing Integrity ----------------------------------------------
+  - ref: PI1.1
+    title: Communication of processing specifications
+    trust_category: Processing Integrity
+    domain: APP
+    uc: UC-APP-01
+    criticality: Medium
+    text: The entity obtains or generates, uses and communicates relevant, quality information regarding the objectives related to processing to support the use of products and services.
+
+  - ref: PI1.2
+    title: Completeness and accuracy of system inputs
+    trust_category: Processing Integrity
+    domain: APP
+    uc: UC-APP-01
+    criticality: High
+    text: The entity implements policies and procedures over system inputs, including controls over completeness and accuracy, to result in products and services that meet specifications.
+
+  - ref: PI1.3
+    title: Completeness and accuracy of system processing
+    trust_category: Processing Integrity
+    domain: APP
+    uc: UC-APP-02
+    criticality: High
+    text: The entity implements policies and procedures over system processing to result in products and services that meet specifications.
+
+  - ref: PI1.4
+    title: Completeness and accuracy of system output
+    trust_category: Processing Integrity
+    domain: APP
+    uc: UC-APP-02
+    criticality: Medium
+    text: The entity implements policies and procedures to make available or deliver output completely, accurately and in a timely manner in accordance with specifications.
+
+  - ref: PI1.5
+    title: Storage of inputs and outputs
+    trust_category: Processing Integrity
+    domain: DAT
+    uc: UC-DAT-06
+    criticality: Medium
+    text: The entity implements policies and procedures to store inputs, items in processing and outputs completely, accurately and in a timely manner in accordance with system specifications.
+
+  # --- P Privacy -------------------------------------------------------------
+  - ref: P1.1
+    title: Notice of privacy practices
+    trust_category: Privacy
+    domain: DAT
+    uc: UC-DAT-01
+    criticality: Medium
+    text: The entity provides notice to data subjects about its privacy practices to meet its objectives, and the notice is updated and communicated in a timely manner.
+
+  - ref: P2.1
+    title: Choice and consent for personal information
+    trust_category: Privacy
+    domain: DAT
+    uc: UC-DAT-01
+    criticality: Medium
+    text: The entity communicates choices available regarding the collection, use, retention, disclosure and disposal of personal information, and obtains consent where required.
+
+  - ref: P3.1
+    title: Collection of personal information consistent with objectives
+    trust_category: Privacy
+    domain: DAT
+    uc: UC-DAT-01
+    criticality: Medium
+    text: Personal information is collected consistent with the entity's objectives related to privacy.
+
+  - ref: P3.2
+    title: Explicit consent for sensitive personal information
+    trust_category: Privacy
+    domain: DAT
+    uc: UC-DAT-01
+    criticality: Medium
+    text: For information requiring explicit consent, the entity communicates the need for such consent and obtains it prior to collection.
+
+  - ref: P4.1
+    title: Use of personal information
+    trust_category: Privacy
+    domain: DAT
+    uc: UC-DAT-01
+    criticality: Medium
+    text: The entity limits the use of personal information to the purposes identified in its objectives related to privacy.
+
+  - ref: P4.2
+    title: Retention of personal information
+    trust_category: Privacy
+    domain: DAT
+    uc: UC-DAT-06
+    criticality: High
+    text: The entity retains personal information consistent with its objectives related to privacy.
+
+  - ref: P4.3
+    title: Disposal of personal information
+    trust_category: Privacy
+    domain: MED
+    uc: UC-MED-01
+    criticality: High
+    text: The entity securely disposes of personal information to meet its objectives related to privacy.
+
+  - ref: P5.1
+    title: Data subject access to personal information
+    trust_category: Privacy
+    domain: DAT
+    uc: UC-DAT-01
+    criticality: Medium
+    text: The entity grants identified and authenticated data subjects the ability to access their stored personal information for review and, upon request, provides them with physical or electronic copies.
+
+  - ref: P5.2
+    title: Correction of personal information
+    trust_category: Privacy
+    domain: DAT
+    uc: UC-DAT-01
+    criticality: Low
+    text: The entity corrects, amends or appends personal information based on information provided by data subjects, and communicates such information to third parties as committed or required.
+
+  - ref: P6.1
+    title: Disclosure of personal information to third parties
+    trust_category: Privacy
+    domain: TPR
+    uc: UC-TPR-02
+    criticality: High
+    text: The entity discloses personal information to third parties only for the purposes identified in its objectives and with the consent of the data subject where required.
+
+  - ref: P6.2
+    title: Record of authorized disclosures
+    trust_category: Privacy
+    domain: DAT
+    uc: UC-DAT-06
+    criticality: Medium
+    text: The entity creates and retains a complete, accurate and timely record of authorized disclosures of personal information.
+
+  - ref: P6.3
+    title: Record of unauthorized disclosures
+    trust_category: Privacy
+    domain: IRP
+    uc: UC-IRP-03
+    criticality: High
+    text: The entity creates and retains a complete, accurate and timely record of detected or reported unauthorized disclosures of personal information.
+
+  - ref: P6.4
+    title: Third-party commitments for personal information
+    trust_category: Privacy
+    domain: TPR
+    uc: UC-TPR-02
+    criticality: High
+    text: The entity obtains privacy commitments from vendors and other third parties who have access to personal information, consistent with its own privacy objectives.
+
+  - ref: P6.5
+    title: Third-party notification of unauthorized disclosure
+    trust_category: Privacy
+    domain: TPR
+    uc: UC-TPR-02
+    criticality: High
+    text: The entity obtains commitments from vendors and other third parties to notify it in the event of an actual or suspected unauthorized disclosure of personal information.
+
+  - ref: P6.6
+    title: Notification of privacy incidents
+    trust_category: Privacy
+    domain: IRP
+    uc: UC-IRP-03
+    criticality: High
+    text: The entity provides notification of breaches and incidents involving personal information to affected data subjects, regulators and others as required.
+
+  - ref: P6.7
+    title: Accounting of personal information held
+    trust_category: Privacy
+    domain: ASM
+    uc: UC-ASM-02
+    criticality: Medium
+    text: The entity provides data subjects with an accounting of the personal information held and, upon request, an accounting of the disclosures of that information.
+
+  - ref: P7.1
+    title: Accuracy and completeness of personal information
+    trust_category: Privacy
+    domain: DAT
+    uc: UC-DAT-01
+    criticality: Low
+    text: The entity collects and maintains accurate, up-to-date, complete and relevant personal information to meet its objectives related to privacy.
+
+  - ref: P8.1
+    title: Privacy complaint handling and compliance monitoring
+    trust_category: Privacy
+    domain: GOV
+    uc: UC-GOV-05
+    criticality: Medium
+    text: The entity implements a process for receiving, addressing, resolving and communicating the resolution of inquiries, complaints and disputes from data subjects, and periodically monitors compliance with its privacy objectives.

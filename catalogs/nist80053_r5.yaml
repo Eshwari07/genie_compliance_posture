@@ -1,0 +1,341 @@
+# =============================================================================
+# nist80053_r5.yaml — NIST SP 800-53 Rev 5 (Moderate baseline selection)
+# =============================================================================
+# LICENSING: NIST SP 800-53 is US Government work in the public domain.
+#
+# ROLE OF THIS FILE: notebook 02 prefers the official NIST OSCAL control catalog when
+# the JSON has been uploaded to the volume, and falls back to this seed otherwise.
+# Whichever path runs is recorded per row in framework_obligations.extraction_method.
+#
+# 88 controls selected from the Moderate baseline across 18 families. Full 800-53r5 has
+# 1000+ controls with enhancements; a focused subset keeps the Genie views small enough
+# to stay responsive on a 2X-Small warehouse, which is the binding constraint on Free Edition.
+#
+# `uc` is the ground-truth unified control, hidden from the LLM crosswalk.
+# =============================================================================
+
+framework:
+  id: NIST80053
+  short_name: NIST 800-53
+  full_name: NIST SP 800-53 Revision 5 — Security and Privacy Controls (Moderate baseline subset)
+  version: "Rev 5"
+  issuing_body: National Institute of Standards and Technology
+  category: Control catalog
+  jurisdiction: United States
+  text_provenance: verbatim_public
+
+obligations:
+
+  # --- AC Access Control -----------------------------------------------------
+  - {ref: AC-1, title: Policy and procedures, domain: IAM, uc: UC-GOV-01, criticality: Medium,
+     text: Develop, document and disseminate access control policy and procedures, and review and update them at defined intervals.}
+  - {ref: AC-2, title: Account management, domain: IAM, uc: UC-IAM-01, criticality: High,
+     text: Define and manage system accounts across their lifecycle, including creation, enabling, modification, disabling and removal, with authorisation for each action.}
+  - {ref: AC-3, title: Access enforcement, domain: IAM, uc: UC-IAM-04, criticality: High,
+     text: Enforce approved authorisations for logical access to information and system resources in accordance with applicable access control policies.}
+  - {ref: AC-4, title: Information flow enforcement, domain: NET, uc: UC-NET-01, criticality: High,
+     text: Enforce approved authorisations for controlling the flow of information within the system and between connected systems.}
+  - {ref: AC-5, title: Separation of duties, domain: IAM, uc: UC-IAM-04, criticality: High,
+     text: Identify and document duties of individuals requiring separation, and define system access authorisations to support that separation.}
+  - {ref: AC-6, title: Least privilege, domain: IAM, uc: UC-IAM-04, criticality: High,
+     text: Employ the principle of least privilege, allowing only authorised access necessary to accomplish assigned organisational tasks.}
+  - {ref: AC-6(7), title: Review of user privileges, domain: IAM, uc: UC-IAM-05, criticality: High,
+     text: Review the privileges assigned to defined roles or classes of users at a defined frequency to validate the need for such privileges, and reassign or remove privileges as necessary to correctly reflect organisational mission and business needs.}
+  - {ref: AC-7, title: Unsuccessful logon attempts, domain: IAM, uc: UC-IAM-02, criticality: Medium,
+     text: Enforce a limit on consecutive invalid logon attempts by a user and take defined action when the limit is exceeded.}
+  - {ref: AC-8, title: System use notification, domain: IAM, uc: UC-IAM-02, criticality: Low,
+     text: Display an approved system use notification message before granting access to the system.}
+  - {ref: AC-11, title: Device lock, domain: IAM, uc: UC-IAM-02, criticality: Low,
+     text: Prevent further access to the system by initiating a device lock after a defined period of inactivity, retaining the lock until the user re-establishes access.}
+  - {ref: AC-12, title: Session termination, domain: IAM, uc: UC-IAM-02, criticality: Medium,
+     text: Automatically terminate a user session after defined conditions or trigger events requiring session disconnect.}
+  - {ref: AC-17, title: Remote access, domain: IAM, uc: UC-IAM-07, criticality: High,
+     text: Establish and document usage restrictions, configuration requirements and implementation guidance for each type of remote access allowed, and authorise each type prior to allowing connections.}
+  - {ref: AC-18, title: Wireless access, domain: NET, uc: UC-NET-03, criticality: Medium,
+     text: Establish configuration requirements and usage restrictions for wireless access, and authorise wireless access prior to allowing connections.}
+  - {ref: AC-19, title: Access control for mobile devices, domain: DAT, uc: UC-DAT-02, criticality: Medium,
+     text: Establish usage restrictions and implementation guidance for organisation-controlled mobile devices, and authorise their connection to organisational systems.}
+  - {ref: AC-20, title: Use of external systems, domain: TPR, uc: UC-TPR-02, criticality: Medium,
+     text: Establish terms and conditions permitting authorised individuals to access the system from external systems and to process, store or transmit organisation-controlled information using external systems.}
+  - {ref: AC-22, title: Publicly accessible content, domain: DAT, uc: UC-DAT-01, criticality: Low,
+     text: Designate individuals authorised to make information publicly accessible, and review the proposed content prior to posting to ensure non-public information is not included.}
+
+  # --- AT Awareness and Training ---------------------------------------------
+  - {ref: AT-1, title: Policy and procedures, domain: HRS, uc: UC-GOV-01, criticality: Low,
+     text: Develop, document and disseminate awareness and training policy and procedures, and review and update them at defined intervals.}
+  - {ref: AT-2, title: Literacy training and awareness, domain: HRS, uc: UC-HRS-02, criticality: High,
+     text: Provide security and privacy literacy training to system users as part of initial training for new users, when required by system changes, and thereafter at a defined frequency.}
+  - {ref: AT-3, title: Role-based training, domain: HRS, uc: UC-HRS-03, criticality: High,
+     text: Provide role-based security and privacy training to personnel with assigned security and privacy roles before authorising access and at a defined frequency thereafter.}
+  - {ref: AT-4, title: Training records, domain: HRS, uc: UC-HRS-02, criticality: Low,
+     text: Document and monitor information security and privacy training activities and retain individual training records for a defined period.}
+
+  # --- AU Audit and Accountability -------------------------------------------
+  - {ref: AU-2, title: Event logging, domain: LOG, uc: UC-LOG-01, criticality: High,
+     text: Identify the event types the system is capable of logging, coordinate the logging function with other organisational entities, and review and update the set of logged event types periodically.}
+  - {ref: AU-3, title: Content of audit records, domain: LOG, uc: UC-LOG-01, criticality: High,
+     text: Ensure audit records contain information establishing what type of event occurred, when it occurred, where it occurred, its source, its outcome, and the identity of associated individuals or subjects.}
+  - {ref: AU-4, title: Audit log storage capacity, domain: LOG, uc: UC-LOG-01, criticality: Medium,
+     text: Allocate audit log storage capacity to accommodate defined audit log retention requirements.}
+  - {ref: AU-5, title: Response to audit logging process failures, domain: LOG, uc: UC-LOG-02, criticality: Medium,
+     text: Alert defined personnel in the event of an audit logging process failure and take defined additional actions.}
+  - {ref: AU-6, title: Audit record review, analysis and reporting, domain: LOG, uc: UC-LOG-02, criticality: High,
+     text: Review and analyse system audit records at a defined frequency for indications of inappropriate or unusual activity, and report findings to defined personnel.}
+  - {ref: AU-8, title: Time stamps, domain: LOG, uc: UC-LOG-01, criticality: Medium,
+     text: Use internal system clocks to generate time stamps for audit records, and record time stamps that meet a defined granularity and map to Coordinated Universal Time.}
+  - {ref: AU-9, title: Protection of audit information, domain: LOG, uc: UC-LOG-03, criticality: High,
+     text: Protect audit information and audit logging tools from unauthorised access, modification and deletion, and alert defined personnel upon detection of unauthorised access.}
+  - {ref: AU-11, title: Audit record retention, domain: LOG, uc: UC-LOG-01, criticality: High,
+     text: Retain audit records for a defined time period consistent with the records retention policy to support after-the-fact investigations and to meet regulatory and organisational requirements.}
+  - {ref: AU-12, title: Audit record generation, domain: LOG, uc: UC-LOG-01, criticality: High,
+     text: Provide audit record generation capability for the event types the system is capable of auditing on all defined system components.}
+
+  # --- CA Assessment, Authorization and Monitoring ---------------------------
+  - {ref: CA-2, title: Control assessments, domain: GOV, uc: UC-GOV-05, criticality: High,
+     text: Select an assessor, develop a control assessment plan, and assess the controls in the system and its environment of operation at a defined frequency to determine the extent to which they are implemented correctly and producing the desired outcome.}
+  - {ref: CA-3, title: Information exchange, domain: TPR, uc: UC-TPR-02, criticality: Medium,
+     text: Approve and manage the exchange of information between the system and other systems using agreements that document interface characteristics, security requirements and responsibilities.}
+  - {ref: CA-5, title: Plan of action and milestones, domain: GOV, uc: UC-GOV-05, criticality: Medium,
+     text: Develop and update a plan of action and milestones to document remedial actions planned to correct weaknesses and reduce or eliminate known vulnerabilities.}
+  - {ref: CA-7, title: Continuous monitoring, domain: LOG, uc: UC-LOG-02, criticality: High,
+     text: Develop and implement a system-level continuous monitoring strategy that includes defined metrics, ongoing control assessments, and response to the results of analysis and reporting.}
+  - {ref: CA-8, title: Penetration testing, domain: VUL, uc: UC-VUL-03, criticality: High,
+     text: Conduct penetration testing at a defined frequency on defined systems or system components.}
+  - {ref: CA-9, title: Internal system connections, domain: NET, uc: UC-NET-01, criticality: Medium,
+     text: Authorise internal connections of defined system components to the system and document the interface characteristics, security requirements and the nature of the information communicated.}
+
+  # --- CM Configuration Management -------------------------------------------
+  - {ref: CM-2, title: Baseline configuration, domain: CFG, uc: UC-CFG-01, criticality: High,
+     text: Develop, document and maintain a current baseline configuration of the system, and review and update it at a defined frequency and when required due to system changes.}
+  - {ref: CM-3, title: Configuration change control, domain: CFG, uc: UC-CFG-02, criticality: High,
+     text: Determine and document the types of changes that are configuration-controlled, review and approve them with explicit consideration of security impact, and retain records of configuration-controlled changes.}
+  - {ref: CM-4, title: Impact analyses, domain: CFG, uc: UC-CFG-02, criticality: Medium,
+     text: Analyse changes to the system to determine potential security and privacy impacts prior to change implementation.}
+  - {ref: CM-5, title: Access restrictions for change, domain: CFG, uc: UC-IAM-04, criticality: High,
+     text: Define, document, approve and enforce physical and logical access restrictions associated with changes to the system.}
+  - {ref: CM-6, title: Configuration settings, domain: CFG, uc: UC-CFG-01, criticality: High,
+     text: Establish and document configuration settings that reflect the most restrictive mode consistent with operational requirements, implement them, and monitor and control changes to them.}
+  - {ref: CM-7, title: Least functionality, domain: CFG, uc: UC-CFG-01, criticality: High,
+     text: Configure the system to provide only mission-essential capabilities and prohibit or restrict the use of defined functions, ports, protocols, software and services.}
+  - {ref: CM-8, title: System component inventory, domain: ASM, uc: UC-ASM-01, criticality: High,
+     text: Develop and maintain an accurate, current inventory of system components that reflects the current system and is at the level of granularity necessary for tracking and reporting.}
+  - {ref: CM-9, title: Configuration management plan, domain: CFG, uc: UC-CFG-01, criticality: Medium,
+     text: Develop, document and implement a configuration management plan that addresses roles, responsibilities, processes and procedures for the system.}
+  - {ref: CM-10, title: Software usage restrictions, domain: CFG, uc: UC-GOV-04, criticality: Low,
+     text: Use software and associated documentation in accordance with contract agreements and copyright laws, and control and document the use of peer-to-peer file sharing technology.}
+  - {ref: CM-11, title: User-installed software, domain: CFG, uc: UC-CFG-01, criticality: Medium,
+     text: Establish policies governing the installation of software by users, enforce those policies through defined methods, and monitor compliance at a defined frequency.}
+  - {ref: CM-14, title: Signed components, domain: APP, uc: UC-APP-03, criticality: Medium,
+     text: Prevent the installation of defined software and firmware components without verification that the component has been digitally signed using a certificate recognised and approved by the organisation.}
+
+  # --- CP Contingency Planning -----------------------------------------------
+  - {ref: CP-2, title: Contingency plan, domain: BCR, uc: UC-BCR-01, criticality: High,
+     text: Develop a contingency plan that identifies essential mission and business functions, recovery objectives, restoration priorities, roles and responsibilities, and maintains it at a defined frequency.}
+  - {ref: CP-3, title: Contingency training, domain: BCR, uc: UC-HRS-03, criticality: Low,
+     text: Provide contingency training to system users consistent with assigned roles and responsibilities within a defined period of assuming a contingency role and at a defined frequency thereafter.}
+  - {ref: CP-4, title: Contingency plan testing, domain: BCR, uc: UC-BCR-03, criticality: High,
+     text: Test the contingency plan for the system at a defined frequency using defined tests to determine its effectiveness and the organisational readiness to execute it, and review the results and initiate corrective actions.}
+  - {ref: CP-6, title: Alternate storage site, domain: BCR, uc: UC-BCR-02, criticality: High,
+     text: Establish an alternate storage site including necessary agreements to permit the storage and retrieval of system backup information, and ensure it provides controls equivalent to those of the primary site.}
+  - {ref: CP-7, title: Alternate processing site, domain: BCR, uc: UC-BCR-04, criticality: High,
+     text: Establish an alternate processing site including necessary agreements to permit the transfer and resumption of system operations for essential functions within a defined time period consistent with recovery objectives.}
+  - {ref: CP-9, title: System backup, domain: BCR, uc: UC-BCR-02, criticality: High,
+     text: Conduct backups of user-level, system-level and system documentation information at a defined frequency consistent with recovery objectives, and protect the confidentiality, integrity and availability of backup information.}
+  - {ref: CP-10, title: System recovery and reconstitution, domain: BCR, uc: UC-BCR-03, criticality: High,
+     text: Provide for the recovery and reconstitution of the system to a known state within a defined time period after a disruption, compromise or failure.}
+
+  # --- IA Identification and Authentication ----------------------------------
+  - {ref: IA-2, title: Identification and authentication of organisational users, domain: IAM, uc: UC-IAM-01, criticality: High,
+     text: Uniquely identify and authenticate organisational users and associate that unique identification with processes acting on behalf of those users.}
+  - {ref: IA-2(1), title: Multi-factor authentication to privileged accounts, domain: IAM, uc: UC-IAM-03, criticality: High,
+     text: Implement multi-factor authentication for access to privileged accounts.}
+  - {ref: IA-2(2), title: Multi-factor authentication to non-privileged accounts, domain: IAM, uc: UC-IAM-03, criticality: High,
+     text: Implement multi-factor authentication for access to non-privileged accounts.}
+  - {ref: IA-3, title: Device identification and authentication, domain: IAM, uc: UC-IAM-02, criticality: Medium,
+     text: Uniquely identify and authenticate defined devices or types of devices before establishing a local, remote or network connection.}
+  - {ref: IA-4, title: Identifier management, domain: IAM, uc: UC-IAM-01, criticality: Medium,
+     text: Manage system identifiers by receiving authorisation to assign an identifier, selecting an identifier that identifies an individual or device, assigning it to the intended party, and preventing reuse for a defined period.}
+  - {ref: IA-5, title: Authenticator management, domain: IAM, uc: UC-IAM-02, criticality: High,
+     text: Manage system authenticators by verifying the identity of the recipient, establishing initial authenticator content, ensuring sufficient strength, and changing or refreshing authenticators at a defined frequency.}
+  - {ref: IA-6, title: Authentication feedback, domain: IAM, uc: UC-IAM-02, criticality: Low,
+     text: Obscure feedback of authentication information during the authentication process to protect it from possible exploitation and use by unauthorised individuals.}
+  - {ref: IA-7, title: Cryptographic module authentication, domain: DAT, uc: UC-DAT-04, criticality: Medium,
+     text: Implement mechanisms for authentication to a cryptographic module that meet the requirements of applicable laws, directives, policies, standards and guidelines for such authentication.}
+  - {ref: IA-8, title: Identification and authentication of non-organisational users, domain: IAM, uc: UC-IAM-07, criticality: Medium,
+     text: Uniquely identify and authenticate non-organisational users or processes acting on behalf of non-organisational users.}
+
+  # --- IR Incident Response ---------------------------------------------------
+  - {ref: IR-2, title: Incident response training, domain: IRP, uc: UC-HRS-03, criticality: Medium,
+     text: Provide incident response training to system users consistent with assigned roles and responsibilities within a defined period of assuming a role and at a defined frequency thereafter.}
+  - {ref: IR-3, title: Incident response testing, domain: IRP, uc: UC-IRP-02, criticality: High,
+     text: Test the effectiveness of the incident response capability for the system at a defined frequency using defined tests.}
+  - {ref: IR-4, title: Incident handling, domain: IRP, uc: UC-IRP-01, criticality: High,
+     text: Implement an incident handling capability that includes preparation, detection and analysis, containment, eradication and recovery, and coordinate incident handling activities with contingency planning activities.}
+  - {ref: IR-5, title: Incident monitoring, domain: IRP, uc: UC-IRP-01, criticality: Medium,
+     text: Track and document incidents on the system.}
+  - {ref: IR-6, title: Incident reporting, domain: IRP, uc: UC-IRP-03, criticality: High,
+     text: Require personnel to report suspected incidents to the organisational incident response capability within a defined time period, and report incident information to defined authorities.}
+  - {ref: IR-7, title: Incident response assistance, domain: IRP, uc: UC-IRP-01, criticality: Low,
+     text: Provide an incident response support resource that offers advice and assistance to users of the system for the handling and reporting of incidents.}
+  - {ref: IR-8, title: Incident response plan, domain: IRP, uc: UC-IRP-01, criticality: High,
+     text: Develop an incident response plan that provides a roadmap for implementing the incident response capability, defines reportable incidents, and is reviewed and approved at a defined frequency.}
+
+  # --- MA Maintenance ---------------------------------------------------------
+  - {ref: MA-2, title: Controlled maintenance, domain: PHY, uc: UC-PHY-03, criticality: Low,
+     text: Schedule, document and review records of maintenance, repair and replacement of system components in accordance with manufacturer specifications and organisational requirements.}
+  - {ref: MA-4, title: Nonlocal maintenance, domain: IAM, uc: UC-IAM-07, criticality: Medium,
+     text: Approve and monitor nonlocal maintenance and diagnostic activities, and allow their use only as consistent with organisational policy and documented in the security plan.}
+  - {ref: MA-5, title: Maintenance personnel, domain: HRS, uc: UC-HRS-01, criticality: Medium,
+     text: Establish a process for maintenance personnel authorisation and maintain a list of authorised maintenance organisations or personnel.}
+
+  # --- MP Media Protection ----------------------------------------------------
+  - {ref: MP-2, title: Media access, domain: MED, uc: UC-MED-02, criticality: Medium,
+     text: Restrict access to defined types of digital and non-digital media to defined personnel or roles.}
+  - {ref: MP-3, title: Media marking, domain: MED, uc: UC-DAT-01, criticality: Low,
+     text: Mark system media indicating the distribution limitations, handling caveats and applicable security markings of the information.}
+  - {ref: MP-4, title: Media storage, domain: MED, uc: UC-MED-03, criticality: Medium,
+     text: Physically control and securely store defined types of digital and non-digital media within defined controlled areas.}
+  - {ref: MP-5, title: Media transport, domain: MED, uc: UC-MED-03, criticality: Medium,
+     text: Protect and control defined types of system media during transport outside of controlled areas, maintain accountability during transport, and document activities associated with transport.}
+  - {ref: MP-6, title: Media sanitization, domain: MED, uc: UC-MED-01, criticality: High,
+     text: Sanitize system media prior to disposal, release out of organisational control or release for reuse using defined sanitization techniques, and employ sanitization mechanisms with the strength and integrity commensurate with the security category of the information.}
+  - {ref: MP-7, title: Media use, domain: MED, uc: UC-MED-02, criticality: Medium,
+     text: Restrict or prohibit the use of defined types of system media on defined systems or system components using defined controls.}
+
+  # --- PE Physical and Environmental Protection -------------------------------
+  - {ref: PE-2, title: Physical access authorizations, domain: PHY, uc: UC-PHY-01, criticality: Medium,
+     text: Develop, approve and maintain a list of individuals with authorised access to the facility where the system resides, issue authorisation credentials, and review the access list at a defined frequency.}
+  - {ref: PE-3, title: Physical access control, domain: PHY, uc: UC-PHY-01, criticality: High,
+     text: Enforce physical access authorisations at defined entry and exit points, maintain physical access audit logs, and control access to areas within the facility designated as publicly accessible.}
+  - {ref: PE-6, title: Monitoring physical access, domain: PHY, uc: UC-PHY-02, criticality: Medium,
+     text: Monitor physical access to the facility to detect and respond to physical security incidents, and review physical access logs at a defined frequency.}
+  - {ref: PE-8, title: Visitor access records, domain: PHY, uc: UC-PHY-01, criticality: Low,
+     text: Maintain visitor access records to the facility for a defined time period and review them at a defined frequency.}
+  - {ref: PE-12, title: Emergency lighting, domain: PHY, uc: UC-PHY-03, criticality: Low,
+     text: Employ and maintain automatic emergency lighting for the system that activates in the event of a power outage or disruption and covers emergency exits and evacuation routes.}
+  - {ref: PE-13, title: Fire protection, domain: PHY, uc: UC-PHY-03, criticality: Medium,
+     text: Employ and maintain fire detection and suppression systems that are supported by an independent energy source.}
+  - {ref: PE-14, title: Environmental controls, domain: PHY, uc: UC-PHY-03, criticality: Medium,
+     text: Maintain temperature and humidity levels within the facility at defined acceptable levels and monitor them at a defined frequency.}
+  - {ref: PE-15, title: Water damage protection, domain: PHY, uc: UC-PHY-03, criticality: Low,
+     text: Protect the system from damage resulting from water leakage by providing master shutoff or isolation valves that are accessible, working properly and known to key personnel.}
+
+  # --- PL Planning -------------------------------------------------------------
+  - {ref: PL-2, title: System security and privacy plans, domain: GOV, uc: UC-GOV-01, criticality: Medium,
+     text: Develop security and privacy plans for the system that define the authorisation boundary, describe the operational context, identify the controls in place or planned, and are reviewed and updated at a defined frequency.}
+  - {ref: PL-4, title: Rules of behavior, domain: HRS, uc: UC-HRS-05, criticality: Medium,
+     text: Establish and provide to individuals requiring access the rules describing their responsibilities and expected behaviour for information and system usage, and receive a documented acknowledgement.}
+  - {ref: PL-8, title: Security and privacy architectures, domain: APP, uc: UC-APP-01, criticality: Medium,
+     text: Develop security and privacy architectures for the system that describe the requirements and approach to be taken for protecting information and for managing privacy risk.}
+
+  # --- PS Personnel Security ----------------------------------------------------
+  - {ref: PS-2, title: Position risk designation, domain: HRS, uc: UC-HRS-01, criticality: Low,
+     text: Assign a risk designation to all organisational positions, establish screening criteria for individuals filling those positions, and review and update position risk designations at a defined frequency.}
+  - {ref: PS-3, title: Personnel screening, domain: HRS, uc: UC-HRS-01, criticality: High,
+     text: Screen individuals prior to authorising access to the system and rescreen individuals in accordance with defined conditions requiring rescreening.}
+  - {ref: PS-4, title: Personnel termination, domain: HRS, uc: UC-IAM-01, criticality: High,
+     text: Upon termination of individual employment, disable system access within a defined time period, terminate or revoke authenticators and credentials, conduct exit interviews, and retrieve organisational system-related property.}
+  - {ref: PS-5, title: Personnel transfer, domain: HRS, uc: UC-IAM-01, criticality: Medium,
+     text: Review and confirm ongoing operational need for current logical and physical access authorisations when individuals are reassigned or transferred to other positions, and modify access authorisation as needed.}
+  - {ref: PS-6, title: Access agreements, domain: HRS, uc: UC-HRS-05, criticality: Medium,
+     text: Develop and document access agreements for organisational systems, review and update them at a defined frequency, and verify that individuals have signed them prior to being granted access.}
+  - {ref: PS-7, title: External personnel security, domain: TPR, uc: UC-TPR-02, criticality: Medium,
+     text: Establish personnel security requirements for external providers, require them to notify the organisation of personnel transfers or terminations, and monitor provider compliance.}
+  - {ref: PS-8, title: Personnel sanctions, domain: HRS, uc: UC-HRS-05, criticality: Low,
+     text: Employ a formal sanctions process for individuals failing to comply with established security and privacy policies and procedures, and notify defined personnel when such a process is initiated.}
+
+  # --- RA Risk Assessment --------------------------------------------------------
+  - {ref: RA-2, title: Security categorization, domain: ASM, uc: UC-ASM-02, criticality: Medium,
+     text: Categorize the system and the information it processes, stores and transmits, document the results in the security plan, and verify that the authorising official reviews and approves the categorization decision.}
+  - {ref: RA-3, title: Risk assessment, domain: GOV, uc: UC-GOV-03, criticality: High,
+     text: Conduct a risk assessment including the likelihood and magnitude of harm from unauthorised access, use, disclosure, disruption, modification or destruction of the system and its information, and update it at a defined frequency.}
+  - {ref: RA-5, title: Vulnerability monitoring and scanning, domain: VUL, uc: UC-VUL-01, criticality: High,
+     text: Monitor and scan for vulnerabilities in the system and hosted applications at a defined frequency and when new vulnerabilities are identified, and remediate legitimate vulnerabilities within defined response times in accordance with risk assessment.}
+  - {ref: RA-7, title: Risk response, domain: GOV, uc: UC-GOV-03, criticality: Medium,
+     text: Respond to findings from security and privacy assessments, monitoring and audits in accordance with organisational risk tolerance.}
+  - {ref: RA-9, title: Criticality analysis, domain: ASM, uc: UC-ASM-03, criticality: Medium,
+     text: Identify critical system components and functions by performing a criticality analysis for defined systems, system components or system services at defined decision points in the system development life cycle.}
+
+  # --- SA System and Services Acquisition -----------------------------------------
+  - {ref: SA-3, title: System development life cycle, domain: APP, uc: UC-APP-01, criticality: High,
+     text: Acquire, develop and manage the system using a system development life cycle that incorporates information security and privacy considerations, and defines and documents security and privacy roles and responsibilities throughout.}
+  - {ref: SA-4, title: Acquisition process, domain: TPR, uc: UC-TPR-02, criticality: Medium,
+     text: Include security and privacy functional, strength, assurance and documentation requirements in the acquisition contract for the system, system component or system service.}
+  - {ref: SA-8, title: Security and privacy engineering principles, domain: APP, uc: UC-APP-01, criticality: Medium,
+     text: Apply defined systems security and privacy engineering principles in the specification, design, development, implementation and modification of the system and system components.}
+  - {ref: SA-9, title: External system services, domain: TPR, uc: UC-TPR-01, criticality: High,
+     text: Require that providers of external system services comply with organisational security and privacy requirements, define and document oversight and user roles, and monitor control compliance on an ongoing basis.}
+  - {ref: SA-11, title: Developer testing and evaluation, domain: APP, uc: UC-APP-02, criticality: High,
+     text: Require the developer of the system to create and implement a security and privacy assessment plan, perform testing at a defined depth and coverage, produce evidence of the execution of the plan, and correct flaws identified during testing.}
+  - {ref: SA-15, title: Development process, standards and tools, domain: APP, uc: UC-APP-01, criticality: Medium,
+     text: Require the developer to follow a documented development process that explicitly addresses security and privacy requirements, and review the process, standards, tools and tool options at a defined frequency.}
+  - {ref: SA-22, title: Unsupported system components, domain: ASM, uc: UC-ASM-03, criticality: Medium,
+     text: Replace system components when support for the components is no longer available from the developer, vendor or manufacturer, or provide justification and documented approval for the continued use of unsupported components.}
+
+  # --- SC System and Communications Protection --------------------------------------
+  - {ref: SC-2, title: Separation of system and user functionality, domain: APP, uc: UC-APP-01, criticality: Medium,
+     text: Separate user functionality, including user interface services, from system management functionality.}
+  - {ref: SC-4, title: Information in shared system resources, domain: DAT, uc: UC-DAT-01, criticality: Medium,
+     text: Prevent unauthorised and unintended information transfer via shared system resources.}
+  - {ref: SC-5, title: Denial-of-service protection, domain: BCR, uc: UC-BCR-04, criticality: Medium,
+     text: Protect against or limit the effects of denial-of-service events by employing defined controls.}
+  - {ref: SC-7, title: Boundary protection, domain: NET, uc: UC-NET-02, criticality: High,
+     text: Monitor and control communications at the external managed interfaces to the system and at key internal managed interfaces, and connect to external networks only through managed interfaces consisting of boundary protection devices.}
+  - {ref: SC-8, title: Transmission confidentiality and integrity, domain: DAT, uc: UC-DAT-03, criticality: High,
+     text: Protect the confidentiality and integrity of transmitted information.}
+  - {ref: SC-12, title: Cryptographic key establishment and management, domain: DAT, uc: UC-DAT-04, criticality: High,
+     text: Establish and manage cryptographic keys when cryptography is employed within the system, in accordance with defined requirements for key generation, distribution, storage, access and destruction.}
+  - {ref: SC-13, title: Cryptographic protection, domain: DAT, uc: UC-DAT-04, criticality: High,
+     text: Determine the cryptographic uses required by the system and implement the types of cryptography required for each use.}
+  - {ref: SC-15, title: Collaborative computing devices, domain: PHY, uc: UC-PHY-02, criticality: Low,
+     text: Prohibit remote activation of collaborative computing devices and applications except under defined exceptions, and provide an explicit indication of use to users physically present at the devices.}
+  - {ref: SC-18, title: Mobile code, domain: APP, uc: UC-APP-01, criticality: Low,
+     text: Define acceptable and unacceptable mobile code and mobile code technologies, and authorise, monitor and control the use of mobile code within the system.}
+  - {ref: SC-20, title: Secure name/address resolution service, domain: NET, uc: UC-NET-02, criticality: Low,
+     text: Provide additional data origin authentication and integrity verification artifacts along with the authoritative name resolution data the system returns in response to external name/address resolution queries.}
+  - {ref: SC-22, title: Architecture and provisioning for name/address resolution, domain: NET, uc: UC-NET-02, criticality: Low,
+     text: Ensure the systems that collectively provide name/address resolution service for an organisation are fault-tolerant and implement internal and external role separation.}
+  - {ref: SC-23, title: Session authenticity, domain: DAT, uc: UC-DAT-03, criticality: Medium,
+     text: Protect the authenticity of communications sessions.}
+  - {ref: SC-28, title: Protection of information at rest, domain: DAT, uc: UC-DAT-02, criticality: High,
+     text: Protect the confidentiality and integrity of defined information at rest.}
+  - {ref: SC-39, title: Process isolation, domain: APP, uc: UC-APP-01, criticality: Low,
+     text: Maintain a separate execution domain for each executing system process.}
+
+  # --- SI System and Information Integrity -----------------------------------------
+  - {ref: SI-2, title: Flaw remediation, domain: VUL, uc: UC-VUL-02, criticality: High,
+     text: Identify, report and correct system flaws, test software and firmware updates related to flaw remediation for effectiveness and potential side effects before installation, and install security-relevant updates within a defined time period of release.}
+  - {ref: SI-3, title: Malicious code protection, domain: NET, uc: UC-NET-04, criticality: High,
+     text: Implement malicious code protection mechanisms at system entry and exit points, automatically update them as new releases become available, and configure them to perform periodic and real-time scans.}
+  - {ref: SI-4, title: System monitoring, domain: LOG, uc: UC-LOG-02, criticality: High,
+     text: Monitor the system to detect attacks and indicators of potential attacks and unauthorised local, network and remote connections, and identify unauthorised use of the system through defined techniques and methods.}
+  - {ref: SI-5, title: Security alerts, advisories and directives, domain: LOG, uc: UC-LOG-04, criticality: Medium,
+     text: Receive system security alerts, advisories and directives from defined external organisations on an ongoing basis, generate internal security alerts and directives as deemed necessary, and disseminate them to defined personnel.}
+  - {ref: SI-7, title: Software, firmware and information integrity, domain: CFG, uc: UC-CFG-03, criticality: High,
+     text: Employ integrity verification tools to detect unauthorised changes to defined software, firmware and information, and take defined actions when unauthorised changes are detected.}
+  - {ref: SI-8, title: Spam protection, domain: NET, uc: UC-NET-04, criticality: Low,
+     text: Employ spam protection mechanisms at system entry and exit points to detect and act on unsolicited messages, and update them when new releases become available.}
+  - {ref: SI-10, title: Information input validation, domain: APP, uc: UC-APP-01, criticality: High,
+     text: Check the validity of defined information inputs.}
+  - {ref: SI-11, title: Error handling, domain: APP, uc: UC-APP-01, criticality: Medium,
+     text: Generate error messages that provide information necessary for corrective actions without revealing information that could be exploited, and reveal error messages only to defined personnel or roles.}
+  - {ref: SI-12, title: Information management and retention, domain: DAT, uc: UC-DAT-06, criticality: Medium,
+     text: Manage and retain information within the system and information output from the system in accordance with applicable laws, regulations, policies, standards, guidelines and operational requirements.}
+  - {ref: SI-16, title: Memory protection, domain: CFG, uc: UC-CFG-01, criticality: Low,
+     text: Implement defined controls to protect the system memory from unauthorised code execution.}
+
+  # --- SR Supply Chain Risk Management ------------------------------------------------
+  - {ref: SR-2, title: Supply chain risk management plan, domain: APP, uc: UC-APP-03, criticality: High,
+     text: Develop a plan for managing supply chain risks associated with the research and development, design, manufacturing, acquisition, delivery, integration, operations and maintenance, and disposal of the system, and review and update it at a defined frequency.}
+  - {ref: SR-3, title: Supply chain controls and processes, domain: APP, uc: UC-APP-03, criticality: High,
+     text: Establish a process for identifying and addressing weaknesses or deficiencies in the supply chain elements and processes, and employ defined controls to protect against supply chain risks.}
+  - {ref: SR-5, title: Acquisition strategies, tools and methods, domain: TPR, uc: UC-TPR-01, criticality: Medium,
+     text: Employ defined acquisition strategies, contract tools and procurement methods to protect against, identify and mitigate supply chain risks.}
+  - {ref: SR-6, title: Supplier assessments and reviews, domain: TPR, uc: UC-TPR-03, criticality: High,
+     text: Assess and review the supply chain-related risks associated with suppliers or contractors and the system, system component or system service they provide, at a defined frequency.}
+  - {ref: SR-8, title: Notification agreements, domain: TPR, uc: UC-TPR-02, criticality: Medium,
+     text: Establish agreements and procedures with entities involved in the supply chain for the notification of supply chain compromises and results of assessments or audits.}
+  - {ref: SR-11, title: Component authenticity, domain: APP, uc: UC-APP-03, criticality: Medium,
+     text: Develop and implement anti-counterfeit policy and procedures that include the means to detect and prevent counterfeit components from entering the system, and report counterfeit system components to defined sources.}
+  - {ref: SR-12, title: Component disposal, domain: MED, uc: UC-MED-01, criticality: High,
+     text: Dispose of defined data, documentation, tools or system components using defined techniques and methods.}

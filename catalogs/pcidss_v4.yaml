@@ -1,0 +1,688 @@
+# =============================================================================
+# pcidss_v4.yaml — PCI DSS v4.0.1
+# =============================================================================
+# LICENSING: PCI DSS is copyrighted by the PCI Security Standards Council. This file
+# contains NO verbatim requirement text. `ref` and `title` are the publicly-referenced
+# requirement numbers and short names; `text` is independently authored plain-English
+# paraphrase. Loaded with text_provenance = 'paraphrased'.
+#
+# `force_gap_theme` links an obligation to gap_spec.yaml#pci_omissions. Notebook 07
+# applies these as a human-review correction AFTER the LLM mapping runs, which is why
+# PCI DSS is the weakest framework. Coverage is assessed clause-by-clause, so an
+# obligation can map to a unified control that has coverage elsewhere and still be a
+# gap in its own right — that distinction is the whole point of the CDE omissions.
+# =============================================================================
+
+framework:
+  id: PCIDSS
+  short_name: PCI DSS
+  full_name: Payment Card Industry Data Security Standard v4.0.1
+  version: "4.0.1"
+  issuing_body: PCI Security Standards Council
+  category: Contractual industry standard
+  jurisdiction: International
+  text_provenance: paraphrased
+
+obligations:
+
+  # --- Req 1: Network security controls -------------------------------------
+  - ref: "1.1.1"
+    title: Security policies and procedures for network security controls
+    domain: GOV
+    uc: UC-GOV-01
+    criticality: Medium
+    text: Processes and mechanisms for installing and maintaining network security controls are documented, kept current, in use and known to affected parties.
+  - ref: "1.2.1"
+    title: Configuration standards for network security controls
+    domain: NET
+    uc: UC-NET-02
+    criticality: High
+    text: Configuration standards for network security control rulesets are defined, implemented and maintained.
+  - ref: "1.2.5"
+    title: Approval of ports, protocols and services
+    domain: NET
+    uc: UC-NET-02
+    criticality: High
+    text: All services, protocols and ports allowed are identified, approved and have a defined business need.
+  - ref: "1.2.6"
+    title: Security features for insecure services
+    domain: NET
+    uc: UC-NET-02
+    criticality: Medium
+    text: Security features are defined and implemented for all services, protocols and ports that are in use and considered insecure.
+  - ref: "1.2.7"
+    title: Periodic review of network security control configurations
+    domain: NET
+    uc: UC-NET-02
+    criticality: Medium
+    text: Configurations of network security controls are reviewed at least once every six months to confirm they remain relevant and effective.
+  - ref: "1.3.1"
+    title: Inbound traffic to the CDE restricted
+    domain: NET
+    uc: UC-NET-01
+    criticality: High
+    text: Inbound traffic to the cardholder data environment is restricted to only that which is necessary, and all other traffic is specifically denied.
+  - ref: "1.3.2"
+    title: Outbound traffic from the CDE restricted
+    domain: NET
+    uc: UC-NET-01
+    criticality: High
+    text: Outbound traffic from the cardholder data environment is restricted to only that which is necessary, and all other traffic is specifically denied.
+  - ref: "1.4.1"
+    title: Controls between trusted and untrusted networks
+    domain: NET
+    uc: UC-NET-01
+    criticality: High
+    text: Network security controls are implemented between trusted and untrusted networks.
+  - ref: "1.4.2"
+    title: Inbound traffic from untrusted networks restricted
+    domain: NET
+    uc: UC-NET-02
+    criticality: High
+    text: Inbound traffic from untrusted networks to trusted networks is restricted to communications with authorised system components providing publicly accessible services.
+  - ref: "1.4.4"
+    title: No direct route to stored account data
+    domain: NET
+    uc: UC-NET-01
+    criticality: High
+    text: System components that store cardholder data are not directly accessible from untrusted networks.
+  - ref: "1.5.1"
+    title: Controls on computing devices with dual network access
+    domain: NET
+    uc: UC-NET-01
+    criticality: Medium
+    text: Security controls are implemented on any computing device that connects to both untrusted networks and the cardholder data environment.
+
+  # --- Req 2: Secure configurations -----------------------------------------
+  - ref: "2.1.1"
+    title: Processes for applying secure configurations documented
+    domain: CFG
+    uc: UC-CFG-01
+    criticality: Medium
+    text: Processes and mechanisms for applying secure configurations to all system components are documented, kept current, in use and known to affected parties.
+  - ref: "2.2.1"
+    title: Configuration standards developed and maintained
+    domain: CFG
+    uc: UC-CFG-01
+    criticality: High
+    text: Configuration standards are developed, implemented and maintained to cover all system components and address all known security vulnerabilities.
+  - ref: "2.2.2"
+    title: Vendor default accounts managed
+    domain: CFG
+    uc: UC-CFG-01
+    criticality: High
+    text: Vendor default accounts are either removed or disabled, or the default password is changed before the system is placed into service.
+  - ref: "2.2.4"
+    title: Unnecessary services and functions removed
+    domain: CFG
+    uc: UC-CFG-01
+    criticality: High
+    text: Only necessary services, protocols, daemons and functions are enabled, and all unnecessary functionality is removed or disabled.
+  - ref: "2.2.5"
+    title: Justification for insecure services documented
+    domain: CFG
+    uc: UC-CFG-01
+    criticality: Medium
+    text: Where any insecure services, protocols or daemons are present, the business justification is documented and additional security features are implemented.
+  - ref: "2.2.7"
+    title: Non-console administrative access encrypted
+    domain: DAT
+    uc: UC-DAT-03
+    criticality: High
+    text: All non-console administrative access is encrypted using strong cryptography.
+  - ref: "2.3.1"
+    title: Wireless defaults changed
+    domain: NET
+    uc: UC-NET-03
+    criticality: High
+    text: For wireless environments connected to the cardholder data environment or transmitting account data, all wireless vendor defaults are changed or confirmed to be secure at installation.
+
+  # --- Req 3: Protect stored account data -----------------------------------
+  - ref: "3.1.1"
+    title: Processes for protecting stored account data documented
+    domain: GOV
+    uc: UC-GOV-01
+    criticality: Medium
+    text: Processes and mechanisms for protecting stored account data are documented, kept current, in use and known to affected parties.
+  # PCI OMISSION — gap_spec.yaml#pci_omissions
+  - ref: "3.2.1"
+    title: Account data storage kept to a minimum
+    domain: DAT
+    uc: UC-DAT-06
+    criticality: High
+    force_gap_theme: cardholder data retention and disposal limits
+    text: Account data storage is kept to a minimum through a documented data retention and disposal policy that defines retention periods, requires deletion when no longer needed, and includes a process to verify at least quarterly that stored account data does not exceed the defined retention period.
+  - ref: "3.3.1"
+    title: Sensitive authentication data not retained after authorisation
+    domain: DAT
+    uc: UC-DAT-01
+    criticality: High
+    text: Sensitive authentication data is not retained after authorisation, even if encrypted, and any such data received is rendered unrecoverable upon completion of the authorisation process.
+  - ref: "3.3.2"
+    title: Sensitive authentication data encrypted before authorisation completes
+    domain: DAT
+    uc: UC-DAT-02
+    criticality: High
+    text: Any sensitive authentication data stored electronically prior to completion of authorisation is encrypted using strong cryptography.
+  - ref: "3.4.1"
+    title: Primary account number masked when displayed
+    domain: DAT
+    uc: UC-DAT-01
+    criticality: High
+    text: The primary account number is masked when displayed such that only personnel with a documented and legitimate business need can view more than the first six and last four digits.
+  - ref: "3.5.1"
+    title: Primary account number rendered unreadable when stored
+    domain: DAT
+    uc: UC-DAT-02
+    criticality: High
+    text: The primary account number is rendered unreadable anywhere it is stored, using one-way hashing, truncation, tokenisation, or strong cryptography with associated key management processes.
+  - ref: "3.6.1"
+    title: Cryptographic keys protected
+    domain: DAT
+    uc: UC-DAT-04
+    criticality: High
+    text: Procedures are defined and implemented to protect cryptographic keys used to protect stored account data against disclosure and misuse.
+  - ref: "3.7.1"
+    title: Key management processes defined
+    domain: DAT
+    uc: UC-DAT-04
+    criticality: High
+    text: Key management policies and procedures are implemented to cover the generation, secure distribution, secure storage, rotation, retirement and destruction of cryptographic keys.
+
+  # --- Req 4: Protect data in transit ---------------------------------------
+  - ref: "4.1.1"
+    title: Processes for protecting data in transit documented
+    domain: GOV
+    uc: UC-GOV-01
+    criticality: Low
+    text: Processes and mechanisms for protecting cardholder data with strong cryptography during transmission over open public networks are documented and kept current.
+  - ref: "4.2.1"
+    title: Strong cryptography during transmission
+    domain: DAT
+    uc: UC-DAT-03
+    criticality: High
+    text: Strong cryptography and security protocols are implemented to safeguard the primary account number during transmission over open, public networks, with only trusted keys and certificates accepted.
+  - ref: "4.2.2"
+    title: Primary account number secured on end-user messaging
+    domain: DAT
+    uc: UC-DAT-03
+    criticality: Medium
+    text: The primary account number is secured with strong cryptography whenever it is sent using end-user messaging technologies.
+
+  # --- Req 5: Malicious software --------------------------------------------
+  - ref: "5.1.1"
+    title: Processes for protecting against malware documented
+    domain: GOV
+    uc: UC-GOV-01
+    criticality: Low
+    text: Processes and mechanisms for protecting all systems and networks from malicious software are documented, kept current and in use.
+  - ref: "5.2.1"
+    title: Anti-malware solution deployed
+    domain: NET
+    uc: UC-NET-04
+    criticality: High
+    text: An anti-malware solution is deployed on all system components, except for those system components identified in periodic evaluations as not at risk from malware.
+  - ref: "5.2.2"
+    title: Anti-malware detects and addresses known malware
+    domain: NET
+    uc: UC-NET-04
+    criticality: High
+    text: The deployed anti-malware solution detects all known types of malware and removes, blocks or contains them.
+  - ref: "5.3.1"
+    title: Anti-malware kept current
+    domain: NET
+    uc: UC-NET-04
+    criticality: High
+    text: The anti-malware solution is kept current via automatic updates.
+  - ref: "5.3.2"
+    title: Anti-malware performs scans and continuous monitoring
+    domain: NET
+    uc: UC-NET-04
+    criticality: Medium
+    text: The anti-malware solution performs periodic scans and active or real-time scans, or performs continuous behavioural analysis of systems or processes.
+  # PCI OMISSION — removable media is a hard gap (UC-MED-02)
+  - ref: "5.3.3"
+    title: Anti-malware scans for removable electronic media
+    domain: MED
+    uc: UC-MED-02
+    criticality: Medium
+    text: For removable electronic media, the anti-malware solution performs automatic scans when the media is inserted, connected or logically mounted, or performs continuous behavioural analysis.
+  - ref: "5.4.1"
+    title: Anti-phishing mechanisms
+    domain: HRS
+    uc: UC-HRS-02
+    criticality: Medium
+    text: Processes and automated mechanisms are in place to detect and protect personnel against phishing attacks.
+
+  # --- Req 6: Secure systems and software -----------------------------------
+  - ref: "6.1.1"
+    title: Processes for developing secure systems documented
+    domain: GOV
+    uc: UC-GOV-01
+    criticality: Low
+    text: Processes and mechanisms for developing and maintaining secure systems and software are documented, kept current and in use.
+  - ref: "6.2.1"
+    title: Bespoke software developed securely
+    domain: APP
+    uc: UC-APP-01
+    criticality: High
+    text: Bespoke and custom software is developed securely, based on industry standards and secure software development practices, and incorporates information security throughout the lifecycle.
+  - ref: "6.2.2"
+    title: Software development personnel trained
+    domain: HRS
+    uc: UC-HRS-03
+    criticality: Medium
+    text: Software development personnel working on bespoke and custom software are trained at least annually in software security relevant to their role and development languages.
+  - ref: "6.2.3"
+    title: Bespoke software reviewed before release
+    domain: APP
+    uc: UC-APP-04
+    criticality: High
+    text: Bespoke and custom software is reviewed prior to release to production to identify and correct potential coding vulnerabilities, by an individual other than the originating author.
+  - ref: "6.2.4"
+    title: Software engineering techniques prevent common attacks
+    domain: APP
+    uc: UC-APP-01
+    criticality: High
+    text: Software engineering techniques are defined and in use by developers to prevent or mitigate common software attacks, including injection, insecure data handling and broken access control.
+  - ref: "6.3.1"
+    title: Security vulnerabilities identified and managed
+    domain: VUL
+    uc: UC-VUL-01
+    criticality: High
+    text: Security vulnerabilities are identified and managed, including assigning a risk ranking and identifying vulnerabilities in bespoke, custom and third-party software components.
+  # PCI OMISSION — software supply chain is a hard gap (UC-APP-03)
+  - ref: "6.3.2"
+    title: Inventory of bespoke and third-party software components
+    domain: APP
+    uc: UC-APP-03
+    criticality: High
+    text: An inventory of bespoke and custom software, and of third-party software components incorporated into it, is maintained to facilitate vulnerability and patch management.
+  - ref: "6.3.3"
+    title: System components protected from known vulnerabilities
+    domain: VUL
+    uc: UC-VUL-02
+    criticality: High
+    text: All system components are protected from known vulnerabilities by installing applicable security patches, with critical or high-security patches installed within one month of release.
+  - ref: "6.4.1"
+    title: Public-facing web applications protected
+    domain: APP
+    uc: UC-APP-02
+    criticality: High
+    text: Public-facing web applications are protected against attacks either by reviewing them at least annually and after changes using automated or manual application vulnerability assessment tools, or by deploying an automated technical solution that continually detects and prevents web-based attacks.
+  - ref: "6.5.1"
+    title: Changes to system components managed
+    domain: CFG
+    uc: UC-CFG-02
+    criticality: High
+    text: Changes to all system components in the production environment are made according to established procedures covering reason, documented approval, functionality testing and back-out procedures.
+  - ref: "6.5.3"
+    title: Production and pre-production environments separated
+    domain: CFG
+    uc: UC-APP-01
+    criticality: High
+    text: Pre-production environments are separated from production environments, and the separation is enforced with access controls.
+  - ref: "6.5.5"
+    title: Live account data not used in pre-production
+    domain: DAT
+    uc: UC-DAT-01
+    criticality: High
+    text: Live primary account numbers are not used in pre-production environments, except where those environments are included in the cardholder data environment and protected accordingly.
+
+  # --- Req 7: Restrict access by business need to know ----------------------
+  - ref: "7.1.1"
+    title: Processes for restricting access documented
+    domain: GOV
+    uc: UC-GOV-01
+    criticality: Low
+    text: Processes and mechanisms for restricting access to system components and cardholder data by business need to know are documented, kept current and in use.
+  - ref: "7.2.1"
+    title: Access control model defined
+    domain: IAM
+    uc: UC-IAM-04
+    criticality: High
+    text: An access control model is defined and includes granting access based on job classification and function, and the least privileges required to perform a job function.
+  - ref: "7.2.2"
+    title: Access assigned based on job function and least privilege
+    domain: IAM
+    uc: UC-IAM-04
+    criticality: High
+    text: Access is assigned to users, including privileged users, based on job classification and function and the least privileges necessary to perform job responsibilities.
+  - ref: "7.2.4"
+    title: User accounts and access privileges reviewed
+    domain: IAM
+    uc: UC-IAM-05
+    criticality: High
+    text: All user accounts and related access privileges are reviewed at least once every six months to confirm that accounts and access remain appropriate, and inappropriate access is addressed.
+  - ref: "7.2.5"
+    title: Application and system accounts managed
+    domain: IAM
+    uc: UC-IAM-01
+    criticality: High
+    text: All application and system accounts and related access privileges are assigned and managed based on the least privileges necessary for the operability of the system or application.
+  - ref: "7.3.1"
+    title: Access control system in place
+    domain: IAM
+    uc: UC-IAM-04
+    criticality: High
+    text: An access control system is in place that restricts access based on a user's need to know and covers all system components.
+
+  # --- Req 8: Identify users and authenticate access ------------------------
+  - ref: "8.1.1"
+    title: Processes for identification and authentication documented
+    domain: GOV
+    uc: UC-GOV-01
+    criticality: Low
+    text: Processes and mechanisms for identifying users and authenticating access to system components are documented, kept current and in use.
+  - ref: "8.2.1"
+    title: Unique user identifiers assigned
+    domain: IAM
+    uc: UC-IAM-01
+    criticality: High
+    text: All users are assigned a unique identifier before access to system components or cardholder data is allowed.
+  - ref: "8.2.2"
+    title: Shared and generic accounts controlled
+    domain: IAM
+    uc: UC-IAM-02
+    criticality: High
+    text: Group, shared or generic accounts are used only on an exception basis, and where used their use is limited to the time needed, business justified, documented and attributable to an individual.
+  - ref: "8.2.4"
+    title: Lifecycle of user identities managed
+    domain: IAM
+    uc: UC-IAM-01
+    criticality: High
+    text: Addition, deletion and modification of user identifiers, authentication factors and other identifier objects are managed with appropriate authorisation and are logged.
+  - ref: "8.2.5"
+    title: Access for terminated users revoked
+    domain: IAM
+    uc: UC-IAM-01
+    criticality: High
+    text: Access for terminated users is immediately revoked.
+  - ref: "8.2.8"
+    title: Idle sessions terminated
+    domain: IAM
+    uc: UC-IAM-02
+    criticality: Medium
+    text: If a user session has been idle for more than fifteen minutes, the user is required to re-authenticate to re-activate the terminal or session.
+  - ref: "8.3.1"
+    title: Strong authentication for all access
+    domain: IAM
+    uc: UC-IAM-02
+    criticality: High
+    text: All user access to system components is authenticated via at least one authentication factor, with authentication factors managed securely.
+  - ref: "8.3.4"
+    title: Invalid authentication attempts limited
+    domain: IAM
+    uc: UC-IAM-02
+    criticality: Medium
+    text: Invalid authentication attempts are limited by locking out the user identifier after not more than ten attempts, for a minimum of thirty minutes or until identity is confirmed.
+  - ref: "8.3.6"
+    title: Password complexity requirements
+    domain: IAM
+    uc: UC-IAM-02
+    criticality: Medium
+    text: Passwords used as an authentication factor meet a minimum length and complexity requirement, containing both numeric and alphabetic characters.
+  - ref: "8.4.2"
+    title: Multi-factor authentication for all CDE access
+    domain: IAM
+    uc: UC-IAM-03
+    criticality: High
+    text: Multi-factor authentication is implemented for all access into the cardholder data environment.
+  - ref: "8.4.3"
+    title: Multi-factor authentication for remote network access
+    domain: IAM
+    uc: UC-IAM-03
+    criticality: High
+    text: Multi-factor authentication is implemented for all remote network access originating from outside the entity's network that could access or impact the cardholder data environment.
+  - ref: "8.6.1"
+    title: Interactive use of system accounts managed
+    domain: IAM
+    uc: UC-IAM-06
+    criticality: Medium
+    text: Where accounts used by systems or applications can be used for interactive login, their use is prevented unless needed for an exceptional circumstance, is time-limited, justified and attributable.
+
+  # --- Req 9: Restrict physical access --------------------------------------
+  - ref: "9.1.1"
+    title: Processes for restricting physical access documented
+    domain: GOV
+    uc: UC-GOV-01
+    criticality: Low
+    text: Processes and mechanisms for restricting physical access to cardholder data are documented, kept current and in use.
+  - ref: "9.2.1"
+    title: Physical access controls to CDE facilities
+    domain: PHY
+    uc: UC-PHY-02
+    criticality: High
+    text: Appropriate facility entry controls are in place to restrict physical access to systems in the cardholder data environment.
+  - ref: "9.3.1"
+    title: Physical access for personnel authorised
+    domain: PHY
+    uc: UC-PHY-01
+    criticality: High
+    text: Procedures are implemented for authorising and managing physical access of personnel to the cardholder data environment, including identification and revocation on termination.
+  - ref: "9.4.1"
+    title: Media with cardholder data physically secured
+    domain: MED
+    uc: UC-MED-03
+    criticality: High
+    text: All media with cardholder data is physically secured.
+  # PCI OMISSION — media sanitization is a hard gap (UC-MED-01)
+  - ref: "9.4.6"
+    title: Hard-copy media destroyed when no longer needed
+    domain: MED
+    uc: UC-MED-01
+    criticality: High
+    text: Hard-copy materials with cardholder data are destroyed when no longer needed for business or legal reasons, by cross-cut shredding, incineration or pulping so that the data cannot be reconstructed.
+  # PCI OMISSION — media sanitization is a hard gap (UC-MED-01)
+  - ref: "9.4.7"
+    title: Electronic media rendered unrecoverable
+    domain: MED
+    uc: UC-MED-01
+    criticality: High
+    text: Electronic media with cardholder data is destroyed when no longer needed, or rendered unrecoverable so that the data cannot be reconstructed.
+  - ref: "9.5.1"
+    title: Point-of-interaction devices protected from tampering
+    domain: PHY
+    uc: UC-PHY-02
+    criticality: High
+    text: Point-of-interaction devices that capture payment card data via direct physical interaction are protected from tampering and unauthorised substitution, including periodic inspection.
+
+  # --- Req 10: Log and monitor ----------------------------------------------
+  - ref: "10.1.1"
+    title: Processes for logging and monitoring documented
+    domain: GOV
+    uc: UC-GOV-01
+    criticality: Low
+    text: Processes and mechanisms for logging and monitoring all access to system components and cardholder data are documented, kept current and in use.
+  - ref: "10.2.1"
+    title: Audit logs enabled and active
+    domain: LOG
+    uc: UC-LOG-01
+    criticality: High
+    text: Audit logs are enabled and active for all system components and cardholder data, capturing all individual user access to cardholder data and all actions taken by privileged users.
+  - ref: "10.2.2"
+    title: Audit log content requirements
+    domain: LOG
+    uc: UC-LOG-01
+    criticality: High
+    text: Audit logs record the user identification, type of event, date and time, success or failure indication, origination of event, and identity or name of affected data or system component.
+  - ref: "10.3.1"
+    title: Read access to audit logs limited
+    domain: LOG
+    uc: UC-LOG-03
+    criticality: High
+    text: Read access to audit log files is limited to those with a job-related need.
+  - ref: "10.3.2"
+    title: Audit logs protected from modification
+    domain: LOG
+    uc: UC-LOG-03
+    criticality: High
+    text: Audit log files are protected to prevent modification by individuals, including those with administrative access to the systems generating the logs.
+  - ref: "10.4.1"
+    title: Audit logs reviewed
+    domain: LOG
+    uc: UC-LOG-02
+    criticality: High
+    text: Audit logs for all critical system components and for systems performing security functions are reviewed at least once daily, using automated mechanisms where available.
+  - ref: "10.5.1"
+    title: Audit log history retained
+    domain: LOG
+    uc: UC-LOG-01
+    criticality: High
+    text: Audit log history is retained for at least twelve months, with at least the most recent three months immediately available for analysis.
+  - ref: "10.6.1"
+    title: System clocks synchronised
+    domain: LOG
+    uc: UC-LOG-01
+    criticality: Medium
+    text: System clocks and time are synchronised using time synchronisation technology.
+  - ref: "10.7.2"
+    title: Failures of critical security control systems detected
+    domain: LOG
+    uc: UC-LOG-02
+    criticality: High
+    text: Failures of critical security control systems are detected, alerted and addressed promptly, including failures of network security controls, anti-malware, logging and access control mechanisms.
+
+  # --- Req 11: Test security regularly --------------------------------------
+  - ref: "11.1.1"
+    title: Processes for testing security documented
+    domain: GOV
+    uc: UC-GOV-01
+    criticality: Low
+    text: Processes and mechanisms for regularly testing the security of systems and networks are documented, kept current and in use.
+  - ref: "11.2.1"
+    title: Wireless access points identified and monitored
+    domain: NET
+    uc: UC-NET-03
+    criticality: Medium
+    text: Authorised and unauthorised wireless access points are managed, with testing for their presence performed at least once every three months.
+  - ref: "11.3.1"
+    title: Internal vulnerability scans performed
+    domain: VUL
+    uc: UC-VUL-01
+    criticality: High
+    text: Internal vulnerability scans are performed at least once every three months, with high-risk and critical vulnerabilities resolved and rescans performed to confirm resolution.
+  # PCI OMISSION — gap_spec.yaml#pci_omissions
+  - ref: "11.3.2"
+    title: External vulnerability scans performed by an ASV
+    domain: VUL
+    uc: UC-VUL-01
+    criticality: High
+    force_gap_theme: quarterly ASV external vulnerability scanning
+    text: External vulnerability scans are performed at least once every three months by a PCI SSC Approved Scanning Vendor, with vulnerabilities resolved and rescans performed until a passing scan is achieved.
+  # PCI OMISSION — gap_spec.yaml#pci_omissions
+  - ref: "11.4.1"
+    title: Penetration testing methodology defined
+    domain: VUL
+    uc: UC-VUL-03
+    criticality: High
+    force_gap_theme: annual penetration testing and segmentation validation
+    text: A penetration testing methodology is defined, documented and implemented, covering the entire cardholder data environment perimeter and critical systems, with testing performed at least annually and after significant change.
+  # PCI OMISSION — gap_spec.yaml#pci_omissions
+  - ref: "11.4.5"
+    title: Segmentation controls validated by penetration testing
+    domain: VUL
+    uc: UC-VUL-03
+    criticality: High
+    force_gap_theme: annual penetration testing and segmentation validation
+    text: If segmentation is used to isolate the cardholder data environment, penetration tests are performed at least annually to confirm that the segmentation controls are operational and effective.
+  # PCI OMISSION — gap_spec.yaml#pci_omissions
+  - ref: "11.5.2"
+    title: Change detection mechanism deployed
+    domain: CFG
+    uc: UC-CFG-03
+    criticality: Medium
+    force_gap_theme: file integrity monitoring on CDE systems
+    text: A change-detection mechanism is deployed to alert personnel to unauthorised modification of critical files, configuration files or content files, and to perform critical file comparisons at least weekly.
+  - ref: "11.6.1"
+    title: Payment page change and tamper detection
+    domain: APP
+    uc: UC-APP-02
+    criticality: Medium
+    text: A change and tamper-detection mechanism is deployed to alert personnel to unauthorised modification of the HTTP headers and script contents of payment pages as received by the consumer browser.
+
+  # --- Req 12: Organizational policies and programs -------------------------
+  - ref: "12.1.1"
+    title: Overall information security policy established
+    domain: GOV
+    uc: UC-GOV-01
+    criticality: High
+    text: An overall information security policy is established, published, maintained and disseminated to all relevant personnel and relevant third parties.
+  - ref: "12.2.1"
+    title: Acceptable use policies defined
+    domain: HRS
+    uc: UC-HRS-05
+    criticality: Medium
+    text: Acceptable use policies for end-user technologies are documented and implemented, including explicit approval, acceptable uses and a list of products approved by the company.
+  - ref: "12.3.1"
+    title: Targeted risk analyses performed
+    domain: GOV
+    uc: UC-GOV-03
+    criticality: Medium
+    text: Each requirement that provides flexibility for how frequently it is performed is supported by a targeted risk analysis that is documented and reviewed at least annually.
+  - ref: "12.4.1"
+    title: PCI DSS compliance responsibility assigned
+    domain: GOV
+    uc: UC-GOV-02
+    criticality: Medium
+    text: Responsibility is established for the protection of cardholder data and a PCI DSS compliance programme, with executive management accountability.
+  - ref: "12.5.1"
+    title: Inventory of system components in scope maintained
+    domain: ASM
+    uc: UC-ASM-01
+    criticality: High
+    text: An inventory of system components that are in scope for PCI DSS, including a description of function and use, is maintained and kept current.
+  - ref: "12.5.2"
+    title: PCI DSS scope documented and validated
+    domain: ASM
+    uc: UC-ASM-02
+    criticality: High
+    text: PCI DSS scope is documented and confirmed by the entity at least once every twelve months and upon significant change to the in-scope environment.
+  - ref: "12.6.1"
+    title: Security awareness programme implemented
+    domain: HRS
+    uc: UC-HRS-02
+    criticality: Medium
+    text: A formal security awareness programme is implemented to make all personnel aware of the entity's information security policy and procedures and their role in protecting cardholder data.
+  - ref: "12.6.3"
+    title: Personnel receive security awareness training
+    domain: HRS
+    uc: UC-HRS-02
+    criticality: Medium
+    text: Personnel receive security awareness training upon hire and at least once every twelve months, with acknowledgement that they have read and understood the information security policy.
+  - ref: "12.8.1"
+    title: Third-party service providers inventoried
+    domain: TPR
+    uc: UC-TPR-01
+    criticality: High
+    text: A list of all third-party service providers with which account data is shared, or that could affect the security of account data, is maintained including a description of the services provided.
+  - ref: "12.8.2"
+    title: Written agreements with service providers maintained
+    domain: TPR
+    uc: UC-TPR-02
+    criticality: High
+    text: Written agreements are maintained with all third-party service providers, acknowledging their responsibility for the security of account data they possess or otherwise store, process or transmit on behalf of the entity.
+  - ref: "12.8.4"
+    title: Service provider PCI DSS compliance monitored
+    domain: TPR
+    uc: UC-TPR-03
+    criticality: High
+    text: A programme is implemented to monitor the PCI DSS compliance status of all third-party service providers at least once every twelve months.
+  - ref: "12.10.1"
+    title: Incident response plan exists and is ready to be activated
+    domain: IRP
+    uc: UC-IRP-01
+    criticality: High
+    text: An incident response plan exists and is ready to be activated in the event of a suspected or confirmed security incident, covering roles, responsibilities, communication and contact strategies, and notification of the payment brands.
+  - ref: "12.10.2"
+    title: Incident response plan reviewed and tested
+    domain: IRP
+    uc: UC-IRP-02
+    criticality: High
+    text: The security incident response plan is reviewed and tested at least once every twelve months, and is updated as needed to reflect organisational change and lessons learned.
+  - ref: "12.10.5"
+    title: Security alerts monitored and responded to
+    domain: LOG
+    uc: UC-LOG-02
+    criticality: High
+    text: The security incident response plan includes monitoring and responding to alerts from security monitoring systems, including intrusion detection, network security controls and change-detection mechanisms.

@@ -1,0 +1,473 @@
+# =============================================================================
+# ffiec_infosec.yaml — FFIEC IT Examination Handbook, Information Security booklet
+# =============================================================================
+# LICENSING: FFIEC handbooks are US Government work in the public domain, so verbatim
+# use would be permissible. This catalog is nonetheless authored paraphrase organised
+# against the booklet's real section structure, loaded with text_provenance = 'paraphrased'.
+#
+# ROLE OF THIS FILE: notebook 04 prefers obligations extracted from the real FFIEC PDF
+# via ai_parse_document, and falls back to this seed when the PDF is unavailable or the
+# parser is not enabled on Free Edition. Whichever path runs is recorded per row in
+# framework_obligations.extraction_method, so the write-up can state plainly which
+# obligations came from a parsed document and which came from this seed.
+#
+# `uc` is the ground-truth unified control, hidden from the LLM crosswalk.
+# =============================================================================
+
+framework:
+  id: FFIEC
+  short_name: FFIEC
+  full_name: FFIEC IT Examination Handbook — Information Security Booklet
+  version: "2016 (as amended)"
+  issuing_body: Federal Financial Institutions Examination Council
+  category: Regulatory examination guidance
+  jurisdiction: United States
+  text_provenance: paraphrased
+
+obligations:
+
+  # --- I. Governance of the Information Security Program --------------------
+  - ref: I.A.1
+    title: Security culture
+    domain: GOV
+    uc: UC-GOV-01
+    criticality: Medium
+    text: Management should promote a security culture in which personnel understand that information security is a shared responsibility supporting the institution's safety and soundness.
+  - ref: I.B.1
+    title: Board oversight of the information security program
+    domain: GOV
+    uc: UC-GOV-05
+    criticality: High
+    text: The board of directors should oversee the information security program, approve the written program, and hold management accountable for its effectiveness.
+  - ref: I.B.2
+    title: Assignment of information security responsibility
+    domain: GOV
+    uc: UC-GOV-02
+    criticality: High
+    text: Management should designate an individual with sufficient authority and independence to be responsible for the day-to-day oversight of the information security program.
+  - ref: I.B.3
+    title: Reporting to the board
+    domain: GOV
+    uc: UC-GOV-05
+    criticality: High
+    text: Management should report to the board at least annually on the overall status of the information security program, including risk assessment results, control effectiveness, and security incidents.
+  - ref: I.C.1
+    title: Adequate resources for the security program
+    domain: GOV
+    uc: UC-GOV-02
+    criticality: Medium
+    text: Management should provide the information security program with resources and staffing commensurate with the institution's size, complexity and risk profile.
+  - ref: I.D.1
+    title: Written information security program
+    domain: GOV
+    uc: UC-GOV-01
+    criticality: High
+    text: The institution should maintain a written information security program approved by the board and reviewed at least annually to address changes in technology, threats and business arrangements.
+  - ref: I.D.2
+    title: Coordination with enterprise risk management
+    domain: GOV
+    uc: UC-GOV-03
+    criticality: Medium
+    text: The information security program should be integrated with the institution's enterprise risk management and business continuity processes.
+
+  # --- II.A Risk Identification ---------------------------------------------
+  - ref: II.A.1
+    title: Inventory of information assets
+    domain: ASM
+    uc: UC-ASM-01
+    criticality: High
+    text: The institution should maintain a current inventory of hardware, software and information assets, including their criticality and the business processes they support.
+  - ref: II.A.2
+    title: Classification of information assets
+    domain: DAT
+    uc: UC-DAT-01
+    criticality: High
+    text: Information assets should be classified according to sensitivity and criticality so that protection can be applied commensurate with risk.
+  - ref: II.A.3
+    title: Data flow diagrams maintained
+    domain: ASM
+    uc: UC-ASM-02
+    criticality: Medium
+    text: Management should maintain current data flow diagrams identifying where sensitive customer information is stored, processed and transmitted, including flows to third parties.
+  - ref: II.A.4
+    title: Threat identification
+    domain: LOG
+    uc: UC-LOG-04
+    criticality: High
+    text: Management should identify internal and external threats to the institution, drawing on threat intelligence sources appropriate to the institution's risk profile.
+  - ref: II.A.5
+    title: Vulnerability identification
+    domain: VUL
+    uc: UC-VUL-01
+    criticality: High
+    text: Management should identify vulnerabilities in the institution's systems and processes through scanning, assessment and review of configuration.
+
+  # --- II.B Risk Measurement -------------------------------------------------
+  - ref: II.B.1
+    title: Risk assessment process
+    domain: GOV
+    uc: UC-GOV-03
+    criticality: High
+    text: The institution should perform a risk assessment that evaluates the likelihood and potential impact of identified threats exploiting identified vulnerabilities.
+  - ref: II.B.2
+    title: Risk assessment updated for change
+    domain: GOV
+    uc: UC-GOV-03
+    criticality: High
+    text: The risk assessment should be updated as new threats emerge and prior to the introduction of new products, services, technologies or third-party relationships.
+  - ref: II.B.3
+    title: Residual risk evaluated against appetite
+    domain: GOV
+    uc: UC-GOV-03
+    criticality: Medium
+    text: Management should evaluate residual risk after controls are applied and confirm it remains within the institution's stated risk appetite.
+
+  # --- II.C Risk Mitigation: policies and controls --------------------------
+  - ref: II.C.1
+    title: Information security policies and standards
+    domain: GOV
+    uc: UC-GOV-01
+    criticality: High
+    text: The institution should maintain policies, standards and procedures that implement the information security program and are communicated to affected personnel.
+  - ref: II.C.2
+    title: Layered security controls
+    domain: NET
+    uc: UC-NET-02
+    criticality: High
+    text: Management should implement layered, defence-in-depth controls so that the failure of a single control does not result in compromise of sensitive information.
+  - ref: II.C.3
+    title: User access authorisation
+    domain: IAM
+    uc: UC-IAM-01
+    criticality: High
+    text: Access to systems and information should be authorised by an appropriate business owner before it is granted, and access should be based on job responsibilities.
+  - ref: II.C.4
+    title: Least privilege and need to know
+    domain: IAM
+    uc: UC-IAM-04
+    criticality: High
+    text: Access rights should be limited to the minimum necessary for personnel to perform their duties, applying least privilege and need-to-know principles.
+  - ref: II.C.5
+    title: Segregation of duties
+    domain: IAM
+    uc: UC-IAM-04
+    criticality: High
+    text: Duties should be segregated so that no single individual can initiate, approve and conceal an unauthorised transaction or system change.
+  - ref: II.C.6
+    title: Periodic access reviews
+    domain: IAM
+    uc: UC-IAM-05
+    criticality: High
+    text: Management should periodically review user access rights, including privileged access, and promptly remove access that is no longer required.
+  - ref: II.C.7
+    title: Timely revocation of access on termination
+    domain: IAM
+    uc: UC-IAM-01
+    criticality: High
+    text: Access should be revoked promptly upon employee termination or change in job responsibilities.
+  - ref: II.C.8
+    title: Administration of privileged accounts
+    domain: IAM
+    uc: UC-IAM-06
+    criticality: High
+    text: Privileged accounts should be limited in number, individually attributable, monitored, and subject to enhanced controls over issuance and use.
+  - ref: II.C.9
+    title: Strong authentication for high-risk access
+    domain: IAM
+    uc: UC-IAM-03
+    criticality: High
+    text: Multifactor or layered authentication should be implemented for administrative access, remote access, and access to systems containing sensitive customer information.
+  - ref: II.C.10
+    title: Customer authentication for electronic banking
+    domain: IAM
+    uc: UC-IAM-02
+    criticality: High
+    text: Authentication methods for electronic banking should be commensurate with the risk of the transaction and the sensitivity of the information accessed.
+  - ref: II.C.11
+    title: Network segmentation
+    domain: NET
+    uc: UC-NET-01
+    criticality: High
+    text: Networks should be segmented so that systems of differing risk and sensitivity are separated, limiting the ability of an attacker to move laterally.
+  - ref: II.C.12
+    title: Perimeter and boundary controls
+    domain: NET
+    uc: UC-NET-02
+    criticality: High
+    text: Firewalls and other boundary devices should control traffic between network segments and to external networks, permitting only necessary and approved communications.
+  - ref: II.C.13
+    title: Wireless network controls
+    domain: NET
+    uc: UC-NET-03
+    criticality: Medium
+    text: Wireless networks should be secured with strong authentication and encryption, and monitored for unauthorised access points.
+  - ref: II.C.14
+    title: Remote access controls
+    domain: IAM
+    uc: UC-IAM-07
+    criticality: High
+    text: Remote access should be controlled through approved secure channels, authenticated, restricted to authorised users, and logged.
+  - ref: II.C.15
+    title: Encryption of sensitive information
+    domain: DAT
+    uc: UC-DAT-02
+    criticality: High
+    text: Sensitive customer information should be encrypted at rest and in transit where the risk assessment indicates that encryption is warranted.
+  - ref: II.C.16
+    title: Cryptographic key management
+    domain: DAT
+    uc: UC-DAT-04
+    criticality: High
+    text: Cryptographic keys should be managed through their lifecycle with controls over generation, distribution, storage, rotation and destruction.
+  - ref: II.C.17
+    title: Malware protection
+    domain: NET
+    uc: UC-NET-04
+    criticality: High
+    text: The institution should implement controls to prevent, detect and respond to malicious software across servers, endpoints and email gateways.
+  - ref: II.C.18
+    title: Patch management
+    domain: VUL
+    uc: UC-VUL-02
+    criticality: High
+    text: Management should implement a patch management process that identifies, evaluates, tests and applies security patches within timeframes based on risk.
+  - ref: II.C.19
+    title: Configuration and change management
+    domain: CFG
+    uc: UC-CFG-02
+    criticality: High
+    text: Changes to hardware, software and configurations should be authorised, tested, documented and approved before implementation in production.
+  - ref: II.C.20
+    title: Secure configuration baselines
+    domain: CFG
+    uc: UC-CFG-01
+    criticality: High
+    text: Systems should be configured to secure baselines that disable unnecessary services and change default credentials before deployment.
+  - ref: II.C.21
+    title: End-of-life system management
+    domain: ASM
+    uc: UC-ASM-03
+    criticality: Medium
+    text: Management should identify systems and software approaching end of vendor support and plan for replacement or implement compensating controls.
+  - ref: II.C.22
+    title: Application development security
+    domain: APP
+    uc: UC-APP-01
+    criticality: High
+    text: Security requirements should be incorporated throughout the software development lifecycle for internally developed and acquired applications.
+  - ref: II.C.23
+    title: Application security testing
+    domain: APP
+    uc: UC-APP-02
+    criticality: High
+    text: Applications should be tested for security vulnerabilities before deployment and after significant change.
+  - ref: II.C.24
+    title: Separation of development and production
+    domain: CFG
+    uc: UC-APP-01
+    criticality: High
+    text: Development and test environments should be separated from production, and production data should not be used in test environments without appropriate protection.
+  - ref: II.C.25
+    title: Personnel screening
+    domain: HRS
+    uc: UC-HRS-01
+    criticality: High
+    text: Background screening should be performed on personnel commensurate with the sensitivity of the position and the access granted.
+  - ref: II.C.26
+    title: Security awareness training
+    domain: HRS
+    uc: UC-HRS-02
+    criticality: High
+    text: All personnel should receive security awareness training at hire and periodically thereafter, tailored where appropriate to their role.
+  - ref: II.C.27
+    title: Insider threat considerations
+    domain: HRS
+    uc: UC-HRS-04
+    criticality: Medium
+    text: Management should consider the risk posed by trusted insiders and implement controls to detect anomalous behaviour by authorised users.
+  - ref: II.C.28
+    title: Physical security of facilities
+    domain: PHY
+    uc: UC-PHY-01
+    criticality: Medium
+    text: Physical access to facilities housing information systems should be restricted to authorised personnel and monitored.
+  - ref: II.C.29
+    title: Environmental controls for data centres
+    domain: PHY
+    uc: UC-PHY-03
+    criticality: Medium
+    text: Data centres should be protected by environmental controls including power continuity, temperature management and fire suppression.
+  - ref: II.C.30
+    title: Secure disposal of media and equipment
+    domain: MED
+    uc: UC-MED-01
+    criticality: High
+    text: Media and equipment containing sensitive customer information should be sanitised or destroyed before disposal or reuse, with the method appropriate to the sensitivity of the data.
+  - ref: II.C.31
+    title: Controls over removable media
+    domain: MED
+    uc: UC-MED-02
+    criticality: Medium
+    text: The use of removable media should be restricted, authorised and protected where permitted, and prevented where not required.
+  - ref: II.C.32
+    title: Protection of information in transport
+    domain: MED
+    uc: UC-MED-03
+    criticality: Medium
+    text: Physical media containing sensitive information should be protected and tracked while in transit between locations.
+  - ref: II.C.33
+    title: Data loss prevention
+    domain: DAT
+    uc: UC-DAT-05
+    criticality: Medium
+    text: Management should implement controls to detect and prevent unauthorised transmission of sensitive customer information outside the institution.
+  - ref: II.C.34
+    title: Third-party due diligence
+    domain: TPR
+    uc: UC-TPR-01
+    criticality: High
+    text: The institution should perform risk-based due diligence on third-party service providers before entering into a relationship, evaluating their ability to protect institution and customer information.
+  - ref: II.C.35
+    title: Contractual security provisions with third parties
+    domain: TPR
+    uc: UC-TPR-02
+    criticality: High
+    text: Contracts with third-party service providers should address information security, incident notification, audit rights and the return or destruction of institution data.
+  - ref: II.C.36
+    title: Ongoing oversight of third parties
+    domain: TPR
+    uc: UC-TPR-03
+    criticality: High
+    text: Management should monitor third-party service providers on an ongoing basis, with the intensity of monitoring based on the criticality of the service.
+  - ref: II.C.37
+    title: Third-party termination and data return
+    domain: TPR
+    uc: UC-TPR-04
+    criticality: Medium
+    text: On termination of a third-party relationship, management should ensure institution data is returned or destroyed and access is revoked.
+  - ref: II.C.38
+    title: Oversight of the technology supply chain
+    domain: APP
+    uc: UC-APP-03
+    criticality: High
+    text: Management should consider risks arising from the hardware and software supply chain, including the provenance and integrity of acquired components.
+
+  # --- II.D Risk Monitoring and Reporting -----------------------------------
+  - ref: II.D.1
+    title: Security metrics and reporting
+    domain: GOV
+    uc: UC-GOV-05
+    criticality: Medium
+    text: Management should define and report metrics that allow the board and senior management to evaluate the effectiveness of the information security program.
+  - ref: II.D.2
+    title: Tracking of security issues to resolution
+    domain: GOV
+    uc: UC-GOV-05
+    criticality: Medium
+    text: Identified security weaknesses should be tracked to resolution with assigned ownership and target dates.
+
+  # --- III. Security Operations ---------------------------------------------
+  - ref: III.A.1
+    title: Continuous security monitoring
+    domain: LOG
+    uc: UC-LOG-02
+    criticality: High
+    text: The institution should continuously monitor its systems and networks for indications of unauthorised activity, with monitoring coverage based on risk.
+  - ref: III.A.2
+    title: Logging of security events
+    domain: LOG
+    uc: UC-LOG-01
+    criticality: High
+    text: Security-relevant events should be logged with sufficient detail to support investigation, and logs should be retained for a period appropriate to the institution's needs.
+  - ref: III.A.3
+    title: Protection and review of audit logs
+    domain: LOG
+    uc: UC-LOG-03
+    criticality: High
+    text: Audit logs should be protected from unauthorised modification and deletion, and reviewed for anomalous activity.
+  - ref: III.A.4
+    title: Threat intelligence and information sharing
+    domain: LOG
+    uc: UC-LOG-04
+    criticality: Medium
+    text: Management should participate in threat information sharing arrangements and use the resulting intelligence to inform detection and prevention.
+  - ref: III.B.1
+    title: Incident response program
+    domain: IRP
+    uc: UC-IRP-01
+    criticality: High
+    text: The institution should maintain a written incident response program that defines roles, escalation, containment and recovery procedures.
+  - ref: III.B.2
+    title: Customer notification of unauthorised access
+    domain: IRP
+    uc: UC-IRP-03
+    criticality: High
+    text: The institution should notify affected customers when it becomes aware of unauthorised access to sensitive customer information that could result in substantial harm or inconvenience.
+  - ref: III.B.3
+    title: Regulatory notification of incidents
+    domain: IRP
+    uc: UC-IRP-03
+    criticality: High
+    text: The institution should notify its primary federal regulator of significant computer security incidents within the timeframe required by applicable rule.
+  - ref: III.B.4
+    title: Incident response testing
+    domain: IRP
+    uc: UC-IRP-02
+    criticality: High
+    text: The incident response program should be tested periodically and updated based on the results of testing and lessons learned from actual incidents.
+  - ref: III.B.5
+    title: Forensic capability
+    domain: IRP
+    uc: UC-IRP-04
+    criticality: Medium
+    text: The institution should have access to forensic capability sufficient to investigate incidents and preserve evidence.
+  - ref: III.C.1
+    title: Business continuity planning
+    domain: BCR
+    uc: UC-BCR-01
+    criticality: High
+    text: The institution should maintain business continuity plans based on a business impact analysis that identifies critical processes and their recovery objectives.
+  - ref: III.C.2
+    title: Backup of critical data
+    domain: BCR
+    uc: UC-BCR-02
+    criticality: High
+    text: Critical data should be backed up on a defined schedule, protected from alteration, and stored so that a single event cannot destroy both primary and backup copies.
+  - ref: III.C.3
+    title: Recovery testing
+    domain: BCR
+    uc: UC-BCR-03
+    criticality: High
+    text: Recovery plans should be tested periodically against defined recovery objectives, with results reported to management and deficiencies remediated.
+  - ref: III.C.4
+    title: Resilience of critical services
+    domain: BCR
+    uc: UC-BCR-04
+    criticality: High
+    text: Critical systems should be designed with sufficient redundancy and capacity to withstand disruption without prolonged loss of service.
+
+  # --- IV. Information Security Program Effectiveness -----------------------
+  - ref: IV.A.1
+    title: Independent assurance and testing
+    domain: GOV
+    uc: UC-GOV-05
+    criticality: High
+    text: The institution should obtain independent assurance over the information security program through audit, testing or third-party assessment, with scope and frequency based on risk.
+  - ref: IV.A.2
+    title: Vulnerability scanning and penetration testing
+    domain: VUL
+    uc: UC-VUL-03
+    criticality: High
+    text: Management should conduct vulnerability scanning and penetration testing at a frequency commensurate with risk, and remediate identified weaknesses.
+  - ref: IV.A.3
+    title: Audit independence and expertise
+    domain: GOV
+    uc: UC-GOV-05
+    criticality: Medium
+    text: Personnel performing independent testing should have sufficient expertise and be independent of the functions they assess.
+  - ref: IV.B.1
+    title: Remediation of audit findings
+    domain: GOV
+    uc: UC-GOV-05
+    criticality: High
+    text: Findings from audits and independent testing should be tracked to remediation, with escalation of overdue items to senior management and the board.
