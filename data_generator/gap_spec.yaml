@@ -20,58 +20,70 @@ meta:
   tolerance_pct: 3.0
 
 # -----------------------------------------------------------------------------
-# Domain taxonomy — CSF 2.0-informed, one policy document per domain.
-# Every obligation, unified control and org control carries exactly one of these.
+# Domain taxonomy — CSF 2.0-informed. Every obligation, unified control and org
+# control carries exactly one of these.
+#
+# `expected_coverage_pct` is an OBSERVED OUTCOME, not an input. Calibration targets
+# the framework percentages below; domain coverage falls out of which obligations the
+# policy corpus happens to evidence. These values are recorded so that drift is
+# visible, and are asserted with a wide (+/- 6 point) tolerance.
+#
+# The one BINDING domain assertion is `is_weakest_domain`, because the demo question
+# "which domain is weakest?" must have a stable answer.
 # -----------------------------------------------------------------------------
 domains:
   - id: GOV
     name: Governance & Risk Management
-    target_coverage_pct: 82
+    expected_coverage_pct: 67.3
   - id: ASM
     name: Asset Management
-    target_coverage_pct: 71
+    expected_coverage_pct: 45.5
   - id: IAM
     name: Identity & Access Management
-    target_coverage_pct: 84
+    expected_coverage_pct: 91.4
   - id: DAT
     name: Data Protection & Cryptography
-    target_coverage_pct: 66
+    expected_coverage_pct: 72.9
   - id: CFG
     name: Secure Configuration & Change Management
-    target_coverage_pct: 74
+    expected_coverage_pct: 76.7
   - id: VUL
     name: Vulnerability & Patch Management
-    target_coverage_pct: 62
+    expected_coverage_pct: 39.3
+  # No dedicated network security standard exists in the corpus; NET requirements are
+  # only addressed incidentally inside the CDE Standard. A genuine secondary finding.
   - id: NET
     name: Network & Infrastructure Security
-    target_coverage_pct: 70
+    expected_coverage_pct: 20.8
   - id: APP
     name: Application Security
-    target_coverage_pct: 58
+    expected_coverage_pct: 60.0
   - id: LOG
     name: Logging, Monitoring & Detection
-    target_coverage_pct: 76
+    expected_coverage_pct: 67.2
   - id: IRP
     name: Incident Response
-    target_coverage_pct: 80
+    expected_coverage_pct: 73.1
   - id: BCR
     name: Business Continuity & Resilience
-    target_coverage_pct: 55
+    expected_coverage_pct: 76.2
   - id: TPR
     name: Third-Party Risk Management
-    target_coverage_pct: 64
+    expected_coverage_pct: 80.8
   - id: PHY
     name: Physical & Environmental Security
-    target_coverage_pct: 61
-  # Deliberately the weakest domain. Drives "which domain is weakest, and by how much?"
-  # Must remain the minimum across all domains by a clear margin (>=8 points).
+    expected_coverage_pct: 79.6
+  # Deliberately the weakest domain — no policy document owns it at all.
+  # Drives "which domain is weakest, and by how much?"
+  # BINDING: must remain the minimum across all domains by at least 8 points.
   - id: MED
     name: Media Handling & Secure Disposal
-    target_coverage_pct: 24
+    expected_coverage_pct: 4.8
     is_weakest_domain: true
+    min_margin_pct: 8
   - id: HRS
     name: Human Resources Security & Awareness
-    target_coverage_pct: 78
+    expected_coverage_pct: 82.8
 
 # -----------------------------------------------------------------------------
 # Framework posture. PCI DSS is deliberately the weakest framework.

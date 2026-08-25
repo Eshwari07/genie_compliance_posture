@@ -220,11 +220,12 @@ def validate_all(require_policies: bool = True) -> dict:
         errors.append("gap_spec must designate exactly one weakest domain")
     else:
         w = weakest[0]
-        others = [d["target_coverage_pct"] for d in spec["domains"] if d["id"] != w["id"]]
-        if w["target_coverage_pct"] >= min(others) - 8:
+        others = [d["expected_coverage_pct"] for d in spec["domains"] if d["id"] != w["id"]]
+        margin = min(others) - w["expected_coverage_pct"]
+        if margin < w["min_margin_pct"]:
             errors.append(
-                f"Weakest domain {w['id']} at {w['target_coverage_pct']}% is not clearly "
-                f"below the next lowest ({min(others)}%); need an 8-point margin"
+                f"Weakest domain {w['id']} at {w['expected_coverage_pct']}% is only {margin:.1f} "
+                f"points below the next lowest; need {w['min_margin_pct']}"
             )
 
     # --- weakest framework must clear its stated margin ---
