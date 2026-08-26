@@ -7,6 +7,31 @@ is the execution checklist.
 
 ---
 
+## Read this before you attach any compute
+
+Free Edition gives you a **small shared pool of serverless capacity**, and there are two
+different kinds of compute that both draw on it.
+
+| Compute | What it is | Use it for |
+|---|---|---|
+| **Serverless** (green dot) | Notebook compute — PySpark and Python | **Every notebook in this repo** |
+| **Serverless Starter Warehouse** | A SQL warehouse | Genie Agent and the app, later |
+
+Two rules that follow from the shared pool:
+
+1. **Attach notebooks to `Serverless`, never to the SQL warehouse.** These notebooks run
+   PySpark and Python; a SQL warehouse cannot execute them properly.
+2. **Do not start the SQL warehouse while you are running notebooks.** Running both at
+   once exceeds the free capacity and produces:
+   `RESOURCE_EXHAUSTED: You've hit the limit for serverless compute for free usage`
+
+   If you see that, click **Stop** on the warehouse — it retries in a loop until you do.
+
+You only need the warehouse from step 2.2 onward (creating the Genie Agent). Genie starts
+it on demand, so you never have to start it by hand.
+
+---
+
 ## Day 0 — de-risk (do this first, ~1 hour)
 
 ### 0.1 LinkedIn verification
@@ -113,6 +138,12 @@ SELECT * FROM <catalog>.complylens_gold.mapping_scorecard;
 ```
 
 ### 2.2 Create the Genie Agent
+
+**First, free up serverless capacity.** Detach the notebooks (Compute → detach, or just
+close them), because the Genie Agent needs the SQL warehouse and Free Edition cannot run
+both at once. If the warehouse reports `RESOURCE_EXHAUSTED`, something else is still
+holding compute.
+
 Sidebar → **Genie** → New.
 
 Attach **only** the six views in `<catalog>.complylens_genie`:
@@ -230,8 +261,11 @@ The article needs these. Fill them in here as they appear.
 | Notebook 09 assertion fails | Generation drifted | Re-run `generate_controls.py`; the message names the invariant |
 | Genie returns wrong SQL | Missing context | Fix the column comment first, example SQL second, instruction last |
 | App tiles show "—" | Resources not bound | Check `/api/health` |
-| Genie times out | Cold warehouse | Warm it with any SQL query |
+| Genie times out | Cold warehouse | Warm it with any SQL query (detach notebooks first) |
 | Quota exhausted | Too many AI function calls | Bronze caches parse output; do not re-run 03 unnecessarily |
+| `RESOURCE_EXHAUSTED` on warehouse start | Notebook compute is also running | Stop the warehouse, detach notebooks, then start it. Free Edition cannot run both |
+| Notebook cell fails on `spark` or `dbutils` | Attached to the SQL warehouse | Re-attach to **Serverless** (green dot) |
+| Code changes have no effect after a `git pull` | Python cached the old modules | Detach and re-attach, or run `dbutils.library.restartPython()` |
 
 ## Scope guardrails
 
