@@ -15,9 +15,14 @@ import os
 # ---------------------------------------------------------------------------
 # Unity Catalog layout
 # ---------------------------------------------------------------------------
-# Free Edition normally provides a `workspace` catalog. Override with an env var or by
-# editing this line if yours differs.
+# Confirmed by 00_capability_smoke_test.py: CREATE SCHEMA and CREATE VOLUME both
+# succeed in the `workspace` catalog on this account.
 CATALOG = os.environ.get("COMPLYLENS_CATALOG", "workspace")
+
+# SQL warehouse discovered by the smoke test. Needed when binding the app resource;
+# the notebooks themselves do not use it.
+SQL_WAREHOUSE_ID = os.environ.get("COMPLYLENS_WAREHOUSE_ID", "fb3f33bc104fbd50")
+SQL_WAREHOUSE_NAME = "Serverless Starter Warehouse"
 
 SCHEMA_BRONZE = "complylens_bronze"
 SCHEMA_SILVER = "complylens_silver"
@@ -41,25 +46,34 @@ def t(schema: str, table: str) -> str:
 # ---------------------------------------------------------------------------
 # Model selection
 # ---------------------------------------------------------------------------
-# Free Edition hard-limits premium foundation models (Claude, GPT) to a rate limit of 0.
-# 00_capability_smoke_test.py probes which endpoints actually respond; set this to
-# whatever it reports as usable. Llama 4 Maverick is documented as exempt from the
-# zero-rate-limit hold, so it is the default.
+# Confirmed working on this Free Edition workspace by 00_capability_smoke_test.py
+# (run 2026-08-26):
+#     databricks-llama-4-maverick             PASS
+#     databricks-gpt-oss-120b                 PASS
+#     databricks-gpt-oss-20b                  PASS
+#     databricks-meta-llama-3-3-70b-instruct  PASS
+#     databricks-gemma-3-12b                  PASS
+#     databricks-claude-sonnet-4              404 — not provisioned in this workspace
+#
+# Maverick is the default: strong instruction-following, and the crosswalk and coverage
+# prompts both demand strict JSON with no preamble. If notebook 06 reports a high
+# "unparseable" count, try gpt-oss-120b next.
 LLM_ENDPOINT = os.environ.get("COMPLYLENS_LLM_ENDPOINT", "databricks-llama-4-maverick")
 
-# Fallback chain used by notebooks that can degrade gracefully.
 LLM_FALLBACKS = [
     "databricks-llama-4-maverick",
     "databricks-gpt-oss-120b",
     "databricks-meta-llama-3-3-70b-instruct",
+    "databricks-gemma-3-12b",
 ]
 
 # ---------------------------------------------------------------------------
 # Pipeline behaviour
 # ---------------------------------------------------------------------------
-# ai_parse_document is region-gated and may be unavailable on Free Edition. When False,
-# notebook 03 falls back to pypdf text extraction and records parser='pypdf_fallback'
-# on every affected row so the write-up can state exactly which path ran.
+# ai_parse_document is region-gated, but the smoke test confirms it works on this
+# workspace, so the FFIEC parse is genuine rather than a fallback. If it ever stops
+# working, set this False: notebook 03 switches to pypdf and stamps
+# parser='pypdf_fallback' on every affected row, so provenance claims stay honest.
 USE_AI_PARSE = os.environ.get("COMPLYLENS_USE_AI_PARSE", "true").lower() == "true"
 
 # When True, notebooks 06/07 run the real LLM crosswalk and coverage mapping.

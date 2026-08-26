@@ -290,12 +290,18 @@ except Exception as e:
     record("SQL warehouse visible", False, str(e)[:180])
 
 try:
-    spaces = list(w.genie.list_spaces())
-    record("Genie API reachable", True, f"{len(spaces)} existing space(s)")
+    # list_spaces() returns a GenieListSpacesResponse wrapper, not an iterable —
+    # the .spaces attribute is the actual list, and it is None when there are none yet.
+    resp = w.genie.list_spaces()
+    spaces = getattr(resp, "spaces", None) or []
+    record("Genie API reachable", True, f"{len(spaces)} existing agent(s)")
     for s in spaces:
         print(f"  - {s.title} (id={s.space_id})")
-except AttributeError:
-    record("Genie API reachable", False, "SDK too old — needs databricks-sdk>=0.57")
+    if not spaces:
+        print("  (none yet — you create the ComplyLens agent after notebook 10)")
+except AttributeError as e:
+    record("Genie API reachable", False,
+           f"SDK likely too old (needs >=0.57): {str(e)[:120]}")
 except Exception as e:
     record("Genie API reachable", False, str(e)[:180])
 
