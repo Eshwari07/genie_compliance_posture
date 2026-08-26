@@ -98,11 +98,19 @@ else:
 
 # COMMAND ----------
 
-# MAGIC %md ## 2. NIST CPRT — the official crosswalk ground truth
+# MAGIC %md ## 2. NIST official crosswalk — the external ground truth
 # MAGIC
-# MAGIC CPRT's JSON schema is intentionally flat: `documents`, `elements`, `relationships`,
-# MAGIC `relationship_types`. We keep `elements` (controls and subcategories) and
-# MAGIC `relationships` (the mappings between them) as-is in bronze.
+# MAGIC NIST's OLIR programme publishes official mappings from CSF 2.0 subcategories out to
+# MAGIC other frameworks. Critically, that covers **SP 800-53 Rev 5, ISO/IEC 27001:2022 Annex A
+# MAGIC *and* PCI DSS** — three of the five frameworks in ComplyLens.
+# MAGIC
+# MAGIC That means notebook 08 can report a crosswalk accuracy figure marked by NIST rather
+# MAGIC than by us. It is the only measurement in this project where a third party grades the
+# MAGIC homework.
+# MAGIC
+# MAGIC The source download is XLSX with the mappings crammed into one newline-delimited cell,
+# MAGIC so `data_generator/convert_cprt.py` flattens it on the laptop first. Upload the
+# MAGIC resulting `cprt_csf_mappings.json`.
 
 # COMMAND ----------
 
@@ -114,63 +122,61 @@ def find_source(*patterns: str) -> str | None:
     return None
 
 
-cprt_path = find_source("*cprt*.json", "*CPRT*.json")
+cprt_path = find_source("cprt_csf_mappings.json", "*cprt*mapping*.json", "*cprt*.json")
 cprt_loaded = False
 
 if cprt_path:
     with open(cprt_path, encoding="utf-8") as f:
         cprt = json.load(f)
 
-    # CPRT wraps its payload in a "response" object in most exports.
-    payload = cprt.get("response", cprt)
-    elements = payload.get("elements", [])
-    relationships = payload.get("relationships", [])
-    print(f"CPRT: {len(elements)} elements, {len(relationships)} relationships")
+    subcats = cprt.get("subcategories", [])
+    relationships = cprt.get("relationships", [])
+    print(f"Loaded {len(subcats)} CSF subcategories and {len(relationships)} official relationships")
 
-    if elements:
+    if subcats:
         (
-            spark.createDataFrame([json.dumps(e) for e in elements], StringType())
-            .withColumnRenamed("value", "raw_json")
-            .withColumn("element", F.from_json("raw_json", "map<string,string>"))
-            .select(
-                F.col("element")["element_identifier"].alias("element_id"),
-                F.col("element")["element_type"].alias("element_type"),
-                F.col("element")["title"].alias("title"),
-                F.col("element")["text"].alias("text"),
-                F.col("element")["doc_identifier"].alias("doc_id"),
-                F.col("raw_json"),
-            )
+            spark.createDataFrame(subcats)
             .write.mode("overwrite").option("overwriteSchema", "true")
-            .saveAsTable(t(SCHEMA_BRONZE, "cprt_elements"))
+            .saveAsTable(t(SCHEMA_BRONZE, "cprt_subcategories"))
         )
+        spark.sql(f"""
+            COMMENT ON TABLE {t(SCHEMA_BRONZE, 'cprt_subcategories')} IS
+            'NIST CSF 2.0 subcategories, loaded from the official CSF Reference Tool export.
+             Public domain.'
+        """)
 
     if relationships:
         (
-            spark.createDataFrame([json.dumps(r) for r in relationships], StringType())
-            .withColumnRenamed("value", "raw_json")
-            .withColumn("rel", F.from_json("raw_json", "map<string,string>"))
-            .select(
-                F.col("rel")["source_element_identifier"].alias("source_element_id"),
-                F.col("rel")["dest_element_identifier"].alias("dest_element_id"),
-                F.col("rel")["relationship_identifier"].alias("relationship_type"),
-                F.col("rel")["source_doc_identifier"].alias("source_doc_id"),
-                F.col("rel")["dest_doc_identifier"].alias("dest_doc_id"),
-                F.col("raw_json"),
-            )
+            spark.createDataFrame(relationships)
             .write.mode("overwrite").option("overwriteSchema", "true")
             .saveAsTable(t(SCHEMA_BRONZE, "cprt_relationships"))
         )
         spark.sql(f"""
             COMMENT ON TABLE {t(SCHEMA_BRONZE, 'cprt_relationships')} IS
-            'Official NIST mappings between CSF 2.0 subcategories and SP 800-53 Rev 5 controls,
-             loaded verbatim from the Cybersecurity and Privacy Reference Tool. Used as external
-             ground truth to score the generated crosswalk in notebook 08.'
+            'Official NIST OLIR mappings from CSF 2.0 subcategories to SP 800-53 Rev 5,
+             ISO/IEC 27001:2022 Annex A and PCI DSS. Public domain. Used as EXTERNAL ground
+             truth to score the generated crosswalk in notebook 08 — this is the one accuracy
+             number in the project that NIST supplies rather than we do.'
         """)
         cprt_loaded = True
-        print("  loaded cprt_elements and cprt_relationships")
+
+        display(spark.sql(f"""
+            SELECT target_framework,
+                   COUNT(*) AS relationships,
+                   COUNT(DISTINCT target_ref) AS distinct_controls,
+                   COUNT(DISTINCT csf_subcategory) AS csf_subcategories
+            FROM {t(SCHEMA_BRONZE, 'cprt_relationships')}
+            GROUP BY target_framework ORDER BY relationships DESC
+        """))
 else:
-    print("CPRT export not found — notebook 08 will score against internal ground truth only.")
-    print(f"  expected something matching *cprt*.json in {FRAMEWORK_DOCS_PATH}")
+    print("Official CSF mappings not found — notebook 08 will score against internal")
+    print("ground truth only, which is a materially weaker claim.")
+    print(f"\nTo add them (10 minutes, worth it):")
+    print("  1. Download:")
+    print("     https://csrc.nist.gov/extensions/nudp/services/json/csf/download?olirids=all")
+    print("     (saves as XLSX despite the URL)")
+    print("  2. python data_generator/convert_cprt.py --xlsx <downloaded file>")
+    print(f"  3. Upload sources/cprt_csf_mappings.json to {FRAMEWORK_DOCS_PATH}")
 
 # COMMAND ----------
 

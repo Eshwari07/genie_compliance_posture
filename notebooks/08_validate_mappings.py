@@ -99,103 +99,122 @@ else:
 
 # COMMAND ----------
 
-# MAGIC %md ## 2. Agreement with NIST's official CSF 2.0 ↔ SP 800-53 mapping
+# MAGIC %md ## 2. Agreement with NIST's official CSF 2.0 mappings
 # MAGIC
-# MAGIC Our unified controls carry a `csf_category` (e.g. `PR.AA`). NIST 800-53 obligations
-# MAGIC carry a control id (e.g. `AC-2`). CPRT publishes the authoritative relationship
-# MAGIC between the two.
+# MAGIC Our unified controls each carry a `csf_category` (e.g. `PR.AA`). NIST publishes, via
+# MAGIC the OLIR programme, the authoritative relationship between CSF 2.0 subcategories and
+# MAGIC **SP 800-53 Rev 5, ISO/IEC 27001:2022 Annex A, and PCI DSS**.
 # MAGIC
-# MAGIC So for every NIST obligation we can ask: does the CSF category we routed it through
-# MAGIC match a CSF subcategory that NIST itself associates with that control? This validates
-# MAGIC the *hub design*, not just our own consistency — and it is the strongest credibility
-# MAGIC claim available on Free Edition.
+# MAGIC So for any obligation in those three frameworks we can ask: is the CSF category we
+# MAGIC routed it through one that NIST itself associates with that control?
+# MAGIC
+# MAGIC That validates the **hub design** against an external authority rather than against
+# MAGIC our own consistency, and it covers three of our five frameworks — not just NIST's own.
+# MAGIC
+# MAGIC Note on interpretation: NIST frequently associates one control with several CSF
+# MAGIC subcategories across different categories. We score a hit when our single chosen
+# MAGIC category is among them, which is the fair test for a hub that must pick exactly one.
 
 # COMMAND ----------
 
 cprt_available = spark.catalog.tableExists(f"{CATALOG}.{SCHEMA_BRONZE}.cprt_relationships")
 
 if cprt_available:
-    # CPRT identifiers look like "PR.AA-01" for CSF subcategories and "ac-2" for 800-53.
-    spark.sql(f"""
-        CREATE OR REPLACE TEMP VIEW cprt_pairs AS
-        SELECT DISTINCT
-            UPPER(REGEXP_EXTRACT(source_element_id, '^([A-Z]{{2}}\\\\.[A-Z]{{2}})', 1)) AS csf_category,
-            UPPER(TRIM(dest_element_id)) AS nist_control,
-            relationship_type
+    display(spark.sql(f"""
+        SELECT target_framework, COUNT(*) AS official_relationships,
+               COUNT(DISTINCT target_ref) AS distinct_controls
         FROM {t(SCHEMA_BRONZE, 'cprt_relationships')}
-        WHERE source_element_id RLIKE '^[A-Z]{{2}}\\\\.[A-Z]{{2}}'
-        UNION
-        SELECT DISTINCT
-            UPPER(REGEXP_EXTRACT(dest_element_id, '^([A-Z]{{2}}\\\\.[A-Z]{{2}})', 1)) AS csf_category,
-            UPPER(TRIM(source_element_id)) AS nist_control,
-            relationship_type
-        FROM {t(SCHEMA_BRONZE, 'cprt_relationships')}
-        WHERE dest_element_id RLIKE '^[A-Z]{{2}}\\\\.[A-Z]{{2}}'
-    """)
-    n_pairs = spark.table("cprt_pairs").count()
-    print(f"Official CPRT relationship pairs: {n_pairs}")
+        GROUP BY target_framework ORDER BY official_relationships DESC
+    """))
 
     comparison = spark.sql(f"""
         WITH ours AS (
             SELECT
                 o.obligation_id,
-                -- strip enhancement suffixes: AC-2(1) -> AC-2
-                UPPER(REGEXP_EXTRACT(o.control_ref, '^([A-Za-z]+-[0-9]+)', 1)) AS nist_control,
+                o.framework_id,
+                -- NIST enhancements collapse to their base control: AC-2(1) -> AC-2,
+                -- because that is the granularity NIST publishes mappings at.
+                CASE WHEN o.framework_id = 'NIST80053'
+                     THEN UPPER(REGEXP_EXTRACT(o.control_ref, '^([A-Za-z]+-[0-9]+)', 1))
+                     ELSE UPPER(TRIM(o.control_ref)) END AS lookup_ref,
+                o.control_ref,
                 u.csf_category AS our_csf_category
             FROM {t(SCHEMA_SILVER, 'framework_obligations')} o
-            JOIN {XW} x  ON o.obligation_id = x.obligation_id
-            JOIN {UC} u  ON x.unified_control_id = u.unified_control_id
-            WHERE o.framework_id = 'NIST80053'
+            JOIN {XW} x ON o.obligation_id = x.obligation_id
+            JOIN {UC} u ON x.unified_control_id = u.unified_control_id
+            WHERE o.framework_id IN ('NIST80053', 'ISO27001', 'PCIDSS')
         ),
         official AS (
-            SELECT nist_control, COLLECT_SET(csf_category) AS official_categories
-            FROM cprt_pairs WHERE csf_category <> '' GROUP BY nist_control
+            SELECT target_framework,
+                   UPPER(TRIM(target_ref)) AS lookup_ref,
+                   COLLECT_SET(csf_category) AS official_categories
+            FROM {t(SCHEMA_BRONZE, 'cprt_relationships')}
+            GROUP BY target_framework, UPPER(TRIM(target_ref))
         )
         SELECT
-            ours.obligation_id, ours.nist_control, ours.our_csf_category,
-            official.official_categories,
+            ours.obligation_id, ours.framework_id, ours.control_ref,
+            ours.our_csf_category, official.official_categories,
             CASE
-                WHEN official.official_categories IS NULL THEN 'not_in_cprt'
+                WHEN official.official_categories IS NULL THEN 'not_mapped_by_nist'
                 WHEN ARRAY_CONTAINS(official.official_categories, ours.our_csf_category) THEN 'agrees'
                 ELSE 'differs'
             END AS verdict
-        FROM ours LEFT JOIN official USING (nist_control)
+        FROM ours
+        LEFT JOIN official
+               ON ours.framework_id = official.target_framework
+              AND ours.lookup_ref   = official.lookup_ref
     """)
     comparison.write.mode("overwrite").option("overwriteSchema", "true").saveAsTable(
         t(SCHEMA_GOLD, "mapping_validation")
     )
     spark.sql(f"""
         COMMENT ON TABLE {t(SCHEMA_GOLD, 'mapping_validation')} IS
-        'Compares the CSF 2.0 category each NIST 800-53 obligation was routed through against
-         the official NIST CPRT CSF-to-800-53 relationship mapping. External validation of the
-         unified control hub design.'
+        'Compares the CSF 2.0 category each obligation was routed through against NIST''s
+         official OLIR mappings for SP 800-53 Rev 5, ISO/IEC 27001:2022 and PCI DSS.
+         External validation of the unified control hub design.'
     """)
 
+    MV = t(SCHEMA_GOLD, "mapping_validation")
     display(spark.sql(f"""
-        SELECT verdict, COUNT(*) AS obligations
-        FROM {t(SCHEMA_GOLD, 'mapping_validation')} GROUP BY verdict ORDER BY obligations DESC
+        SELECT framework_id, verdict, COUNT(*) AS obligations
+        FROM {MV} GROUP BY framework_id, verdict ORDER BY framework_id, obligations DESC
     """))
 
+    # Per-framework, then overall.
+    for fw in ["NIST80053", "ISO27001", "PCIDSS"]:
+        v = spark.sql(f"""
+            SELECT SUM(CASE WHEN verdict='agrees' THEN 1 ELSE 0 END) AS agrees,
+                   SUM(CASE WHEN verdict<>'not_mapped_by_nist' THEN 1 ELSE 0 END) AS comparable
+            FROM {MV} WHERE framework_id = '{fw}'
+        """).collect()[0]
+        if v["comparable"]:
+            record(f"CSF agreement with NIST — {fw}", v["agrees"], v["comparable"])
+
     v = spark.sql(f"""
-        SELECT
-            SUM(CASE WHEN verdict='agrees'  THEN 1 ELSE 0 END) AS agrees,
-            SUM(CASE WHEN verdict<>'not_in_cprt' THEN 1 ELSE 0 END) AS comparable
-        FROM {t(SCHEMA_GOLD, 'mapping_validation')}
+        SELECT SUM(CASE WHEN verdict='agrees' THEN 1 ELSE 0 END) AS agrees,
+               SUM(CASE WHEN verdict<>'not_mapped_by_nist' THEN 1 ELSE 0 END) AS comparable
+        FROM {MV}
     """).collect()[0]
     if v["comparable"]:
-        record("CSF category agreement with NIST CPRT", v["agrees"], v["comparable"],
-               "<- external ground truth")
+        record("CSF agreement with NIST — ALL", v["agrees"], v["comparable"],
+               "<- EXTERNAL ground truth")
 
     print("\nWhere our hub routes a control differently from NIST:")
     display(spark.sql(f"""
-        SELECT nist_control, our_csf_category, official_categories
-        FROM {t(SCHEMA_GOLD, 'mapping_validation')} WHERE verdict='differs' LIMIT 20
+        SELECT framework_id, control_ref, our_csf_category, official_categories
+        FROM {MV} WHERE verdict = 'differs'
+        ORDER BY framework_id, control_ref LIMIT 25
     """))
+
+    unmapped = spark.sql(f"SELECT COUNT(*) c FROM {MV} WHERE verdict='not_mapped_by_nist'").collect()[0]["c"]
+    print(f"\n{unmapped} obligations have no NIST mapping to compare against — expected, since "
+          "our catalogs include controls NIST's OLIR submissions do not cover.")
 else:
-    print("CPRT export not uploaded — external validation skipped.")
-    print("This is the single most credible number in the project. Worth uploading the file:")
-    print("  https://csrc.nist.gov/projects/cprt  ->  CSF 2.0 + SP 800-53 r5 relationships (JSON)")
-    print(f"  then: databricks fs cp cprt.json dbfs:{FRAMEWORK_DOCS_PATH}/cprt_csf_80053.json")
+    print("Official CSF mappings not uploaded — external validation skipped.")
+    print("This is the single most credible number in the project. Ten minutes to add:")
+    print("  1. https://csrc.nist.gov/extensions/nudp/services/json/csf/download?olirids=all")
+    print("  2. python data_generator/convert_cprt.py")
+    print(f"  3. upload sources/cprt_csf_mappings.json to {FRAMEWORK_DOCS_PATH}")
 
 # COMMAND ----------
 
