@@ -131,8 +131,16 @@ else:
 
 ffiec_enriched = 0
 
+# The FFIEC booklet is ~98 pages of prose, which yields far more obligation-language
+# paragraphs than we need: the FFIEC catalog has only 72 obligations to match against.
+# Capping the candidate set bounds LLM spend here so the quota is available for the
+# crosswalk and coverage notebooks, which are the ones that genuinely need it.
+FFIEC_CANDIDATE_LIMIT = int(os.environ.get("COMPLYLENS_FFIEC_LIMIT", "220"))
+
 if ffiec_docs > 0 and USE_LLM_MAPPING:
     # Candidate paragraphs: substantive prose containing obligation language.
+    # Longest first, because a longer paragraph carries more of the actual expectation
+    # than a one-line cross-reference does.
     candidates = spark.sql(f"""
         SELECT doc_id, page_no, element_id, content
         FROM {t(SCHEMA_BRONZE, 'parsed_elements')}
@@ -141,10 +149,19 @@ if ffiec_docs > 0 and USE_LLM_MAPPING:
           AND element_type IN ('text', 'section_header')
           AND LENGTH(content) BETWEEN 80 AND 1200
           AND (LOWER(content) RLIKE '(should|must|is expected to|are expected to|management should)')
-        ORDER BY element_id
+        ORDER BY LENGTH(content) DESC
+        LIMIT {FFIEC_CANDIDATE_LIMIT}
     """)
     n_cand = candidates.count()
-    print(f"FFIEC candidate paragraphs: {n_cand}")
+    total_cand = spark.sql(f"""
+        SELECT COUNT(*) c FROM {t(SCHEMA_BRONZE, 'parsed_elements')}
+        WHERE doc_class = 'framework' AND LOWER(doc_id) LIKE '%ffiec%'
+          AND element_type IN ('text', 'section_header')
+          AND LENGTH(content) BETWEEN 80 AND 1200
+          AND (LOWER(content) RLIKE '(should|must|is expected to|are expected to|management should)')
+    """).collect()[0]["c"]
+    print(f"FFIEC candidate paragraphs: {n_cand} (capped from {total_cand}) "
+          f"-> {n_cand} ai_query calls")
 
     if n_cand > 0:
         candidates.createOrReplaceTempView("ffiec_candidates")
