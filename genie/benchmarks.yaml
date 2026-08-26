@@ -1,0 +1,296 @@
+# =============================================================================
+# Genie Agent benchmark suite — 36 questions
+# =============================================================================
+# Twelve certified questions, each asked three ways: the canonical phrasing, a
+# colloquial phrasing, and a phrasing that deliberately avoids the schema's vocabulary.
+#
+# The third variant is the interesting one. If a compliance officer types "where are we
+# exposed?" and gets nothing, the agent has failed regardless of how well it handles
+# "list obligations where coverage_status equals Gap". Synonym coverage is what these
+# variants actually test.
+#
+# Run in CHAT MODE so accuracy is scored automatically by comparing result sets against
+# the gold SQL. Capture a baseline BEFORE loading any instructions, expressions or
+# example queries, then re-run after each layer to attribute the improvement.
+#
+# Render for upload:  python genie/render_assets.py --catalog <your_catalog>
+# =============================================================================
+
+meta:
+  view_schema: complylens_genie
+  mode: chat
+  target_accuracy_pct: 85
+
+benchmarks:
+
+  # --- 1. Overall posture ----------------------------------------------------
+  - id: B01a
+    category: posture
+    question: What is our overall compliance coverage across all five frameworks?
+    sql: |
+      SELECT ROUND(AVG(coverage_weight) * 100, 1) AS overall_coverage_pct
+      FROM {schema}.v_obligation_coverage
+  - id: B01b
+    category: posture
+    question: How compliant are we overall?
+    sql: |
+      SELECT ROUND(AVG(coverage_weight) * 100, 1) AS overall_coverage_pct
+      FROM {schema}.v_obligation_coverage
+  - id: B01c
+    category: posture
+    question: Give me a single number for where we stand right now.
+    sql: |
+      SELECT ROUND(AVG(coverage_weight) * 100, 1) AS overall_coverage_pct
+      FROM {schema}.v_obligation_coverage
+
+  # --- 2. Coverage by framework ----------------------------------------------
+  - id: B02a
+    category: posture
+    question: Show coverage percentage by framework.
+    sql: |
+      SELECT framework, coverage_pct FROM {schema}.d_frameworks ORDER BY coverage_pct ASC
+  - id: B02b
+    category: posture
+    question: Break our compliance down by standard.
+    sql: |
+      SELECT framework, coverage_pct FROM {schema}.d_frameworks ORDER BY coverage_pct ASC
+  - id: B02c
+    category: posture
+    question: Which regulation are we least prepared for?
+    sql: |
+      SELECT framework, coverage_pct FROM {schema}.d_frameworks ORDER BY coverage_pct ASC LIMIT 1
+
+  # --- 3. Weakest domain ------------------------------------------------------
+  - id: B03a
+    category: posture
+    question: Which domain has the weakest coverage, and how many obligations are affected?
+    sql: |
+      SELECT domain, ROUND(AVG(coverage_weight) * 100, 1) AS coverage_pct, COUNT(*) AS obligations
+      FROM {schema}.v_obligation_coverage GROUP BY domain ORDER BY coverage_pct ASC LIMIT 1
+  - id: B03b
+    category: posture
+    question: What is our worst control area?
+    sql: |
+      SELECT domain, ROUND(AVG(coverage_weight) * 100, 1) AS coverage_pct
+      FROM {schema}.v_obligation_coverage GROUP BY domain ORDER BY coverage_pct ASC LIMIT 1
+  - id: B03c
+    category: posture
+    question: Rank our security topics from worst to best.
+    sql: |
+      SELECT domain, ROUND(AVG(coverage_weight) * 100, 1) AS coverage_pct
+      FROM {schema}.v_obligation_coverage GROUP BY domain ORDER BY coverage_pct ASC
+
+  # --- 4. High-criticality gaps ----------------------------------------------
+  - id: B04a
+    category: gaps
+    question: List every high-criticality obligation that has no implemented control.
+    sql: |
+      SELECT framework, control_ref, obligation_title, domain, gap_reason
+      FROM {schema}.v_obligation_coverage
+      WHERE criticality = 'High' AND coverage_status = 'Gap'
+      ORDER BY framework, control_ref
+  - id: B04b
+    category: gaps
+    question: What are our most urgent compliance gaps?
+    sql: |
+      SELECT framework, control_ref, obligation_title, domain, gap_reason
+      FROM {schema}.v_obligation_coverage
+      WHERE criticality = 'High' AND coverage_status = 'Gap'
+      ORDER BY framework, control_ref
+  - id: B04c
+    category: gaps
+    question: Where are we most exposed right now?
+    sql: |
+      SELECT framework, control_ref, obligation_title, domain, gap_reason
+      FROM {schema}.v_obligation_coverage
+      WHERE criticality = 'High' AND coverage_status = 'Gap'
+      ORDER BY framework, control_ref
+
+  # --- 5. PCI partial coverage ------------------------------------------------
+  - id: B05a
+    category: gaps
+    question: How many PCI DSS requirements are only partially covered?
+    sql: |
+      SELECT COUNT(*) AS partially_covered FROM {schema}.v_obligation_coverage
+      WHERE framework = 'PCI DSS' AND coverage_status = 'Partial'
+  - id: B05b
+    category: gaps
+    question: Show me the PCI requirements we have only partly addressed and why.
+    sql: |
+      SELECT control_ref, obligation_title, criticality, gap_reason
+      FROM {schema}.v_obligation_coverage
+      WHERE framework = 'PCI DSS' AND coverage_status = 'Partial' ORDER BY control_ref
+  - id: B05c
+    category: gaps
+    question: For the card standard, what is half done?
+    sql: |
+      SELECT control_ref, obligation_title, gap_reason FROM {schema}.v_obligation_coverage
+      WHERE framework = 'PCI DSS' AND coverage_status = 'Partial' ORDER BY control_ref
+
+  # --- 6. Stale policies -------------------------------------------------------
+  - id: B06a
+    category: policy
+    question: Which policies have not been reviewed in over 18 months, and how many obligations depend on each?
+    sql: |
+      SELECT doc_number, policy_title, last_reviewed_date, obligations_evidenced
+      FROM {schema}.v_policy_health WHERE is_stale ORDER BY obligations_evidenced DESC
+  - id: B06b
+    category: policy
+    question: Which of our documents are out of date?
+    sql: |
+      SELECT doc_number, policy_title, last_reviewed_date, obligations_evidenced
+      FROM {schema}.v_policy_health WHERE is_stale ORDER BY obligations_evidenced DESC
+  - id: B06c
+    category: policy
+    question: If an examiner asked about overdue policy reviews, what would we have to admit?
+    sql: |
+      SELECT doc_number, policy_title, last_reviewed_date, obligations_evidenced
+      FROM {schema}.v_policy_health WHERE is_stale ORDER BY obligations_evidenced DESC
+
+  # --- 7. NIST / ISO overlap ---------------------------------------------------
+  - id: B07a
+    category: crossframework
+    question: Which NIST 800-53 controls also satisfy an ISO 27001 control?
+    sql: |
+      SELECT source_control_ref, target_control_ref, unified_control_name
+      FROM {schema}.v_framework_overlap
+      WHERE source_framework = 'NIST 800-53' AND target_framework = 'ISO 27001'
+      ORDER BY source_control_ref
+  - id: B07b
+    category: crossframework
+    question: Where do NIST and ISO overlap?
+    sql: |
+      SELECT source_control_ref, target_control_ref, unified_control_name
+      FROM {schema}.v_framework_overlap
+      WHERE source_framework = 'NIST 800-53' AND target_framework = 'ISO 27001'
+      ORDER BY source_control_ref
+  - id: B07c
+    category: crossframework
+    question: If we do the NIST work, how much ISO work do we get for free?
+    sql: |
+      SELECT COUNT(DISTINCT target_obligation_id) AS iso_obligations_also_satisfied
+      FROM {schema}.v_framework_overlap
+      WHERE source_framework = 'NIST 800-53' AND target_framework = 'ISO 27001'
+
+  # --- 8. MFA impact ------------------------------------------------------------
+  - id: B08a
+    category: crossframework
+    question: If we fully implement multi-factor authentication for privileged access, which obligations does that close and in which frameworks?
+    sql: |
+      SELECT framework, control_ref, obligation_title, coverage_status
+      FROM {schema}.v_obligation_coverage
+      WHERE unified_control_name ILIKE '%multi-factor authentication%'
+      ORDER BY framework, control_ref
+  - id: B08b
+    category: crossframework
+    question: What does MFA for admins buy us across our standards?
+    sql: |
+      SELECT framework, COUNT(*) AS obligations
+      FROM {schema}.v_obligation_coverage
+      WHERE unified_control_name ILIKE '%multi-factor authentication%'
+      GROUP BY framework ORDER BY framework
+  - id: B08c
+    category: crossframework
+    question: Which frameworks benefit if we finish the privileged access two-factor rollout?
+    sql: |
+      SELECT DISTINCT framework FROM {schema}.v_obligation_coverage
+      WHERE unified_control_name ILIKE '%multi-factor authentication%' ORDER BY framework
+
+  # --- 9. Multi-framework requirements -------------------------------------------
+  - id: B09a
+    category: crossframework
+    question: Show me the requirements that appear in four or more of our five frameworks.
+    sql: |
+      SELECT unified_control_name, COUNT(DISTINCT target_framework) + 1 AS frameworks_spanned
+      FROM {schema}.v_framework_overlap
+      GROUP BY unified_control_id, unified_control_name
+      HAVING COUNT(DISTINCT target_framework) + 1 >= 4
+      ORDER BY frameworks_spanned DESC
+  - id: B09b
+    category: crossframework
+    question: What do all our standards ask for?
+    sql: |
+      SELECT unified_control_name, COUNT(DISTINCT target_framework) + 1 AS frameworks_spanned
+      FROM {schema}.v_framework_overlap
+      GROUP BY unified_control_id, unified_control_name
+      HAVING COUNT(DISTINCT target_framework) + 1 >= 4
+      ORDER BY frameworks_spanned DESC
+  - id: B09c
+    category: crossframework
+    question: Which safeguards give us the widest regulatory reach?
+    sql: |
+      SELECT unified_control_name, COUNT(DISTINCT target_framework) + 1 AS frameworks_spanned
+      FROM {schema}.v_framework_overlap
+      GROUP BY unified_control_id, unified_control_name
+      HAVING COUNT(DISTINCT target_framework) + 1 >= 4
+      ORDER BY frameworks_spanned DESC
+
+  # --- 10. The hero question -------------------------------------------------------
+  - id: B10a
+    category: prioritization
+    question: If we only had budget for three more controls this quarter, which three would close the most high-criticality gaps across the most frameworks?
+    sql: |
+      SELECT recommendation, high_crit_closed, frameworks_touched, effort_days, priority_score
+      FROM {schema}.v_remediation_leverage ORDER BY priority_rank ASC LIMIT 3
+  - id: B10b
+    category: prioritization
+    question: What should we fix first?
+    sql: |
+      SELECT recommendation, high_crit_closed, frameworks_touched, effort_days, priority_score
+      FROM {schema}.v_remediation_leverage ORDER BY priority_rank ASC LIMIT 3
+  - id: B10c
+    category: prioritization
+    question: Where do we get the most compliance for the least effort?
+    sql: |
+      SELECT recommendation, priority_score, effort_days, frameworks_touched
+      FROM {schema}.v_remediation_leverage ORDER BY priority_rank ASC LIMIT 5
+
+  # --- 11. Evidence lookup ----------------------------------------------------------
+  - id: B11a
+    category: evidence
+    question: What policy document and section covers our access recertification requirement, and when was it last reviewed?
+    sql: |
+      SELECT framework, control_ref, policy_doc_number, policy_clause_ref,
+             policy_section_heading, policy_last_reviewed_date
+      FROM {schema}.v_obligation_coverage
+      WHERE unified_control_name ILIKE '%recertification%' AND policy_doc_number IS NOT NULL
+      ORDER BY framework, control_ref
+  - id: B11b
+    category: evidence
+    question: Prove we do access reviews.
+    sql: |
+      SELECT framework, control_ref, policy_doc_number, policy_clause_ref, evidence_text
+      FROM {schema}.v_obligation_coverage
+      WHERE unified_control_name ILIKE '%recertification%' AND policy_doc_number IS NOT NULL
+      ORDER BY framework, control_ref
+  - id: B11c
+    category: evidence
+    question: Show me the supporting text for our access review controls.
+    sql: |
+      SELECT framework, control_ref, policy_doc_number, policy_clause_ref, evidence_text
+      FROM {schema}.v_obligation_coverage
+      WHERE unified_control_name ILIKE '%recertification%' AND evidence_text IS NOT NULL
+      ORDER BY framework, control_ref
+
+  # --- 12. Owner accountability -------------------------------------------------------
+  - id: B12a
+    category: accountability
+    question: Which control owners have the most open high-criticality gaps?
+    sql: |
+      SELECT owner_name, SUM(open_high_crit_gaps) AS open_high_criticality_gaps
+      FROM {schema}.v_control_inventory GROUP BY owner_name
+      HAVING SUM(open_high_crit_gaps) > 0 ORDER BY open_high_criticality_gaps DESC
+  - id: B12b
+    category: accountability
+    question: Who is our biggest bottleneck?
+    sql: |
+      SELECT owner_name, SUM(open_high_crit_gaps) AS open_high_criticality_gaps
+      FROM {schema}.v_control_inventory GROUP BY owner_name
+      HAVING SUM(open_high_crit_gaps) > 0 ORDER BY open_high_criticality_gaps DESC LIMIT 1
+  - id: B12c
+    category: accountability
+    question: Which team is carrying the most unresolved risk?
+    sql: |
+      SELECT owner_team, SUM(open_high_crit_gaps) AS open_high_criticality_gaps
+      FROM {schema}.v_control_inventory GROUP BY owner_team
+      HAVING SUM(open_high_crit_gaps) > 0 ORDER BY open_high_criticality_gaps DESC

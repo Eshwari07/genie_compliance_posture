@@ -6,3 +6,4 @@ app/frontend/dist/
 .venv/
 sources/
 .DS_Store
+genie/rendered/
