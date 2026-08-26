@@ -448,16 +448,29 @@ def build_backlog(controls, obligations, coverage, org_by_uc, spec):
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--out", default=str(HERE / "out"))
+    ap.add_argument("--out", default=str(HERE / "out"),
+                    help="Directory to write the generated JSON into.")
+    # Defaults to <out>/policy_manifest.json rather than the repo, because in Databricks
+    # the manifest is written to a Unity Catalog volume, not alongside the source.
+    ap.add_argument("--manifest", default=None,
+                    help="Path to policy_manifest.json. Defaults to <out>/policy_manifest.json.")
     args = ap.parse_args()
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
+
+    manifest_path = Path(args.manifest) if args.manifest else out / "policy_manifest.json"
+    if not manifest_path.exists():
+        raise SystemExit(
+            f"Policy manifest not found at {manifest_path}.\n"
+            "Run generate_policies.py first, and make sure --manifest points at the same "
+            "location it wrote to."
+        )
 
     rng = random.Random(SEED)
     spec = load_gap_spec()
     controls = load_unified_controls()
     obligations = load_obligations()
-    manifest = load_policy_manifest()
+    manifest = load_policy_manifest(manifest_path)
 
     clause_uc_index: dict[str, list[dict]] = defaultdict(list)
     for pol in manifest:

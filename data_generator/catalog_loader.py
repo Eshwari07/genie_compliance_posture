@@ -137,8 +137,14 @@ def load_policy_manifest(manifest_path: Path | None = None) -> list[dict]:
 # ---------------------------------------------------------------------------
 
 
-def validate_all(require_policies: bool = True) -> dict:
+def validate_all(
+    require_policies: bool = True,
+    manifest_path: Path | None = None,
+) -> dict:
     """Cross-validate every catalog. Raises ValueError listing all problems at once.
+
+    `manifest_path` must be supplied when the policy manifest lives somewhere other than
+    the repo — in Databricks it is written to a Unity Catalog volume.
 
     Returns a summary dict suitable for printing in a notebook.
     """
@@ -249,7 +255,7 @@ def validate_all(require_policies: bool = True) -> dict:
     summary_clauses = 0
     if require_policies:
         try:
-            manifest = load_policy_manifest()
+            manifest = load_policy_manifest(manifest_path)
             summary_policies = len(manifest)
             for pol in manifest:
                 summary_clauses += len(pol["clauses"])

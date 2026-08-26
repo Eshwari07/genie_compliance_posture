@@ -121,9 +121,18 @@ if result.returncode != 0:
 
 # COMMAND ----------
 
+MANIFEST_PATH = f"{SEED_DATA_PATH}/policy_manifest.json"
+
+# The manifest lives on the volume, not in the repo, so it has to be passed explicitly.
+if not os.path.exists(MANIFEST_PATH):
+    raise RuntimeError(
+        f"{MANIFEST_PATH} is missing. The policy generation cell above must succeed first."
+    )
+
 result = subprocess.run(
     [sys.executable, os.path.join(ROOT, "data_generator", "generate_controls.py"),
-     "--out", SEED_DATA_PATH],
+     "--out", SEED_DATA_PATH,
+     "--manifest", MANIFEST_PATH],
     capture_output=True, text=True,
 )
 print(result.stdout)
@@ -141,11 +150,12 @@ if result.returncode != 0:
 # COMMAND ----------
 
 import json
+from pathlib import Path
 from catalog_loader import (
     load_frameworks, load_obligations, load_unified_controls, validate_all,
 )
 
-summary = validate_all()
+summary = validate_all(manifest_path=Path(MANIFEST_PATH))
 print("Catalog validation passed:")
 print(json.dumps(summary, indent=2))
 
