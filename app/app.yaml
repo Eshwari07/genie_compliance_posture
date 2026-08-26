@@ -1,0 +1,22 @@
+command: ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+env:
+  # Bound resources. Add these in the app's Resources panel:
+  #   Genie Agent   -> key "genie-space"   -> permission CAN RUN
+  #   SQL warehouse -> key "sql-warehouse" -> permission CAN USE
+  - name: GENIE_SPACE_ID
+    valueFrom: genie-space
+  - name: DATABRICKS_WAREHOUSE_ID
+    valueFrom: sql-warehouse
+
+  # Where the six Genie serving views live.
+  - name: CATALOG
+    value: "workspace"
+  - name: SCHEMA
+    value: "complylens_genie"
+
+  # Free Edition only offers a 2X-Small warehouse, so allow a generous timeout.
+  - name: GENIE_TIMEOUT_S
+    value: "180"
+  - name: MAX_ROWS
+    value: "500"
