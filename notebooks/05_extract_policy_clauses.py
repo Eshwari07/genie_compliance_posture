@@ -143,27 +143,119 @@ print(f"policy_documents: {spark.table(t(SCHEMA_SILVER, 'policy_documents')).cou
 
 # COMMAND ----------
 
-CLAUSE_RE = r"^(\d+\.\d+)\s+(.+)$"
-SECTION_RE = r"^(\d+)\.\s+([A-Z][A-Za-z ,&/-]{3,70})$"
+# MAGIC %md
+# MAGIC #### First: what did the parser actually give us?
+# MAGIC
+# MAGIC Element granularity differs sharply between parsers. `pypdf` tends to emit one
+# MAGIC paragraph per clause; `ai_parse_document` often groups a whole section into a single
+# MAGIC text block. An extractor that assumes an element *starts* with a clause reference
+# MAGIC silently returns zero rows against the second shape, so inspect before parsing.
 
-elements = spark.sql(f"""
-    SELECT doc_id, file_name, element_id, page_no,
-           REGEXP_REPLACE(TRIM(content), '\\\\s+', ' ') AS content
+# COMMAND ----------
+
+print("Element types and page numbering as produced by this run's parser:\n")
+display(spark.sql(f"""
+    SELECT parser, element_type,
+           COUNT(*) AS elements,
+           MIN(page_no) AS min_page,
+           MAX(page_no) AS max_page,
+           ROUND(AVG(LENGTH(content))) AS avg_chars,
+           MAX(LENGTH(content)) AS max_chars
     FROM {ELEMENTS}
-    WHERE doc_class = 'client_policy' AND page_no > 1
-""")
+    WHERE doc_class = 'client_policy'
+    GROUP BY parser, element_type ORDER BY elements DESC
+"""))
 
-tagged = (
-    elements
-    .withColumn("section_number", F.regexp_extract("content", SECTION_RE, 1))
-    .withColumn("section_heading_raw", F.regexp_extract("content", SECTION_RE, 2))
-    .withColumn("clause_ref", F.regexp_extract("content", CLAUSE_RE, 1))
-    .withColumn("clause_body", F.regexp_extract("content", CLAUSE_RE, 2))
-    .withColumn("is_section", (F.col("section_number") != "") & (F.col("clause_ref") == ""))
-    .withColumn("is_clause", F.col("clause_ref") != "")
+print("Sample body elements — this is what the clause extractor has to cope with:")
+display(spark.sql(f"""
+    SELECT page_no, element_type, LENGTH(content) AS chars,
+           SUBSTRING(content, 1, 400) AS content
+    FROM {ELEMENTS}
+    WHERE doc_class = 'client_policy' AND doc_id LIKE '%encryption%'
+    ORDER BY element_id LIMIT 25
+"""))
+
+# COMMAND ----------
+
+# MAGIC %md ### Extract clauses
+# MAGIC
+# MAGIC Parser-agnostic by design: rather than requiring an element to begin with a clause
+# MAGIC reference, we find every reference *inside* each element and split on those
+# MAGIC boundaries. That handles one-clause-per-element and whole-section-per-element
+# MAGIC identically.
+# MAGIC
+# MAGIC The boundary pattern is deliberately strict, because policy text is full of decimals
+# MAGIC that are not clause numbers — "TLS 1.2", "FIPS 140-2 Level 2", "AES-256". A reference
+# MAGIC only counts when it sits at the start of the element or directly after a sentence
+# MAGIC terminator, **and** is followed by a capitalised word. "using TLS 1.2 or higher"
+# MAGIC fails both tests; "...using AES-256. 4.2 Database-level encryption..." passes both.
+
+# COMMAND ----------
+
+from pyspark.sql.types import ArrayType, StringType, StructField, StructType
+
+clause_schema = ArrayType(StructType([
+    StructField("clause_ref", StringType()),
+    StructField("clause_text", StringType()),
+]))
+
+# Start-of-string or after a sentence terminator, a clause ref, then a capitalised word.
+# Verified by data_generator/test_clause_splitter.py — keep the two in sync.
+CLAUSE_BOUNDARY = re.compile(r"(?:(?<=^)|(?<=[.;:!?]\s)|(?<=[.;:!?]\s\s))(\d{1,2}\.\d{1,2})\s+(?=[A-Z(])")
+
+# A section heading runs straight into its first clause with no sentence terminator
+# ("4. Encryption at Rest 4.1 All data must..."), which is how ai_parse_document tends to
+# group them. Python lookbehind is fixed-width so the heading cannot live in the boundary
+# pattern; terminate the heading first, then split normally.
+HEADING_RUNON = re.compile(r"^(\d{1,2}\.\s+[A-Z][A-Za-z ,&/'-]{2,70}?)(\s+\d{1,2}\.\d{1,2}\s+[A-Z])")
+
+
+@F.udf(returnType=clause_schema)
+def split_clauses(content):
+    """Return every (clause_ref, clause_text) pair found inside one element."""
+    if not content:
+        return []
+    text = " ".join(content.split())
+    text = HEADING_RUNON.sub(r"\1.\2", text)
+
+    matches = list(CLAUSE_BOUNDARY.finditer(text))
+    if not matches:
+        return []
+
+    out = []
+    for i, m in enumerate(matches):
+        start = m.end()
+        end = matches[i + 1].start() if i + 1 < len(matches) else len(text)
+        body = text[start:end].strip()
+        if len(body) > 25:
+            out.append({"clause_ref": m.group(1), "clause_text": body})
+    return out
+
+
+SECTION_RE = r"^(\d{1,2})\.\s+([A-Z][A-Za-z ,&/-]{3,70})$"
+
+# Exclude each document's cover page without assuming whether the parser numbers pages
+# from 0 or 1 — take the minimum page per document and drop it.
+first_page = Window.partitionBy("doc_id")
+
+body = (
+    spark.sql(f"""
+        SELECT doc_id, file_name, element_id, page_no, element_type,
+               REGEXP_REPLACE(TRIM(content), '\\\\s+', ' ') AS content
+        FROM {ELEMENTS}
+        WHERE doc_class = 'client_policy'
+    """)
+    .withColumn("min_page", F.min("page_no").over(first_page))
+    .filter(F.col("page_no") > F.col("min_page"))
 )
 
-# Carry the most recent section heading forward across subsequent clause rows.
+# Track the section heading each clause falls under.
+tagged = (
+    body
+    .withColumn("section_number", F.regexp_extract("content", SECTION_RE, 1))
+    .withColumn("section_heading_raw", F.regexp_extract("content", SECTION_RE, 2))
+    .withColumn("is_section", F.col("section_number") != "")
+)
 ordered = Window.partitionBy("doc_id").orderBy("element_id").rowsBetween(Window.unboundedPreceding, 0)
 with_section = (
     tagged
@@ -172,13 +264,39 @@ with_section = (
 )
 
 clauses = (
-    with_section.filter(F.col("is_clause") & (F.length("clause_body") > 25))
-    .withColumn("section_number", F.coalesce(F.col("cur_sec_no"), F.split(F.col("clause_ref"), r"\.")[0]))
-    .withColumn("section_heading", F.coalesce(F.col("cur_sec_head"), F.lit("")))
-    .select("doc_id", "file_name", "element_id", "page_no", "section_number",
-            "section_heading", "clause_ref", F.col("clause_body").alias("clause_text"))
+    with_section
+    .withColumn("found", split_clauses(F.col("content")))
+    .filter(F.size("found") > 0)
+    .select("doc_id", "file_name", "element_id", "page_no",
+            "cur_sec_no", "cur_sec_head", F.explode("found").alias("c"))
+    .select(
+        "doc_id", "file_name", "element_id", "page_no",
+        F.coalesce(F.nullif(F.col("cur_sec_no"), F.lit("")),
+                   F.split(F.col("c.clause_ref"), r"\.")[0]).alias("section_number"),
+        F.coalesce(F.col("cur_sec_head"), F.lit("")).alias("section_heading"),
+        F.col("c.clause_ref").alias("clause_ref"),
+        F.col("c.clause_text").alias("clause_text"),
+    )
+    # A ref can legitimately appear twice if the parser overlaps element boundaries;
+    # keep the longest text for each, which is the most complete extraction.
+    .withColumn("rn", F.row_number().over(
+        Window.partitionBy("doc_id", "clause_ref").orderBy(F.length("clause_text").desc())
+    ))
+    .filter(F.col("rn") == 1).drop("rn")
 )
-print(f"Clauses recovered from parsed PDFs: {clauses.count()}  (authored: 285)")
+
+n_clauses = clauses.count()
+print(f"Clauses recovered from parsed PDFs: {n_clauses}  (authored: 285)")
+
+if n_clauses == 0:
+    display(spark.sql(f"""
+        SELECT page_no, SUBSTRING(content, 1, 300) AS content
+        FROM {ELEMENTS} WHERE doc_class = 'client_policy' ORDER BY element_id LIMIT 30
+    """))
+    raise RuntimeError(
+        "No clauses matched. The sample above shows what the parser produced — the clause "
+        "boundary pattern needs to be adapted to it."
+    )
 
 # COMMAND ----------
 
