@@ -22,7 +22,14 @@ framework:
   issuing_body: National Institute of Standards and Technology
   category: Control catalog
   jurisdiction: United States
-  text_provenance: verbatim_public
+  # The seed text below is authored, not copied — so it is 'paraphrased' even though
+  # SP 800-53 is public domain and verbatim use would be permitted.
+  #
+  # Notebook 04 upgrades a row to 'verbatim_public' only when it successfully matches
+  # the official OSCAL catalog and takes NIST's own prose. Declaring verbatim_public
+  # here instead would mislabel every unmatched row as verbatim when it is not, which
+  # would quietly undermine the one column the whole provenance story rests on.
+  text_provenance: paraphrased
 
 obligations:
 

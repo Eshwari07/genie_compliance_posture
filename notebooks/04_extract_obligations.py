@@ -367,4 +367,24 @@ print(f"\n{total} obligations, {real} ({100*real/total:.0f}%) derived from a rea
 
 assert total > 400, f"Expected 400+ obligations, got {total}"
 assert spark.sql(f"SELECT COUNT(*) c FROM {OBL} WHERE ground_truth_uc IS NULL").collect()[0]["c"] == 0
+
+# A row may only claim verbatim_public if it actually came from an official source.
+# Without this, a seed catalog declaring verbatim_public at the framework level silently
+# mislabels every row that failed to match — and provenance is the one claim in this
+# project that has to be literally true.
+overclaimed = spark.sql(f"""
+    SELECT framework_id, control_ref, extraction_method
+    FROM {OBL}
+    WHERE text_provenance = 'verbatim_public' AND extraction_method = 'authored_seed'
+""")
+n_over = overclaimed.count()
+if n_over:
+    display(overclaimed)
+    raise AssertionError(
+        f"{n_over} obligation(s) claim verbatim_public but came from the authored seed. "
+        "Set the catalog's framework-level text_provenance to 'paraphrased' and let "
+        "notebook 04 upgrade only the rows it genuinely matched."
+    )
+print("Provenance check passed — no row claims verbatim text it does not have.")
+
 print("\nNext: 05_extract_policy_clauses.py")
