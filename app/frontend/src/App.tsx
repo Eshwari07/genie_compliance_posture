@@ -3,7 +3,7 @@ import { askGenie, exportCsv, getHealth, getPosture, getSuggestions } from "./ap
 import EvidenceDrawer from "./components/EvidenceDrawer";
 import ResultChart from "./components/ResultChart";
 import ResultTable from "./components/ResultTable";
-import type { Cell, Posture, Suggestions, Turn } from "./types";
+import type { Cell, Health, Posture, Suggestions, Turn } from "./types";
 
 const HERO_QUESTION =
   "If we only had budget for three more controls this quarter, which three would " +
@@ -15,7 +15,7 @@ export default function App() {
   const [suggestions, setSuggestions] = useState<Suggestions | null>(null);
   const [posture, setPosture] = useState<Posture | null>(null);
   const [postureError, setPostureError] = useState<string | null>(null);
-  const [health, setHealth] = useState<{ status: string; missing_configuration: string[] } | null>(null);
+  const [health, setHealth] = useState<Health | null>(null);
 
   const [turns, setTurns] = useState<Turn[]>([]);
   const [input, setInput] = useState("");
@@ -108,6 +108,21 @@ export default function App() {
           <div className="banner">
             <b>Not fully configured.</b> Missing: {health.missing_configuration.join("; ")}.
             Add the resources in the app's <code>Resources</code> panel and redeploy.
+          </div>
+        )}
+
+        {health?.mock && (
+          <div className="banner">
+            <b>Offline preview.</b> Answers come from local fixture data, not a Genie Agent —
+            the SQL shown is what Genie writes for each question, but it was not executed.
+            Unset <code>COMPLYLENS_MOCK</code> and bind a Genie Agent for real answers.
+          </div>
+        )}
+
+        {health?.status === "mock_data_missing" && (
+          <div className="banner">
+            <b>Fixture data missing.</b> Run{" "}
+            <code>python data_generator/export_for_sql.py</code> and restart the backend.
           </div>
         )}
 

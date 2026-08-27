@@ -25,6 +25,13 @@ class Settings:
     catalog: str = os.getenv("CATALOG", "workspace")
     schema: str = os.getenv("SCHEMA", "complylens_genie")
 
+    # --- development mode --------------------------------------------------
+    # COMPLYLENS_MOCK=1 answers from the locally generated dataset instead of calling
+    # Databricks, so the UI can be built and reviewed before the Genie Agent exists.
+    # Never enabled in deployment: /api/health reports it and the UI shows a banner, so
+    # fixture output cannot be mistaken for a real answer.
+    mock: bool = os.getenv("COMPLYLENS_MOCK", "").lower() in ("1", "true", "yes")
+
     # --- behaviour ---------------------------------------------------------
     # A 2X-Small warehouse is the only option on Free Edition, so Genie round trips are
     # slow enough that the timeout has to be generous and the UI has to narrate progress.
@@ -40,6 +47,8 @@ class Settings:
     def missing(self) -> list[str]:
         """Config the app cannot run without. Surfaced on /api/health rather than
         crashing at import, so a misconfigured resource binding is diagnosable."""
+        if self.mock:
+            return []
         gaps = []
         if not self.genie_space_id:
             gaps.append("GENIE_SPACE_ID (bind a Genie Agent resource with CAN RUN)")

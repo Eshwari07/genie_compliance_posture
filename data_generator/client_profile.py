@@ -157,7 +157,7 @@ POLICY_CORPUS: list[PolicyDoc] = [
         domain="GOV",
         owner_role="Chief Information Security Officer",
         version="4.2",
-        effective_date=date(2025, 1, 15),
+        effective_date=date(2026, 1, 15),
         sections=[
             "Purpose and Scope",
             "Governance and Accountability",
@@ -175,7 +175,7 @@ POLICY_CORPUS: list[PolicyDoc] = [
         domain="IAM",
         owner_role="Identity & Access Management Lead",
         version="3.1",
-        effective_date=date(2025, 3, 1),
+        effective_date=date(2026, 3, 1),
         sections=[
             "Purpose and Scope",
             "Identity Lifecycle",
@@ -193,7 +193,7 @@ POLICY_CORPUS: list[PolicyDoc] = [
         domain="IAM",
         owner_role="Identity & Access Management Lead",
         version="2.4",
-        effective_date=date(2025, 5, 20),
+        effective_date=date(2026, 5, 20),
         sections=[
             "Purpose and Scope",
             "Privileged Account Inventory",
@@ -211,7 +211,7 @@ POLICY_CORPUS: list[PolicyDoc] = [
         domain="DAT",
         owner_role="Data Protection Officer",
         version="2.0",
-        effective_date=date(2024, 10, 1),
+        effective_date=date(2026, 2, 12),
         sections=[
             "Purpose and Scope",
             "Classification Levels",
@@ -230,7 +230,7 @@ POLICY_CORPUS: list[PolicyDoc] = [
         domain="DAT",
         owner_role="IT Security Manager",
         version="3.0",
-        effective_date=date(2025, 2, 10),
+        effective_date=date(2026, 2, 10),
         sections=[
             "Purpose and Scope",
             "Approved Cryptographic Algorithms",
@@ -248,7 +248,7 @@ POLICY_CORPUS: list[PolicyDoc] = [
         domain="VUL",
         owner_role="IT Security Manager",
         version="2.6",
-        effective_date=date(2025, 4, 7),
+        effective_date=date(2026, 4, 7),
         sections=[
             "Purpose and Scope",
             "Asset Scanning Coverage",
@@ -266,7 +266,7 @@ POLICY_CORPUS: list[PolicyDoc] = [
         domain="CFG",
         owner_role="Head of Infrastructure",
         version="5.1",
-        effective_date=date(2025, 1, 6),
+        effective_date=date(2026, 1, 6),
         sections=[
             "Purpose and Scope",
             "Change Categories",
@@ -285,7 +285,7 @@ POLICY_CORPUS: list[PolicyDoc] = [
         domain="IRP",
         owner_role="Security Operations Lead",
         version="4.0",
-        effective_date=date(2025, 6, 2),
+        effective_date=date(2026, 6, 2),
         sections=[
             "Purpose and Scope",
             "Incident Severity Classification",
@@ -323,7 +323,7 @@ POLICY_CORPUS: list[PolicyDoc] = [
         domain="TPR",
         owner_role="Vendor Risk Manager",
         version="2.8",
-        effective_date=date(2025, 2, 24),
+        effective_date=date(2026, 2, 24),
         sections=[
             "Purpose and Scope",
             "Vendor Tiering and Criticality",
@@ -341,7 +341,7 @@ POLICY_CORPUS: list[PolicyDoc] = [
         domain="HRS",
         owner_role="Head of Human Resources",
         version="2.2",
-        effective_date=date(2025, 1, 20),
+        effective_date=date(2026, 1, 20),
         sections=[
             "Purpose and Scope",
             "Onboarding Security Training",
@@ -360,7 +360,7 @@ POLICY_CORPUS: list[PolicyDoc] = [
         domain="LOG",
         owner_role="Security Operations Lead",
         version="3.3",
-        effective_date=date(2025, 5, 5),
+        effective_date=date(2026, 5, 5),
         sections=[
             "Purpose and Scope",
             "Events Required to be Logged",
@@ -399,7 +399,7 @@ POLICY_CORPUS: list[PolicyDoc] = [
         domain="DAT",
         owner_role="Payments & Card Services Manager",
         version="1.4",
-        effective_date=date(2025, 3, 17),
+        effective_date=date(2026, 3, 17),
         sections=[
             "Purpose and Scope",
             "CDE Boundary and Segmentation",

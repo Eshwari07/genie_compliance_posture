@@ -1,4 +1,4 @@
-import type { Evidence, Posture, StreamEvent, Suggestions } from "./types";
+import type { Evidence, Health, Posture, StreamEvent, Suggestions } from "./types";
 
 async function getJSON<T>(path: string): Promise<T> {
   const res = await fetch(path);
@@ -13,8 +13,7 @@ export const getSuggestions = () => getJSON<Suggestions>("/api/suggestions");
 export const getPosture = () => getJSON<Posture>("/api/posture");
 export const getEvidence = (obligationId: string) =>
   getJSON<Evidence>(`/api/evidence/${encodeURIComponent(obligationId)}`);
-export const getHealth = () =>
-  getJSON<{ status: string; missing_configuration: string[] }>("/api/health");
+export const getHealth = () => getJSON<Health>("/api/health");
 
 /**
  * Ask Genie and invoke `onEvent` as each Server-Sent Event arrives.

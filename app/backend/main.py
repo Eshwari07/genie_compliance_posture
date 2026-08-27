@@ -22,6 +22,7 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
+from . import mock
 from .config import get_settings
 from .genie_client import GenieClient
 from .suggestions import POSTURE_QUESTION, SUGGESTION_GROUPS, TILE_QUESTIONS
@@ -61,8 +62,13 @@ def genie() -> GenieClient:
 @app.get("/api/health")
 def health() -> dict[str, Any]:
     missing = settings.missing()
+    if settings.mock:
+        status = "mock" if mock.available() else "mock_data_missing"
+    else:
+        status = "ok" if not missing else "misconfigured"
     return {
-        "status": "ok" if not missing else "misconfigured",
+        "status": status,
+        "mock": settings.mock,
         "genie_space_bound": bool(settings.genie_space_id),
         "warehouse_bound": bool(settings.warehouse_id),
         "view_schema": settings.view_schema,
@@ -98,6 +104,24 @@ def ask(req: AskRequest) -> StreamingResponse:
     warehouse a question can take 20+ seconds, and a spinner with no narration reads as
     a hung app. Emitting Genie's own stage transitions turns the wait into progress.
     """
+    if settings.mock:
+        if not mock.available():
+            raise HTTPException(
+                503,
+                "Mock mode is on but the fixture data is missing. Run: "
+                "python data_generator/export_for_sql.py",
+            )
+
+        def stream():
+            for event in mock.stream(req.question):
+                yield _sse(event)
+
+        return StreamingResponse(
+            stream(),
+            media_type="text/event-stream",
+            headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+        )
+
     client = genie()
 
     def stream():
@@ -134,6 +158,26 @@ def posture(refresh: bool = Query(False)) -> dict[str, Any]:
     now = time.monotonic()
     if not refresh and _posture_cache["payload"] and (now - _posture_cache["at"]) < settings.posture_cache_ttl_s:
         return {**_posture_cache["payload"], "cached": True}
+
+    if settings.mock:
+        if not mock.available():
+            raise HTTPException(503, "Mock fixture data missing — run export_for_sql.py")
+        result = mock.answer(POSTURE_QUESTION)
+        row = result["rows"][0]
+        return {
+            "coverage_pct": row["overall_coverage_pct"],
+            "total_obligations": row["total_obligations"],
+            "covered": row["covered"],
+            "partial": row["partial"],
+            "gaps": row["gaps"],
+            "high_criticality_gaps": row["high_criticality_gaps"],
+            "sql": result["sql"],
+            "narrative": result["text"],
+            "conversation_id": "mock-conversation",
+            "elapsed_s": 0.4,
+            "source": "mock",
+            "cached": False,
+        }
 
     answer = None
     for event in genie().ask(POSTURE_QUESTION):
@@ -220,6 +264,12 @@ def evidence(obligation_id: str) -> dict[str, Any]:
     it shows the same underlying safeguard satisfying obligations in four other
     frameworks simultaneously.
     """
+    if settings.mock:
+        result = mock.evidence(obligation_id)
+        if not result:
+            raise HTTPException(404, f"No obligation with id {obligation_id}")
+        return result
+
     schema = settings.view_schema
 
     detail = _run_sql(

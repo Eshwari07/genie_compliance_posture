@@ -100,6 +100,15 @@ export interface Evidence {
   also_satisfies: Sibling[];
 }
 
+export interface Health {
+  status: "ok" | "misconfigured" | "mock" | "mock_data_missing";
+  mock: boolean;
+  genie_space_bound: boolean;
+  warehouse_bound: boolean;
+  view_schema: string;
+  missing_configuration: string[];
+}
+
 /** One turn in the conversation, including its in-flight state. */
 export interface Turn {
   id: string;
