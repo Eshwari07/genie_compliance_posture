@@ -306,7 +306,12 @@ for col, comment in {
     "clause_length": "Character length of clause_text.",
     "extraction_method": "Always parsed_pdf — these rows come from parsing, not the authoring manifest.",
 }.items():
-    spark.sql(f"ALTER TABLE {CL} ALTER COLUMN {col} COMMENT '{comment}'")
+    # Comments contain apostrophes ("the framework's own identifier"), which would
+    # otherwise close the SQL string literal early. Doubling escapes them.
+    spark.sql(
+        f"ALTER TABLE {CL} ALTER COLUMN {col} "
+        f"""COMMENT '{comment.replace("'", "''")}'"""
+    )
 
 # COMMAND ----------
 

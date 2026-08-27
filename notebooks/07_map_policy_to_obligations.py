@@ -345,7 +345,12 @@ for col, comment in {
     "human_reviewed": "True when an analyst confirmed or corrected the machine assessment.",
     "assessed_at": "Date the assessment was performed.",
 }.items():
-    spark.sql(f"ALTER TABLE {CA} ALTER COLUMN {col} COMMENT '{comment}'")
+    # Comments contain apostrophes ("the framework's own identifier"), which would
+    # otherwise close the SQL string literal early. Doubling escapes them.
+    spark.sql(
+        f"ALTER TABLE {CA} ALTER COLUMN {col} "
+        f"""COMMENT '{comment.replace("'", "''")}'"""
+    )
 
 # COMMAND ----------
 

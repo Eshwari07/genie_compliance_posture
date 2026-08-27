@@ -331,7 +331,12 @@ for col, comment in {
     "source_page_no": "Page number in the source document, when known.",
     "requirement_length": "Character length of requirement_text.",
 }.items():
-    spark.sql(f"ALTER TABLE {OBL} ALTER COLUMN {col} COMMENT '{comment}'")
+    # Comments contain apostrophes ("the framework's own identifier"), which would
+    # otherwise close the SQL string literal early. Doubling escapes them.
+    spark.sql(
+        f"ALTER TABLE {OBL} ALTER COLUMN {col} "
+        f"""COMMENT '{comment.replace("'", "''")}'"""
+    )
 
 # COMMAND ----------
 

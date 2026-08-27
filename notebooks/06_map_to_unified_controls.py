@@ -297,7 +297,12 @@ for col, comment in {
     "llm_agreed": "True when the model's proposal matched the analyst mapping. Evaluation only.",
     "ground_truth_uc": "Analyst mapping. Evaluation only — not exposed to Genie.",
 }.items():
-    spark.sql(f"ALTER TABLE {XW} ALTER COLUMN {col} COMMENT '{comment}'")
+    # Comments contain apostrophes ("the framework's own identifier"), which would
+    # otherwise close the SQL string literal early. Doubling escapes them.
+    spark.sql(
+        f"ALTER TABLE {XW} ALTER COLUMN {col} "
+        f"""COMMENT '{comment.replace("'", "''")}'"""
+    )
 
 # COMMAND ----------
 
