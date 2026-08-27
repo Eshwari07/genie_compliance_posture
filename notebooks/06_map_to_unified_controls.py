@@ -93,16 +93,30 @@ Reference: {ref}
 Title: {title}
 Requirement: {text}"""
 
-if USE_LLM_MAPPING:
+# This notebook makes one ai_query call per obligation — 469 on the current dataset.
+# Results are written to a Delta table and reused on re-run, because Free Edition quota
+# is finite and re-running the notebook to fix a downstream bug should not cost another
+# 469 calls. Set True to discard and re-map.
+FORCE_REMAP = False
+
+RAW = t(SCHEMA_SILVER, "llm_crosswalk_raw")
+already_mapped = spark.catalog.tableExists(f"{CATALOG}.{SCHEMA_SILVER}.llm_crosswalk_raw")
+
+if USE_LLM_MAPPING and already_mapped and not FORCE_REMAP:
+    n = spark.table(RAW).count()
+    print(f"Reusing {n} cached LLM responses in {RAW}.")
+    print("Set FORCE_REMAP = True to re-run inference.")
+elif USE_LLM_MAPPING:
     spark.table(OBL).select(
         "obligation_id", "framework_id", "control_ref", "title", "requirement_text", "domain"
     ).createOrReplaceTempView("obligations_for_mapping")
 
     # The menu is injected as a SQL literal once rather than per row.
     menu_sql = CONTROL_MENU.replace("'", "''")
+    print(f"Running {spark.table(OBL).count()} ai_query calls — this takes a few minutes.")
 
     spark.sql(f"""
-        CREATE OR REPLACE TABLE {t(SCHEMA_SILVER, 'llm_crosswalk_raw')} AS
+        CREATE OR REPLACE TABLE {RAW} AS
         SELECT
             obligation_id,
             framework_id,
@@ -131,10 +145,12 @@ if USE_LLM_MAPPING:
             current_timestamp() AS mapped_at
         FROM obligations_for_mapping
     """)
-    print(f"LLM responses: {spark.table(t(SCHEMA_SILVER, 'llm_crosswalk_raw')).count()}")
-    display(spark.sql(f"SELECT * FROM {t(SCHEMA_SILVER, 'llm_crosswalk_raw')} LIMIT 5"))
+    print(f"LLM responses: {spark.table(RAW).count()}")
 else:
     print("USE_LLM_MAPPING is False — the crosswalk will use the analyst mapping directly.")
+
+if USE_LLM_MAPPING:
+    display(spark.sql(f"SELECT * FROM {RAW} LIMIT 5"))
 
 # COMMAND ----------
 

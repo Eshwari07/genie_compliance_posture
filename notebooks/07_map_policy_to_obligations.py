@@ -117,14 +117,27 @@ print(f"Pairs sent for adjudication: {ranked.count()}")
 
 # COMMAND ----------
 
-if USE_LLM_MAPPING:
+# The heaviest LLM step in the pipeline — up to three adjudications per obligation.
+# Cached and reused on re-run for the same reason as notebook 06: a downstream fix
+# should not cost another round of inference. Set True to discard and re-adjudicate.
+FORCE_READJUDICATE = False
+
+RAW = t(SCHEMA_SILVER, "llm_coverage_raw")
+already_judged = spark.catalog.tableExists(f"{CATALOG}.{SCHEMA_SILVER}.llm_coverage_raw")
+
+if USE_LLM_MAPPING and already_judged and not FORCE_READJUDICATE:
+    print(f"Reusing {spark.table(RAW).count()} cached adjudications in {RAW}.")
+    print("Set FORCE_READJUDICATE = True to re-run inference.")
+elif USE_LLM_MAPPING:
     ranked.select(
         "obligation_id", "framework_id", "control_ref", "title", "requirement_text",
         "clause_id", "doc_number", "clause_ref", "section_heading", "clause_text", "clause_modality",
     ).createOrReplaceTempView("coverage_candidates")
+    print(f"Running {ranked.count()} ai_query calls — this is the slowest step, "
+          "expect several minutes.")
 
     spark.sql(f"""
-        CREATE OR REPLACE TABLE {t(SCHEMA_SILVER, 'llm_coverage_raw')} AS
+        CREATE OR REPLACE TABLE {RAW} AS
         SELECT
             obligation_id, clause_id,
             ai_query(
@@ -153,11 +166,12 @@ if USE_LLM_MAPPING:
             ) AS llm_response
         FROM coverage_candidates
     """)
-    n = spark.table(t(SCHEMA_SILVER, 'llm_coverage_raw')).count()
-    print(f"Adjudications returned: {n}")
-    display(spark.sql(f"SELECT * FROM {t(SCHEMA_SILVER, 'llm_coverage_raw')} LIMIT 5"))
+    print(f"Adjudications returned: {spark.table(RAW).count()}")
 else:
     print("USE_LLM_MAPPING is False — using the deterministic baseline.")
+
+if USE_LLM_MAPPING:
+    display(spark.sql(f"SELECT * FROM {RAW} LIMIT 5"))
 
 # COMMAND ----------
 

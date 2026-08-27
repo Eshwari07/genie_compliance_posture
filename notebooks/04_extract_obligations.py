@@ -137,6 +137,9 @@ ffiec_enriched = 0
 # crosswalk and coverage notebooks, which are the ones that genuinely need it.
 FFIEC_CANDIDATE_LIMIT = int(os.environ.get("COMPLYLENS_FFIEC_LIMIT", "220"))
 
+# LLM output is cached in a Delta table. Set True to discard it and re-extract.
+FFIEC_FORCE_REEXTRACT = False
+
 if ffiec_docs > 0 and USE_LLM_MAPPING:
     # Candidate paragraphs: substantive prose containing obligation language.
     # Longest first, because a longer paragraph carries more of the actual expectation
@@ -168,33 +171,52 @@ if ffiec_docs > 0 and USE_LLM_MAPPING:
 
         # Ask the model to name the single FFIEC topic each paragraph states an
         # expectation about. Constrained output keeps this joinable.
-        spark.sql(f"""
-            CREATE OR REPLACE TEMP VIEW ffiec_extracted AS
-            SELECT
-                doc_id, page_no, element_id, content,
-                ai_query(
-                    '{LLM_ENDPOINT}',
-                    CONCAT(
-                        'You are reading the FFIEC IT Examination Handbook Information Security booklet. ',
-                        'The paragraph below may state a supervisory expectation. ',
-                        'Reply with ONLY a short topic label of at most 6 words naming what the ',
-                        'expectation is about (for example: "media sanitization", "access recertification", ',
-                        '"vendor due diligence"). If the paragraph states no expectation, reply exactly NONE.',
-                        CHR(10), CHR(10), 'PARAGRAPH: ', content
-                    )
-                ) AS topic_label
-            FROM ffiec_candidates
-        """)
+        #
+        # Written straight to a Delta table rather than a temp view, for two reasons.
+        # A temp view is lazy, so every downstream reference — count, display, the join —
+        # would re-invoke ai_query on all candidates. The usual fix, .cache(), is not
+        # available: serverless compute rejects it with NOT_SUPPORTED_WITH_SERVERLESS.
+        # Materialising also means a notebook re-run reuses these results instead of
+        # re-spending LLM quota.
+        LLM_TOPICS = t(SCHEMA_BRONZE, "ffiec_llm_topics")
+
+        if spark.catalog.tableExists(f"{CATALOG}.{SCHEMA_BRONZE}.ffiec_llm_topics") and not FFIEC_FORCE_REEXTRACT:
+            print(f"Reusing cached extraction in {LLM_TOPICS} "
+                  "(set FFIEC_FORCE_REEXTRACT = True to redo it).")
+        else:
+            spark.sql(f"""
+                CREATE OR REPLACE TABLE {LLM_TOPICS} AS
+                SELECT
+                    doc_id, page_no, element_id, content,
+                    ai_query(
+                        '{LLM_ENDPOINT}',
+                        CONCAT(
+                            'You are reading the FFIEC IT Examination Handbook Information Security booklet. ',
+                            'The paragraph below may state a supervisory expectation. ',
+                            'Reply with ONLY a short topic label of at most 6 words naming what the ',
+                            'expectation is about (for example: "media sanitization", "access recertification", ',
+                            '"vendor due diligence"). If the paragraph states no expectation, reply exactly NONE.',
+                            CHR(10), CHR(10), 'PARAGRAPH: ', content
+                        )
+                    ) AS topic_label
+                FROM ffiec_candidates
+            """)
+            spark.sql(f"""
+                COMMENT ON TABLE {LLM_TOPICS} IS
+                'Topic labels extracted by an LLM from FFIEC booklet paragraphs. Materialised
+                 so downstream joins do not re-invoke ai_query, and so notebook re-runs do not
+                 re-spend model quota.'
+            """)
 
         extracted = (
-            spark.table("ffiec_extracted")
+            spark.table(LLM_TOPICS)
             .withColumn("topic_label", F.lower(F.trim(F.col("topic_label"))))
-            .filter(~F.col("topic_label").rlike("^none")) 
+            .filter(~F.col("topic_label").rlike("^none"))
             .filter(F.length("topic_label").between(3, 60))
         )
-        extracted.cache()
         print(f"FFIEC statements with an identified topic: {extracted.count()}")
-        display(extracted.select("page_no", "topic_label", F.substring("content", 1, 120).alias("excerpt")).limit(15))
+        display(extracted.select("page_no", "topic_label",
+                                 F.substring("content", 1, 120).alias("excerpt")).limit(15))
 
         # Join back to seed obligations on title-word overlap. Deliberately conservative:
         # a wrong match would corrupt the crosswalk, and an unmatched obligation simply
