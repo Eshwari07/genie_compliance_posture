@@ -73,6 +73,28 @@ def main() -> int:
     # --- dimensions --------------------------------------------------------
     exported["frameworks"] = write_jsonl(load_frameworks(), out / "frameworks.jsonl")
 
+    # Obligations are exported for the app's offline preview mode only — the SQL script
+    # deliberately reads silver.framework_obligations instead, because that table carries
+    # verbatim NIST OSCAL text this file cannot reproduce. Exporting it keeps mock mode
+    # self-contained rather than importing repo modules at request time.
+    exported["obligations (mock only)"] = write_jsonl(
+        [
+            {
+                "obligation_id": o["obligation_id"],
+                "framework_id": o["framework_id"],
+                "control_ref": o["control_ref"],
+                "title": o["title"],
+                "domain": o["domain"],
+                "requirement_text": o["requirement_text"],
+                "criticality": o["criticality"],
+                "text_provenance": o["text_provenance"],
+                "trust_category": o["trust_category"],
+            }
+            for o in obligations
+        ],
+        out / "obligations.jsonl",
+    )
+
     exported["unified_controls"] = write_jsonl(
         load_unified_controls(), out / "unified_controls.jsonl"
     )

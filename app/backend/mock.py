@@ -30,8 +30,19 @@ def _load(name: str) -> list[dict]:
     return [json.loads(l) for l in path.read_text(encoding="utf-8").splitlines() if l.strip()]
 
 
+REQUIRED = [
+    "coverage_assessments", "obligations", "obligation_crosswalk", "frameworks",
+    "domains", "unified_controls", "org_controls", "policy_documents",
+    "policy_clauses", "remediation_backlog",
+]
+
+
+def missing_files() -> list[str]:
+    return [n for n in REQUIRED if not (DATA_DIR / f"{n}.jsonl").exists()]
+
+
 def available() -> bool:
-    return (DATA_DIR / "coverage_assessments.jsonl").exists()
+    return not missing_files()
 
 
 # ---------------------------------------------------------------------------
@@ -48,14 +59,10 @@ def obligation_coverage() -> list[dict]:
     policies = {p["policy_id"]: p for p in _load("policy_documents")}
     xw = {x["obligation_id"]: x for x in _load("obligation_crosswalk")}
 
-    # Obligation text comes from the authored catalogs; in Databricks this column carries
-    # verbatim NIST OSCAL text for 139 rows, which mock mode cannot reproduce.
-    import sys
-
-    sys.path.insert(0, str(DATA_DIR.parents[1] / "data_generator"))
-    from catalog_loader import load_obligations
-
-    obligations = {o["obligation_id"]: o for o in load_obligations()}
+    # Read from the exported fixture rather than importing catalog_loader, so preview mode
+    # depends only on data files. In Databricks this text carries verbatim NIST OSCAL prose
+    # for 139 rows, which the fixture cannot reproduce.
+    obligations = {o["obligation_id"]: o for o in _load("obligations")}
 
     rows = []
     for a in _load("coverage_assessments"):
