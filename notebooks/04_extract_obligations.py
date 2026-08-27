@@ -86,9 +86,16 @@ if have_oscal:
         .dropDuplicates(["oscal_ref"])
     )
 
-    nist = seed.filter(F.col("framework_id") == "NIST80053")
+    # Enhancement notation differs between our catalog and OSCAL: we write AC-6(7),
+    # OSCAL writes ac-6.7. Without normalising, every enhancement silently fails to match
+    # and keeps authored text while the base controls succeed — which is exactly the
+    # discrepancy the provenance assertion caught (AC-6(7), IA-2(1), IA-2(2)).
+    nist = seed.filter(F.col("framework_id") == "NIST80053").withColumn(
+        "join_ref",
+        F.upper(F.regexp_replace(F.col("control_ref"), r"\((\d+)\)", ".$1")),
+    )
     enriched = (
-        nist.join(oscal, F.upper(F.col("control_ref")) == F.col("oscal_ref"), "left")
+        nist.join(oscal, F.col("join_ref") == F.col("oscal_ref"), "left")
         .withColumn(
             "requirement_text",
             F.when(F.col("oscal_text").isNotNull() & (F.length("oscal_text") > 40),
@@ -105,11 +112,20 @@ if have_oscal:
             F.when(F.col("oscal_text").isNotNull(), F.lit("nist_oscal_catalog"))
              .otherwise(F.lit("authored_seed")),
         )
-        .drop("oscal_ref", "oscal_title", "oscal_text", "oscal_family")
+        .drop("oscal_ref", "oscal_title", "oscal_text", "oscal_family", "join_ref")
     )
 
     matched = enriched.filter(F.col("extraction_method") == "nist_oscal_catalog").count()
-    print(f"NIST 800-53: {matched}/{nist.count()} obligations matched to official OSCAL text")
+    total_nist = nist.count()
+    print(f"NIST 800-53: {matched}/{total_nist} obligations matched to official OSCAL text")
+
+    if matched < total_nist:
+        print("\nStill unmatched — check for an identifier format we are not normalising:")
+        display(
+            enriched.filter(F.col("extraction_method") == "authored_seed")
+            .select("control_ref", "title")
+        )
+
     seed = seed.filter(F.col("framework_id") != "NIST80053").unionByName(enriched)
 else:
     print("OSCAL not loaded — NIST 800-53 stays on the authored seed.")
